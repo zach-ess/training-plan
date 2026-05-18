@@ -1,0 +1,16 @@
+{
+  "name": "BurliMOT Training Plan",
+  "short_name": "Training",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#0d3b38",
+  "theme_color": "#0d3b38",
+  "icons": [
+    {
+      "src": "ze_monogram.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
