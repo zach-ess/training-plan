@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Workout Calendar</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cardio:#b91c1c; --cardio-bg:#fee2e2;
+  --strength:#1a5fa8; --strength-bg:#dbeafe;
+  --flex:#166534; --flex-bg:#dcfce7;
+  --rest:#4b5563; --rest-bg:#f3f4f6;
+  --border:#e5e7eb; --border-dk:#d1d5db;
+  --text:#111827; --muted:#9ca3af; --mid:#6b7280;
+  --accent:#111827;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:#f9fafb;padding:24px;color:var(--text);}
+
+.controls{display:flex;align-items:center;gap:12px;margin-bottom:20px;background:#fff;border:1px solid var(--border);border-radius:10px;padding:12px 16px;flex-wrap:wrap;}
+.controls label{font-size:11px;font-weight:500;color:var(--mid);text-transform:uppercase;letter-spacing:.06em;}
+.controls select{font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;color:var(--text);background:#fff;border:1px solid var(--border-dk);border-radius:6px;padding:6px 10px;cursor:pointer;outline:none;}
+.controls select:focus{border-color:var(--accent);}
+.btn{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;border:none;border-radius:6px;padding:8px 16px;cursor:pointer;transition:opacity .15s;}
+.btn-dark{background:var(--accent);color:#fff;margin-left:auto;}
+.btn-outline{background:#fff;color:var(--text);border:1px solid var(--border-dk);}
+.btn:hover{opacity:.8;}
+
+.page{background:#fff;border-radius:12px;border:1px solid var(--border);overflow:hidden;}
+
+.header{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:20px 24px 16px;border-bottom:1px solid var(--border);}
+.month-title{font-family:'Bebas Neue',sans-serif;font-size:42px;letter-spacing:.04em;color:var(--text);}
+.header-meta{display:flex;flex-direction:column;gap:6px;text-align:right;}
+.weight-row{display:flex;align-items:center;gap:8px;justify-content:flex-end;}
+.weight-row label{font-size:11px;color:var(--mid);text-transform:uppercase;letter-spacing:.05em;}
+.weight-input{width:58px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;border:none;border-bottom:1.5px solid var(--border-dk);padding:2px 4px;text-align:center;background:transparent;outline:none;color:var(--text);}
+.quote-wrap{padding:10px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.quote-wrap::before{content:'"';font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--border-dk);line-height:1;}
+.quote-input{flex:1;font-family:'DM Sans',sans-serif;font-size:13px;font-style:italic;color:var(--mid);border:none;outline:none;background:transparent;}
+.quote-input::placeholder{color:#d1d5db;}
+
+.day-headers{display:grid;grid-template-columns:repeat(7,1fr);border-bottom:1px solid var(--border);}
+.day-hdr{padding:8px 0;text-align:center;font-size:11px;font-weight:500;color:var(--mid);text-transform:uppercase;letter-spacing:.08em;}
+
+.grid{display:grid;grid-template-columns:repeat(7,1fr);}
+.cell{border-right:1px solid var(--border);border-bottom:1px solid var(--border);padding:6px 7px;min-height:108px;display:flex;flex-direction:column;gap:4px;position:relative;}
+.cell:nth-child(7n){border-right:none;}
+.cell.empty{background:#fafafa;}
+.cell.today{background:#fffbeb;}
+.date-num{font-size:11px;font-weight:500;color:var(--mid);margin-bottom:2px;}
+.cell.today .date-num{background:var(--accent);color:#fff;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+
+.types-row{display:flex;gap:4px;}
+.type-sel{font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;border:none;border-radius:4px;padding:2px 5px;cursor:pointer;outline:none;flex:1;min-width:0;}
+
+.desc-input{font-family:'DM Sans',sans-serif;font-size:10px;color:var(--text);border:none;border-bottom:1px solid var(--border);background:transparent;outline:none;width:100%;resize:none;line-height:1.4;padding:1px 0;flex:1;}
+.desc-input::placeholder{color:var(--muted);}
+
+.done-row{display:flex;align-items:center;gap:5px;margin-top:auto;}
+.done-row label{font-size:10px;color:var(--muted);}
+.done-row input[type=checkbox]{accent-color:var(--accent);width:12px;height:12px;cursor:pointer;}
+
+.footer{padding:12px 24px;border-top:1px solid var(--border);}
+.notes-label{font-size:11px;font-weight:500;color:var(--mid);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px;}
+.notes-area{width:100%;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--text);border:1px solid var(--border);border-radius:6px;padding:8px 10px;resize:none;outline:none;line-height:1.6;}
+.notes-area::placeholder{color:var(--muted);}
+
+.legend{display:flex;gap:14px;align-items:center;margin-top:10px;flex-wrap:wrap;}
+.leg{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--mid);}
+.leg-dot{width:10px;height:10px;border-radius:3px;}
+
+/* Type color application */
+select.t-Cardio{background:var(--cardio-bg);color:var(--cardio);}
+select.t-Strength{background:var(--strength-bg);color:var(--strength);}
+select.t-Flexibility{background:var(--flex-bg);color:var(--flex);}
+select.t-Rest{background:var(--rest-bg);color:var(--rest);}
+
+@media print {
+  body{background:#fff;padding:0;}
+  .controls{display:none;}
+  .page{border:none;border-radius:0;box-shadow:none;}
+  @page{size:landscape;margin:8mm;}
+  .cell{min-height:90px;}
+  .desc-input,.notes-area,.quote-input{-webkit-appearance:none;}
+}
+</style>
+</head>
+<body>
+
+<div class="controls">
+  <label>Month</label>
+  <select id="selMonth">
+    <option value="0">May 2026</option>
+    <option value="1">June 2026</option>
+    <option value="2">July 2026</option>
+    <option value="3">August 2026</option>
+    <option value="4">September 2026</option>
+    <option value="5">October 2026</option>
+  </select>
+  <div style="width:1px;height:20px;background:var(--border);margin:0 4px;"></div>
+  <label style="font-size:11px;color:var(--mid);">Training plan pre-loaded — all fields editable</label>
+  <button class="btn btn-dark" onclick="window.print()">🖨 Print</button>
+</div>
+
+<div class="page" id="calPage">
+  <div class="header">
+    <div class="month-title" id="monthTitle">May 2026</div>
+    <div></div>
+    <div class="header-meta">
+      <div class="weight-row">
+        <label>Start weight</label>
+        <input class="weight-input" type="text" placeholder="lbs"> lbs
+      </div>
+      <div class="weight-row">
+        <label>End weight</label>
+        <input class="weight-input" type="text" placeholder="lbs"> lbs
+      </div>
+    </div>
+  </div>
+
+  <div class="quote-wrap">
+    <input class="quote-input" type="text" placeholder="Monthly motivation quote…">
+  </div>
+
+  <div class="day-headers">
+    <div class="day-hdr">Sun</div>
+    <div class="day-hdr">Mon</div>
+    <div class="day-hdr">Tue</div>
+    <div class="day-hdr">Wed</div>
+    <div class="day-hdr">Thu</div>
+    <div class="day-hdr">Fri</div>
+    <div class="day-hdr">Sat</div>
+  </div>
+
+  <div class="grid" id="calGrid"></div>
+
+  <div class="footer">
+    <div class="notes-label">Notes & Goals</div>
+    <textarea class="notes-area" rows="3" placeholder="Monthly goals, notes, reflections…"></textarea>
+    <div class="legend">
+      <div class="leg"><div class="leg-dot" style="background:var(--cardio-bg);border:1px solid var(--cardio);"></div>Cardio / Run</div>
+      <div class="leg"><div class="leg-dot" style="background:var(--strength-bg);border:1px solid var(--strength);"></div>Strength</div>
+      <div class="leg"><div class="leg-dot" style="background:var(--flex-bg);border:1px solid var(--flex);"></div>Flexibility</div>
+      <div class="leg"><div class="leg-dot" style="background:var(--rest-bg);border:1px solid var(--rest);"></div>Rest</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const PLAN = {
+  '2026-05-18': {t1:'Strength',t2:'',desc:'LIIFT4: Chest/Triceps'},
+  '2026-05-19': {t1:'Strength',t2:'Cardio',desc:'LIIFT4: Back/Biceps | 5K Race — baseline fitness test (3.1 mi)'},
+  '2026-05-20': {t1:'Cardio',t2:'',desc:'Easy Run — 3.0 mi @ 9:30-10:30/mi'},
+  '2026-05-21': {t1:'Strength',t2:'Cardio',desc:'LIIFT4: Shoulders | Easy Run — 3.0 mi @ 9:30-10:30/mi'},
+  '2026-05-22': {t1:'Strength',t2:'',desc:'LIIFT4: Legs'},
+  '2026-05-23': {t1:'Rest',t2:'',desc:''},
+  '2026-05-24': {t1:'Cardio',t2:'Flexibility',desc:'Long Run — 5.0 mi easy @ 9:30-10:30/mi | Mobility & Recovery — foam roll, stretch'},
+  '2026-05-25': {t1:'Strength',t2:'',desc:'LIIFT4: Chest/Triceps'},
+  '2026-05-26': {t1:'Strength',t2:'Cardio',desc:'LIIFT4: Back/Biceps | Easy Run — 3.0 mi @ 9:30-10:30/mi'},
+  '2026-05-27': {t1:'Cardio',t2:'',desc:'Easy Run — 3.0 mi @ 9:30-10:30/mi'},
+  '2026-05-28': {t1:'Strength',t2:'Cardio',desc:'LIIFT4: Shoulders | Easy Run — 3.0 mi @ 9:30-10:30/mi'},
+  '2026-05-29': {t1:'Strength',t2:'',desc:'LIIFT4: Legs'},
+  '2026-05-30': {t1:'Rest',t2:'',desc:''},
+  '2026-05-31': {t1:'Cardio',t2:'Flexibility',desc:'Long Run — 6.0 mi easy @ 9:30-10:30/mi | Mobility & Recovery — foam roll, stretch'},
+  '2026-06-01': {t1:'Strength',t2:'',desc:'LIIFT4: Chest/Triceps'},
+  '2026-06-02': {t1:'Strength',t2:'Cardio',desc:'LIIFT4: Back/Biceps | Easy Run — 3.0 mi @ 9:30-10:30/mi'},
+  '2026-06-03': {t1:'Cardio',t2:'',desc:'30-Minute Threshold Field Test'},
+  '2026-06-04': {t1:'Strength',t2:'Cardio',desc:'LIIFT4: Shoulders | Easy Run — 2.0 mi @ 9:30-10:30/mi'},
+  '2026-06-05': {t1:'Strength',t2:'',desc:'LIIFT4: Legs'},
+  '2026-06-06': {t1:'Rest',t2:'',desc:''},
+  '2026-06-07': {t1:'Cardio',t2:'Flexibility',desc:'Easy Run — 4.0 mi @ 9:30-10:30/mi | Mobility & Recovery — foam roll, stretch'},
+  '2026-06-08': {t1:'Strength',t2:'',desc:'LIIFT4: Chest/Triceps'},
+  '2026-06-09': {t1:'Strength',t2:'Cardio',desc:'LIIFT4: Back/Biceps | Easy Run — 4.0 mi + strides @ 9:30-10:30/mi'},
+  '2026-06-10': {t1:'Cardio',t2:'',desc:'Easy Run — 4.0 mi @ 9:30-10:30/mi'},
+  '2026-06-11': {t1:'Strength',t2:'Cardio',desc:'LIIFT4: Shoulders | Easy Run — 3.0 mi @ 9:30-10:30/mi'},
+  '2026-06-12': {t1:'Strength',t2:'',desc:'LIIFT4: Legs'},
+  '2026-06-13': {t1:'Rest',t2:'',desc:''},
+  '2026-06-14': {t1:'Cardio',t2:'Flexibility',desc:'Long Run — 7.0 mi easy @ 9:30-10:30/mi | Mobility & Recovery — foam roll, stretch'},
+  '2026-06-15': {t1:'Strength',t2:'',desc:'LIIFT4: Chest/Triceps'},
+  '2026-06-16': {t1:'Strength',t2:'Cardio',desc:'LIIFT4: Back/Biceps | Easy Run — 4.0 mi + strides @ 9:30-10:30/mi'},
+  '2026-06-17': {t1:'Cardio',t2:'',desc:'Easy Run — 5.0 mi + strides @ 9:30-10:30/mi'},
+  '2026-06-18': {t1:'Strength',t2:'Cardio',desc:'LIIFT4: Shoulders | Easy Run — 3.0 mi @ 9:30-10:30/mi'},
+  '2026-06-19': {t1:'Strength',t2:'',desc:'LIIFT4: Legs'},
+  '2026-06-20': {t1:'Rest',t2:'',desc:''},
+  '2026-06-21': {t1:'Cardio',t2:'Flexibility',desc:'Long Run — 8.0 mi easy @ 9:30-10:30/mi | Mobility & Recovery — foam roll, stretch'},
+  '2026-06-22': {t1:'Strength',t2:'',desc:'LIIFT4: Chest/Back'},
+  '2026-06-23': {t1:'Strength',t2:'',desc:'LIIFT4: Legs'},
+  '2026-06-24': {t1:'Cardio',t2:'',desc:'Easy Run — 3.0 mi @ 9:30-10:30/mi'},
+  '2026-06-25': {t1:'Strength',t2:'Cardio',desc:'LIIFT4: Shoulders/Arms | Easy Run — 3.0 mi @ 9:30-10:30/mi'},
+  '2026-06-26': {t1:'Strength',t2:'',desc:'LIIFT4: Full Body'},
+  '2026-06-27': {t1:'Rest',t2:'',desc:''},
+  '2026-06-28': {t1:'Cardio',t2:'Flexibility',desc:'Long Run — 5.0 mi easy @ 9:30-10:30/mi | Mobility & Recovery — foam roll, stretch'},
+  '2026-06-29': {t1:'Strength',t2:'',desc:'LIIFT4: Chest/Back'},
+  '2026-06-30': {t1:'Strength',t2:'',desc:'LIIFT4: Legs'},
+  '2026-07-01': {t1:'Cardio',t2:'',desc:'Easy Run — 4.0 mi + strides @ 9:30-10:30/mi'},
+  '2026-07-02': {t1:'Strength',t2:'Cardio',desc:'LIIFT4: Shoulders/Arms | Easy Run — 4.0 mi @ 9:30-10:30/mi'},
+  '2026-07-03': {t1:'Strength',t2:'',desc:'LIIFT4: Full Body'},
+  '2026-07-04': {t1:'Rest',t2:'',desc:''},
+  '2026-07-05': {t1:'Cardio',t2:'Flexibility',desc:'Long Run — 9.0 mi easy @ 9:30-10:30/mi | Mobility & Recovery — foam roll, stretch'},
+  '2026-07-06': {t1:'Rest',t2:'',desc:''},
+  '2026-07-07': {t1:'Cardio',t2:'',desc:'Easy Run — 4.0 mi @ 9:30-10:30/mi'},
+  '2026-07-08': {t1:'Strength',t2:'',desc:'Strength — Build Phase'},
+  '2026-07-09': {t1:'Cardio',t2:'',desc:'Tempo Run — 2x1.5 mi @ T pace (2min walk rest)'},
+  '2026-07-10': {t1:'Rest',t2:'',desc:''},
+  '2026-07-11': {t1:'Cardio',t2:'',desc:'Easy Run — 2.0 mi @ 9:30-10:30/mi'},
+  '2026-07-12': {t1:'Cardio',t2:'Flexibility',desc:'Long Run — 10.0 mi easy @ 9:30-10:30/mi | Mobility & Recovery — foam roll, stretch'},
+  '2026-07-13': {t1:'Rest',t2:'',desc:''},
+  '2026-07-14': {t1:'Cardio',t2:'',desc:'Easy Run — 4.0 mi + strides @ 9:30-10:30/mi'},
+  '2026-07-15': {t1:'Strength',t2:'',desc:'Strength — Build Phase (Moderate)'},
+  '2026-07-16': {t1:'Cardio',t2:'',desc:'Easy Run — 3.0 mi @ 9:30-10:30/mi'},
+  '2026-07-17': {t1:'Rest',t2:'',desc:''},
+  '2026-07-18': {t1:'Rest',t2:'',desc:''},
+  '2026-07-19': {t1:'Cardio',t2:'Flexibility',desc:'Long Run — 7.0 mi easy @ 9:30-10:30/mi | Mobility & Recovery — foam roll, stretch'},
+  '2026-07-20': {t1:'Rest',t2:'',desc:''},
+  '2026-07-21': {t1:'Cardio',t2:'',desc:'Easy Run — 5.0 mi + strides @ 9:30-10:30/mi'},
+  '2026-07-22': {t1:'Strength',t2:'',desc:'Strength — Build Phase'},
+  '2026-07-23': {t1:'Cardio',t2:'',desc:'Tempo Run — 4x1 mi @ T pace (90s jog rest)'},
+  '2026-07-24': {t1:'Cardio',t2:'',desc:'Easy Run — 2.0 mi @ 9:30-10:30/mi'},
+  '2026-07-25': {t1:'Rest',t2:'',desc:''},
+  '2026-07-26': {t1:'Cardio',t2:'Flexibility',desc:'Long Run — 11.0 mi easy @ 9:30-10:30/mi | Mobility & Recovery — foam roll, stretch'},
+  '2026-07-27': {t1:'Rest',t2:'',desc:''},
+  '2026-07-28': {t1:'Cardio',t2:'',desc:'Easy Run — 5.0 mi + strides @ 9:30-10:30/mi'},
+  '2026-07-29': {t1:'Strength',t2:'',desc:'Strength — Build Phase'},
+  '2026-07-30': {t1:'Cardio',t2:'',desc:'Tempo Run — 5x1 mi @ T pace (90s jog rest)'},
+  '2026-07-31': {t1:'Cardio',t2:'',desc:'Easy Run — 2.0 mi @ 9:30-10:30/mi'},
+  '2026-08-01': {t1:'Rest',t2:'',desc:''},
+  '2026-08-02': {t1:'Cardio',t2:'Flexibility',desc:'Long Run — 12.0 mi easy @ 9:30-10:30/mi | Mobility & Recovery — foam roll, stretch'},
+  '2026-08-03': {t1:'Rest',t2:'',desc:''},
+  '2026-08-04': {t1:'Cardio',t2:'',desc:'Easy Run — 4.0 mi + strides @ 9:30-10:30/mi'},
+  '2026-08-05': {t1:'Strength',t2:'',desc:'Strength — Build Phase (Lighter)'},
+  '2026-08-06': {t1:'Cardio',t2:'',desc:'Easy Run — 4.0 mi + strides @ 9:30-10:30/mi'},
+  '2026-08-07': {t1:'Rest',t2:'',desc:''},
+  '2026-08-08': {t1:'Rest',t2:'',desc:''},
+  '2026-08-09': {t1:'Cardio',t2:'Flexibility',desc:'Long Run — 8.0 mi easy @ 9:30-10:30/mi | Mobility & Recovery — foam roll, stretch'},
+  '2026-08-10': {t1:'Rest',t2:'',desc:''},
+  '2026-08-11': {t1:'Cardio',t2:'',desc:'Easy Run — 5.0 mi + strides @ 9:30-10:30/mi'},
+  '2026-08-12': {t1:'Strength',t2:'',desc:'Strength — Build Phase'},
+  '2026-08-13': {t1:'Cardio',t2:'',desc:'Tempo Run — 4x1.5 mi @ T pace (2min walk rest)'},
+  '2026-08-14': {t1:'Cardio',t2:'',desc:'Easy Run — 2.0 mi @ 9:30-10:30/mi'},
+  '2026-08-15': {t1:'Rest',t2:'',desc:''},
+  '2026-08-16': {t1:'Cardio',t2:'Flexibility',desc:'Long Run — 13.0 mi easy @ 9:30-10:30/mi | Mobility & Recovery — foam roll, stretch'},
+  '2026-08-17': {t1:'Rest',t2:'',desc:''},
+  '2026-08-18': {t1:'Cardio',t2:'',desc:'Easy Run — 5.0 mi + strides @ 9:30-10:30/mi'},
+  '2026-08-19': {t1:'Strength',t2:'',desc:'Strength — Maintenance'},
+  '2026-08-20': {t1:'Cardio',t2:'',desc:'Race Simulation — 4 Miles at Goal Pace'},
+  '2026-08-21': {t1:'Cardio',t2:'',desc:'Easy Run — 2.0 mi @ 9:30-10:30/mi'},
+  '2026-08-22': {t1:'Rest',t2:'',desc:''},
+  '2026-08-23': {t1:'Cardio',t2:'Flexibility',desc:'Long Run — 11.0 mi easy @ 9:30-10:30/mi | Mobility & Recovery — foam roll, stretch'},
+  '2026-08-24': {t1:'Rest',t2:'',desc:''},
+  '2026-08-25': {t1:'Cardio',t2:'',desc:'Easy Run — 4.0 mi + strides @ 9:30-10:30/mi'},
+  '2026-08-26': {t1:'Strength',t2:'',desc:'Strength — Maintenance'},
+  '2026-08-27': {t1:'Cardio',t2:'',desc:'Taper Sharpener — 2x2.5 Miles at Goal Pace'},
+  '2026-08-28': {t1:'Rest',t2:'',desc:''},
+  '2026-08-29': {t1:'Rest',t2:'',desc:''},
+  '2026-08-30': {t1:'Cardio',t2:'Flexibility',desc:'Long Run — 8.0 mi easy @ 9:30-10:30/mi | Mobility & Recovery — foam roll, stretch'},
+  '2026-08-31': {t1:'Rest',t2:'',desc:''},
+  '2026-09-01': {t1:'Cardio',t2:'',desc:'Easy Run — 4.0 mi + strides @ 9:30-10:30/mi'},
+  '2026-09-02': {t1:'Strength',t2:'',desc:'Strength — Light Maintenance'},
+  '2026-09-03': {t1:'Cardio',t2:'',desc:'Easy Run — 3.0 mi + strides @ 9:30-10:30/mi'},
+  '2026-09-04': {t1:'Rest',t2:'',desc:''},
+  '2026-09-05': {t1:'Rest',t2:'',desc:''},
+  '2026-09-06': {t1:'Cardio',t2:'Flexibility',desc:'Easy Run — 5.0 mi + strides @ 9:30-10:30/mi | Mobility & Recovery — foam roll, stretch'},
+  '2026-09-07': {t1:'Rest',t2:'',desc:''},
+  '2026-09-08': {t1:'Cardio',t2:'',desc:'Easy Run — 3.0 mi @ 9:30-10:30/mi'},
+  '2026-09-09': {t1:'Rest',t2:'',desc:''},
+  '2026-09-10': {t1:'Cardio',t2:'',desc:'Easy Run — 2.0 mi + strides @ 9:30-10:30/mi'},
+  '2026-09-11': {t1:'Rest',t2:'',desc:''},
+  '2026-09-12': {t1:'Cardio',t2:'',desc:'🏁 RACE DAY — BurliMOT Half Marathon 13.1 mi'},
+  '2026-09-13': {t1:'Flexibility',t2:'',desc:'Mobility & Recovery — foam roll, stretch'},
+};
+
+const MONTHS = [
+  {label:'May 2026',year:2026,month:4},
+  {label:'June 2026',year:2026,month:5},
+  {label:'July 2026',year:2026,month:6},
+  {label:'August 2026',year:2026,month:7},
+  {label:'September 2026',year:2026,month:8},
+  {label:'October 2026',year:2026,month:9},
+];
+
+const TYPES = ['—','Cardio','Strength','Flexibility','Rest'];
+const TYPE_COLORS = {Cardio:'t-Cardio',Strength:'t-Strength',Flexibility:'t-Flexibility',Rest:'t-Rest','—':''};
+
+function pad(n){return String(n).padStart(2,'0');}
+function dateKey(y,m,d){return `${y}-${pad(m+1)}-${pad(d)}`;}
+
+function applyTypeColor(sel){
+  sel.className='type-sel';
+  const c=TYPE_COLORS[sel.value];
+  if(c) sel.classList.add(c);
+}
+
+function buildGrid(monthIdx){
+  const {label,year,month}=MONTHS[monthIdx];
+  document.getElementById('monthTitle').textContent=label;
+  const grid=document.getElementById('calGrid');
+  grid.innerHTML='';
+
+  const today=new Date();
+  const firstDay=new Date(year,month,1).getDay();
+  const daysInMonth=new Date(year,month+1,0).getDate();
+
+  // blank cells
+  for(let i=0;i<firstDay;i++){
+    const c=document.createElement('div');
+    c.className='cell empty';
+    grid.appendChild(c);
+  }
+
+  for(let d=1;d<=daysInMonth;d++){
+    const key=dateKey(year,month,d);
+    const plan=PLAN[key]||{t1:'',t2:'',desc:''};
+    const isToday=(today.getFullYear()===year&&today.getMonth()===month&&today.getDate()===d);
+
+    const cell=document.createElement('div');
+    cell.className='cell'+(isToday?' today':'');
+
+    // Date number
+    const dn=document.createElement('div');
+    dn.className='date-num';
+    dn.textContent=d;
+    cell.appendChild(dn);
+
+    // Two type selectors
+    const tr=document.createElement('div');
+    tr.className='types-row';
+    [plan.t1||'—', plan.t2||'—'].forEach(val=>{
+      const s=document.createElement('select');
+      s.className='type-sel';
+      TYPES.forEach(t=>{
+        const o=document.createElement('option');
+        o.value=t; o.textContent=t;
+        if(t===val) o.selected=true;
+        s.appendChild(o);
+      });
+      applyTypeColor(s);
+      s.addEventListener('change',()=>applyTypeColor(s));
+      tr.appendChild(s);
+    });
+    cell.appendChild(tr);
+
+    // Description textarea
+    const ta=document.createElement('textarea');
+    ta.className='desc-input';
+    ta.rows=3;
+    ta.placeholder='Workout notes…';
+    ta.value=plan.desc||'';
+    cell.appendChild(ta);
+
+    // Done checkbox
+    const dr=document.createElement('div');
+    dr.className='done-row';
+    const cb=document.createElement('input');
+    cb.type='checkbox';
+    const lbl=document.createElement('label');
+    lbl.textContent='Done';
+    dr.appendChild(cb);
+    dr.appendChild(lbl);
+    cell.appendChild(dr);
+
+    grid.appendChild(cell);
+  }
+}
+
+document.getElementById('selMonth').addEventListener('change',function(){
+  buildGrid(parseInt(this.value));
+});
+
+buildGrid(0);
+</script>
+</body>
+</html>
