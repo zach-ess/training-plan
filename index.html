@@ -77,7 +77,7 @@ ${a.join(`
     "planStartDate": "2026-05-18",
     "planEndDate": "2026-09-13",
     "createdAt": "2026-05-18T00:00:00Z",
-    "updatedAt": "2026-05-18T00:00:00Z",
+    "updatedAt": "2026-05-19T00:00:00Z",
     "totalWeeks": 17,
     "generatedBy": "Claude Coach"
   },
@@ -105,7 +105,17 @@ ${a.join(`
       "longestSessions": {
         "run": 4
       },
-      "consistency": 12
+      "consistency": 12,
+      "recentRaces": [
+        {
+          "date": "2026-05-19",
+          "event": "5K",
+          "time": "26:33",
+          "pace": "8:33/mile",
+          "vdot": 37,
+          "notes": "Part of separate training plan. May not be true max effort. HR not captured."
+        }
+      ]
     },
     "strengths": [
       {
@@ -128,8 +138,8 @@ ${a.join(`
   "zones": {
     "run": {
       "hr": {
-        "lthr": 158,
-        "note": "ESTIMATED \u2014 confirm with Week 3 field test. Update after test.",
+        "lthr": 160,
+        "note": "Estimated \u2014 no HR captured during 5K. Confirm with Week 3 field test. LTHR ~160 estimated for VDOT 37.",
         "zones": [
           {
             "zone": 1,
@@ -174,28 +184,40 @@ ${a.join(`
         ]
       },
       "pace": {
-        "note": "ESTIMATED \u2014 update after Week 3 field test.",
-        "thresholdPace": "7:45/mile",
+        "note": "Calibrated from 5K result (26:33, VDOT 37) on May 19 2026. Re-test after Week 3 field test.",
+        "thresholdPace": "8:50/mile",
+        "vdot": 37,
+        "source": "5K race 26:33 on 2026-05-19",
         "zones": [
           {
             "zone": "E",
             "name": "Easy",
-            "paceRange": "9:30-10:30/mile"
+            "paceRange": "10:00-11:00/mile",
+            "description": "Fully conversational. Could hold this pace for hours. Zone 2 HR."
           },
           {
             "zone": "M",
             "name": "Goal Race Pace",
-            "paceRange": "8:00-8:20/mile"
+            "paceRange": "8:10-8:30/mile",
+            "description": "Goal half marathon pace. Controlled hard effort \u2014 short phrases only."
           },
           {
             "zone": "T",
             "name": "Threshold",
-            "paceRange": "7:40-8:00/mile"
+            "paceRange": "8:45-9:00/mile",
+            "description": "Comfortably hard. Few words at a time. 50-60 min race effort. Zone 4-5a."
           },
           {
             "zone": "I",
             "name": "Interval",
-            "paceRange": "7:10-7:25/mile"
+            "paceRange": "8:00-8:15/mile",
+            "description": "Hard. VO2max effort. Zone 5b."
+          },
+          {
+            "zone": "R",
+            "name": "Rep",
+            "paceRange": "7:45-8:00/mile",
+            "description": "Very hard. Short reps with full recovery."
           }
         ]
       }
@@ -313,11 +335,11 @@ ${a.join(`
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 3 Mi",
-              "description": "Easy aerobic run at 9:30-10:30/mile. Fully conversational effort. LIIFT4 rest day \u2014 standalone run, no doubles today. Note how your knees and legs feel after yesterday's 5K.",
+              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. LIIFT4 rest day \u2014 standalone run, no doubles today. Note how your knees and legs feel after yesterday's 5K.",
               "durationMinutes": 31,
               "distanceMeters": 4828,
               "primaryZone": "Zone 2",
-              "humanReadable": "3 miles easy @ 9:30-10:30/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
+              "humanReadable": "3 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
               "completed": false
             }
           ]
@@ -341,11 +363,11 @@ ${a.join(`
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 3 Mi",
-              "description": "Easy aerobic run at 9:30-10:30/mile. Fully conversational effort. Double day. Run AFTER LIIFT4 or separated by a few hours if possible.",
+              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Double day. Run AFTER LIIFT4 or separated by a few hours if possible.",
               "durationMinutes": 31,
               "distanceMeters": 4828,
               "primaryZone": "Zone 2",
-              "humanReadable": "3 miles easy @ 9:30-10:30/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
+              "humanReadable": "3 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
               "completed": false
             }
           ]
@@ -393,7 +415,7 @@ ${a.join(`
               "durationMinutes": 57,
               "distanceMeters": 8046,
               "primaryZone": "Zone 2",
-              "humanReadable": "5 miles easy @ 9:30-10:30/mi. Start conservative \u2014 10:30/mi first 2 miles.\nGel or snack if running over 60 minutes (at ~45min mark).\nKnee check at miles 2, 4, and halfway.\nFresh legs \u2014 two days after LIIFT4 leg day. Take it easy.",
+              "humanReadable": "5 miles easy @ 10:00-11:00/mi. Start conservative \u2014 10:30/mi first 2 miles.\nGel or snack if running over 60 minutes (at ~45min mark).\nKnee check at miles 2, 4, and halfway.\nFresh legs \u2014 two days after LIIFT4 leg day. Take it easy.",
               "completed": false
             },
             {
@@ -464,11 +486,11 @@ ${a.join(`
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 3 Mi",
-              "description": "Easy aerobic run at 9:30-10:30/mile. Fully conversational effort. Double day. Upper body lift + easy run.",
+              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Double day. Upper body lift + easy run.",
               "durationMinutes": 31,
               "distanceMeters": 4828,
               "primaryZone": "Zone 2",
-              "humanReadable": "3 miles easy @ 9:30-10:30/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
+              "humanReadable": "3 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
               "completed": false
             }
           ]
@@ -482,11 +504,11 @@ ${a.join(`
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 3 Mi",
-              "description": "Easy aerobic run at 9:30-10:30/mile. Fully conversational effort. LIIFT4 rest day \u2014 run only. How are your knees responding to the new schedule?",
+              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. LIIFT4 rest day \u2014 run only. How are your knees responding to the new schedule?",
               "durationMinutes": 31,
               "distanceMeters": 4828,
               "primaryZone": "Zone 2",
-              "humanReadable": "3 miles easy @ 9:30-10:30/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
+              "humanReadable": "3 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
               "completed": false
             }
           ]
@@ -510,11 +532,11 @@ ${a.join(`
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 3 Mi",
-              "description": "Easy aerobic run at 9:30-10:30/mile. Fully conversational effort. Double day. Shoulders + run. Keep run easy.",
+              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Double day. Shoulders + run. Keep run easy.",
               "durationMinutes": 31,
               "distanceMeters": 4828,
               "primaryZone": "Zone 2",
-              "humanReadable": "3 miles easy @ 9:30-10:30/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
+              "humanReadable": "3 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
               "completed": false
             }
           ]
@@ -562,7 +584,7 @@ ${a.join(`
               "durationMinutes": 68,
               "distanceMeters": 9656,
               "primaryZone": "Zone 2",
-              "humanReadable": "6 miles easy @ 9:30-10:30/mi. Start conservative \u2014 10:30/mi first 2 miles.\nGel or snack if running over 60 minutes (at ~45min mark).\nKnee check at miles 2, 4, and halfway.\nFirst 6-mile long run. Two days off from LIIFT4 legs \u2014 you should feel fresh.",
+              "humanReadable": "6 miles easy @ 10:00-11:00/mi. Start conservative \u2014 10:30/mi first 2 miles.\nGel or snack if running over 60 minutes (at ~45min mark).\nKnee check at miles 2, 4, and halfway.\nFirst 6-mile long run. Two days off from LIIFT4 legs \u2014 you should feel fresh.",
               "completed": false
             },
             {
@@ -633,11 +655,11 @@ ${a.join(`
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 3 Mi",
-              "description": "Easy aerobic run at 9:30-10:30/mile. Fully conversational effort. Keep very easy \u2014 field test is Wednesday.",
+              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Keep very easy \u2014 field test is Wednesday.",
               "durationMinutes": 31,
               "distanceMeters": 4828,
               "primaryZone": "Zone 2",
-              "humanReadable": "3 miles easy @ 9:30-10:30/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
+              "humanReadable": "3 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
               "completed": false
             }
           ]
@@ -679,11 +701,11 @@ ${a.join(`
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 2 Mi",
-              "description": "Easy aerobic run at 9:30-10:30/mile. Fully conversational effort. SHORT \u2014 active recovery after yesterday's test. 2 miles only.",
+              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. SHORT \u2014 active recovery after yesterday's test. 2 miles only.",
               "durationMinutes": 21,
               "distanceMeters": 3218,
               "primaryZone": "Zone 2",
-              "humanReadable": "2 miles easy @ 9:30-10:30/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
+              "humanReadable": "2 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
               "completed": false
             }
           ]
@@ -727,11 +749,11 @@ ${a.join(`
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 4 Mi",
-              "description": "Easy aerobic run at 9:30-10:30/mile. Fully conversational effort. Shorter run this week \u2014 field test was demanding. Keep it very easy.",
+              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Shorter run this week \u2014 field test was demanding. Keep it very easy.",
               "durationMinutes": 42,
               "distanceMeters": 6437,
               "primaryZone": "Zone 2",
-              "humanReadable": "4 miles easy @ 9:30-10:30/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
+              "humanReadable": "4 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
               "completed": false
             },
             {
@@ -802,11 +824,11 @@ ${a.join(`
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 4 Mi + Strides",
-              "description": "Easy aerobic run at 9:30-10:30/mile. Fully conversational effort. Double day. strides",
+              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Double day. strides",
               "durationMinutes": 42,
               "distanceMeters": 6437,
               "primaryZone": "Zone 2",
-              "humanReadable": "4 miles easy @ 9:30-10:30/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back to recover.",
+              "humanReadable": "4 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back to recover.",
               "completed": false
             }
           ]
@@ -820,11 +842,11 @@ ${a.join(`
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 4 Mi",
-              "description": "Easy aerobic run at 9:30-10:30/mile. Fully conversational effort. LIIFT4 rest day \u2014 solo run. Use your new threshold pace to dial in zones.",
+              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. LIIFT4 rest day \u2014 solo run. Use your new threshold pace to dial in zones.",
               "durationMinutes": 42,
               "distanceMeters": 6437,
               "primaryZone": "Zone 2",
-              "humanReadable": "4 miles easy @ 9:30-10:30/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
+              "humanReadable": "4 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
               "completed": false
             }
           ]
@@ -848,11 +870,11 @@ ${a.join(`
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 3 Mi",
-              "description": "Easy aerobic run at 9:30-10:30/mile. Fully conversational effort. Double day. Shoulders + short easy run.",
+              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Double day. Shoulders + short easy run.",
               "durationMinutes": 31,
               "distanceMeters": 4828,
               "primaryZone": "Zone 2",
-              "humanReadable": "3 miles easy @ 9:30-10:30/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
+              "humanReadable": "3 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
               "completed": false
             }
           ]
@@ -900,7 +922,7 @@ ${a.join(`
               "durationMinutes": 78,
               "distanceMeters": 11265,
               "primaryZone": "Zone 2",
-              "humanReadable": "7 miles easy @ 9:30-10:30/mi. Start conservative \u2014 10:30/mi first 2 miles.\nGel or snack if running over 60 minutes (at ~45min mark).\nKnee check at miles 2, 4, and halfway.\n7 miles \u2014 solid long run. Take a gel at mile 4. Aim for 9:30-10:00/mile.",
+              "humanReadable": "7 miles easy @ 10:00-11:00/mi. Start conservative \u2014 10:30/mi first 2 miles.\nGel or snack if running over 60 minutes (at ~45min mark).\nKnee check at miles 2, 4, and halfway.\n7 miles \u2014 solid long run. Take a gel at mile 4. Aim for 9:30-10:00/mile.",
               "completed": false
             },
             {
@@ -971,11 +993,11 @@ ${a.join(`
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 4 Mi + Strides",
-              "description": "Easy aerobic run at 9:30-10:30/mile. Fully conversational effort. Double. strides",
+              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Double. strides",
               "durationMinutes": 42,
               "distanceMeters": 6437,
               "primaryZone": "Zone 2",
-              "humanReadable": "4 miles easy @ 9:30-10:30/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back to recover.",
+              "humanReadable": "4 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back to recover.",
               "completed": false
             }
           ]
@@ -989,11 +1011,11 @@ ${a.join(`
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 5 Mi + Strides",
-              "description": "Easy aerobic run at 9:30-10:30/mile. Fully conversational effort. LIIFT4 rest day \u2014 best day for quality. Add strides. This is your sharpest run of the week.",
+              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. LIIFT4 rest day \u2014 best day for quality. Add strides. This is your sharpest run of the week.",
               "durationMinutes": 52,
               "distanceMeters": 8046,
               "primaryZone": "Zone 2",
-              "humanReadable": "5 miles easy @ 9:30-10:30/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back to recover.",
+              "humanReadable": "5 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back to recover.",
               "completed": false
             }
           ]
@@ -1017,11 +1039,11 @@ ${a.join(`
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 3 Mi",
-              "description": "Easy aerobic run at 9:30-10:30/mile. Fully conversational effort. Double. Keep run easy after LIIFT4 shoulders.",
+              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Double. Keep run easy after LIIFT4 shoulders.",
               "durationMinutes": 31,
               "distanceMeters": 4828,
               "primaryZone": "Zone 2",
-              "humanReadable": "3 miles easy @ 9:30-10:30/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
+              "humanReadable": "3 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
               "completed": false
             }
           ]
@@ -1069,7 +1091,7 @@ ${a.join(`
               "durationMinutes": 89,
               "distanceMeters": 12874,
               "primaryZone": "Zone 2",
-              "humanReadable": "8 miles easy @ 9:30-10:30/mi. Start conservative \u2014 10:30/mi first 2 miles.\nGel or snack if running over 60 minutes (at ~45min mark).\nKnee check at miles 2, 4, and halfway.\n8 miles! Longest run of your comeback. Take gels at miles 4 and 6-7. Celebrate.",
+              "humanReadable": "8 miles easy @ 10:00-11:00/mi. Start conservative \u2014 10:30/mi first 2 miles.\nGel or snack if running over 60 minutes (at ~45min mark).\nKnee check at miles 2, 4, and halfway.\n8 miles! Longest run of your comeback. Take gels at miles 4 and 6-7. Celebrate.",
               "completed": false
             },
             {
@@ -1146,11 +1168,11 @@ ${a.join(`
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 3 Mi",
-              "description": "Easy aerobic run at 9:30-10:30/mile. Fully conversational effort. LIIFT4 rest day \u2014 only run this week on a non-leg day. Recovery week: keep it genuinely easy.",
+              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. LIIFT4 rest day \u2014 only run this week on a non-leg day. Recovery week: keep it genuinely easy.",
               "durationMinutes": 31,
               "distanceMeters": 4828,
               "primaryZone": "Zone 2",
-              "humanReadable": "3 miles easy @ 9:30-10:30/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
+              "humanReadable": "3 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
               "completed": false
             }
           ]
@@ -1174,11 +1196,11 @@ ${a.join(`
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 3 Mi",
-              "description": "Easy aerobic run at 9:30-10:30/mile. Fully conversational effort. Double. Recovery week \u2014 keep effort low.",
+              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Double. Recovery week \u2014 keep effort low.",
               "durationMinutes": 31,
               "distanceMeters": 4828,
               "primaryZone": "Zone 2",
-              "humanReadable": "3 miles easy @ 9:30-10:30/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
+              "humanReadable": "3 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
               "completed": false
             }
           ]
@@ -1226,7 +1248,7 @@ ${a.join(`
               "durationMinutes": 57,
               "distanceMeters": 8046,
               "primaryZone": "Zone 2",
-              "humanReadable": "5 miles easy @ 9:30-10:30/mi. Start conservative \u2014 10:30/mi first 2 miles.\nGel or snack if running over 60 minutes (at ~45min mark).\nKnee check at miles 2, 4, and halfway.\nRecovery long run \u2014 shorter this week (5 miles). Should feel easy after last week's 8.",
+              "humanReadable": "5 miles easy @ 10:00-11:00/mi. Start conservative \u2014 10:30/mi first 2 miles.\nGel or snack if running over 60 minutes (at ~45min mark).\nKnee check at miles 2, 4, and halfway.\nRecovery long run \u2014 shorter this week (5 miles). Should feel easy after last week's 8.",
               "completed": false
             },
             {
@@ -1303,11 +1325,11 @@ ${a.join(`
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 4 Mi + Strides",
-              "description": "Easy aerobic run at 9:30-10:30/mile. Fully conversational effort. LIIFT4 rest day \u2014 good standalone run. Add strides.",
+              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. LIIFT4 rest day \u2014 good standalone run. Add strides.",
               "durationMinutes": 42,
               "distanceMeters": 6437,
               "primaryZone": "Zone 2",
-              "humanReadable": "4 miles easy @ 9:30-10:30/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back to recover.",
+              "humanReadable": "4 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back to recover.",
               "completed": false
             }
           ]
@@ -1331,11 +1353,11 @@ ${a.join(`
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 4 Mi",
-              "description": "Easy aerobic run at 9:30-10:30/mile. Fully conversational effort. Double. Final week \u2014 enjoy it.",
+              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Double. Final week \u2014 enjoy it.",
               "durationMinutes": 42,
               "distanceMeters": 6437,
               "primaryZone": "Zone 2",
-              "humanReadable": "4 miles easy @ 9:30-10:30/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
+              "humanReadable": "4 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
               "completed": false
             }
           ]
@@ -1383,7 +1405,7 @@ ${a.join(`
               "durationMinutes": 99,
               "distanceMeters": 14484,
               "primaryZone": "Zone 2",
-              "humanReadable": "9 miles easy @ 9:30-10:30/mi. Start conservative \u2014 10:30/mi first 2 miles.\nGel or snack if running over 60 minutes (at ~45min mark).\nKnee check at miles 2, 4, and halfway.\n9 miles \u2014 welcome to double digits territory. You've now completed LIIFT4 AND built to 9 miles. Huge week.",
+              "humanReadable": "9 miles easy @ 10:00-11:00/mi. Start conservative \u2014 10:30/mi first 2 miles.\nGel or snack if running over 60 minutes (at ~45min mark).\nKnee check at miles 2, 4, and halfway.\n9 miles \u2014 welcome to double digits territory. You've now completed LIIFT4 AND built to 9 miles. Huge week.",
               "completed": false
             },
             {
@@ -1442,11 +1464,11 @@ ${a.join(`
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 4 Mi",
-              "description": "Easy aerobic run at 9:30-10:30/mile. Fully conversational effort. Easy base run. No more doubles \u2014 enjoy the lighter load.",
+              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Easy base run. No more doubles \u2014 enjoy the lighter load.",
               "durationMinutes": 42,
               "distanceMeters": 6437,
               "primaryZone": "Zone 2",
-              "humanReadable": "4 miles easy @ 9:30-10:30/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
+              "humanReadable": "4 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
               "completed": false
             }
           ]
@@ -1508,11 +1530,11 @@ ${a.join(`
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 2 Mi",
-              "description": "Easy aerobic run at 9:30-10:30/mile. Fully conversational effort. Optional. Only if feeling fresh. Skip if tired.",
+              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Optional. Only if feeling fresh. Skip if tired.",
               "durationMinutes": 21,
               "distanceMeters": 3218,
               "primaryZone": "Zone 2",
-              "humanReadable": "2 miles easy @ 9:30-10:30/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
+              "humanReadable": "2 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
               "completed": false
             }
           ]
@@ -1530,7 +1552,7 @@ ${a.join(`
               "durationMinutes": 110,
               "distanceMeters": 16093,
               "primaryZone": "Zone 2",
-              "humanReadable": "10 miles easy @ 9:30-10:30/mi. Start conservative \u2014 10:30/mi first 2 miles.\nGel or snack if running over 60 minutes (at ~45min mark).\nKnee check at miles 2, 4, and halfway.\n10 miles \u2014 double digits! Take gels at miles 4-5 and 8. First long run without LIIFT4 fatigue in the legs.",
+              "humanReadable": "10 miles easy @ 10:00-11:00/mi. Start conservative \u2014 10:30/mi first 2 miles.\nGel or snack if running over 60 minutes (at ~45min mark).\nKnee check at miles 2, 4, and halfway.\n10 miles \u2014 double digits! Take gels at miles 4-5 and 8. First long run without LIIFT4 fatigue in the legs.",
               "completed": false
             },
             {
@@ -1589,11 +1611,11 @@ ${a.join(`
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 4 Mi + Strides",
-              "description": "Easy aerobic run at 9:30-10:30/mile. Fully conversational effort. Recovery week. Easy and conversational. strides",
+              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Recovery week. Easy and conversational. strides",
               "durationMinutes": 42,
               "distanceMeters": 6437,
               "primaryZone": "Zone 2",
-              "humanReadable": "4 miles easy @ 9:30-10:30/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back to recover.",
+              "humanReadable": "4 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back to recover.",
               "completed": false
             }
           ]
@@ -1623,11 +1645,11 @@ ${a.join(`
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 3 Mi",
-              "description": "Easy aerobic run at 9:30-10:30/mile. Fully conversational effort. Easy only \u2014 no tempo this week. Let the adaptation happen.",
+              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Easy only \u2014 no tempo this week. Let the adaptation happen.",
               "durationMinutes": 31,
               "distanceMeters": 4828,
               "primaryZone": "Zone 2",
-              "humanReadable": "3 miles easy @ 9:30-10:30/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
+              "humanReadable": "3 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
               "completed": false
             }
           ]
@@ -1673,7 +1695,7 @@ ${a.join(`
               "durationMinutes": 78,
               "distanceMeters": 11265,
               "primaryZone": "Zone 2",
-              "humanReadable": "7 miles easy @ 9:30-10:30/mi. Start conservative \u2014 10:30/mi first 2 miles.\nGel or snack if running over 60 minutes (at ~45min mark).\nKnee check at miles 2, 4, and halfway.\nRecovery long run. Should feel much easier than last week's 10.",
+              "humanReadable": "7 miles easy @ 10:00-11:00/mi. Start conservative \u2014 10:30/mi first 2 miles.\nGel or snack if running over 60 minutes (at ~45min mark).\nKnee check at miles 2, 4, and halfway.\nRecovery long run. Should feel much easier than last week's 10.",
               "completed": false
             },
             {
@@ -1732,11 +1754,11 @@ ${a.join(`
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 5 Mi + Strides",
-              "description": "Easy aerobic run at 9:30-10:30/mile. Fully conversational effort. Easy + strides. Fresh from recovery week.",
+              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Easy + strides. Fresh from recovery week.",
               "durationMinutes": 52,
               "distanceMeters": 8046,
               "primaryZone": "Zone 2",
-              "humanReadable": "5 miles easy @ 9:30-10:30/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back to recover.",
+              "humanReadable": "5 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back to recover.",
               "completed": false
             }
           ]
@@ -1784,11 +1806,11 @@ ${a.join(`
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 2 Mi",
-              "description": "Easy aerobic run at 9:30-10:30/mile. Fully conversational effort. Optional easy run. Only if knees and legs feel good.",
+              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Optional easy run. Only if knees and legs feel good.",
               "durationMinutes": 21,
               "distanceMeters": 3218,
               "primaryZone": "Zone 2",
-              "humanReadable": "2 miles easy @ 9:30-10:30/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
+              "humanReadable": "2 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
               "completed": false
             }
           ]
@@ -1820,7 +1842,7 @@ ${a.join(`
               "durationMinutes": 120,
               "distanceMeters": 17702,
               "primaryZone": "Zone 2",
-              "humanReadable": "11 miles easy @ 9:30-10:30/mi. Start conservative \u2014 10:30/mi first 2 miles.\nGel or snack if running over 60 minutes (at ~45min mark).\nKnee check at miles 2, 4, and halfway.\n11 miles. Gel at miles 4-5 and 8-9. Final 2 miles can drift to 9:00/mi if feeling strong.",
+              "humanReadable": "11 miles easy @ 10:00-11:00/mi. Start conservative \u2014 10:30/mi first 2 miles.\nGel or snack if running over 60 minutes (at ~45min mark).\nKnee check at miles 2, 4, and halfway.\n11 miles. Gel at miles 4-5 and 8-9. Final 2 miles can drift to 9:00/mi if feeling strong.",
               "completed": false
             },
             {
@@ -1879,11 +1901,11 @@ ${a.join(`
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 5 Mi + Strides",
-              "description": "Easy aerobic run at 9:30-10:30/mile. Fully conversational effort. Easy + strides.",
+              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Easy + strides.",
               "durationMinutes": 52,
               "distanceMeters": 8046,
               "primaryZone": "Zone 2",
-              "humanReadable": "5 miles easy @ 9:30-10:30/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back to recover.",
+              "humanReadable": "5 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back to recover.",
               "completed": false
             }
           ]
@@ -1931,11 +1953,11 @@ ${a.join(`
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 2 Mi",
-              "description": "Easy aerobic run at 9:30-10:30/mile. Fully conversational effort. Optional. Skip if Thursday felt hard.",
+              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Optional. Skip if Thursday felt hard.",
               "durationMinutes": 21,
               "distanceMeters": 3218,
               "primaryZone": "Zone 2",
-              "humanReadable": "2 miles easy @ 9:30-10:30/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
+              "humanReadable": "2 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
               "completed": false
             }
           ]
@@ -1967,7 +1989,7 @@ ${a.join(`
               "durationMinutes": 131,
               "distanceMeters": 19312,
               "primaryZone": "Zone 2",
-              "humanReadable": "12 miles easy @ 9:30-10:30/mi. Start conservative \u2014 10:30/mi first 2 miles.\nGel or snack if running over 60 minutes (at ~45min mark).\nKnee check at miles 2, 4, and halfway.\n12 miles \u2014 the longest run of the plan so far. Gel at miles 4, 7-8, and optionally 10. Trust your training.",
+              "humanReadable": "12 miles easy @ 10:00-11:00/mi. Start conservative \u2014 10:30/mi first 2 miles.\nGel or snack if running over 60 minutes (at ~45min mark).\nKnee check at miles 2, 4, and halfway.\n12 miles \u2014 the longest run of the plan so far. Gel at miles 4, 7-8, and optionally 10. Trust your training.",
               "completed": false
             },
             {
@@ -2026,11 +2048,11 @@ ${a.join(`
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 4 Mi + Strides",
-              "description": "Easy aerobic run at 9:30-10:30/mile. Fully conversational effort. Recovery week. Easy only \u2014 no strides.",
+              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Recovery week. Easy only \u2014 no strides.",
               "durationMinutes": 42,
               "distanceMeters": 6437,
               "primaryZone": "Zone 2",
-              "humanReadable": "4 miles easy @ 9:30-10:30/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back to recover.",
+              "humanReadable": "4 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back to recover.",
               "completed": false
             }
           ]
@@ -2060,11 +2082,11 @@ ${a.join(`
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 4 Mi + Strides",
-              "description": "Easy aerobic run at 9:30-10:30/mile. Fully conversational effort. Easy + strides.",
+              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Easy + strides.",
               "durationMinutes": 42,
               "distanceMeters": 6437,
               "primaryZone": "Zone 2",
-              "humanReadable": "4 miles easy @ 9:30-10:30/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back to recover.",
+              "humanReadable": "4 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back to recover.",
               "completed": false
             }
           ]
@@ -2110,7 +2132,7 @@ ${a.join(`
               "durationMinutes": 89,
               "distanceMeters": 12874,
               "primaryZone": "Zone 2",
-              "humanReadable": "8 miles easy @ 9:30-10:30/mi. Start conservative \u2014 10:30/mi first 2 miles.\nGel or snack if running over 60 minutes (at ~45min mark).\nKnee check at miles 2, 4, and halfway.\nRecovery long run. Should feel significantly easier than last week's 12.",
+              "humanReadable": "8 miles easy @ 10:00-11:00/mi. Start conservative \u2014 10:30/mi first 2 miles.\nGel or snack if running over 60 minutes (at ~45min mark).\nKnee check at miles 2, 4, and halfway.\nRecovery long run. Should feel significantly easier than last week's 12.",
               "completed": false
             },
             {
@@ -2169,11 +2191,11 @@ ${a.join(`
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 5 Mi + Strides",
-              "description": "Easy aerobic run at 9:30-10:30/mile. Fully conversational effort. Easy + strides. Fresh from recovery \u2014 use that energy for crisp strides.",
+              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Easy + strides. Fresh from recovery \u2014 use that energy for crisp strides.",
               "durationMinutes": 52,
               "distanceMeters": 8046,
               "primaryZone": "Zone 2",
-              "humanReadable": "5 miles easy @ 9:30-10:30/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back to recover.",
+              "humanReadable": "5 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back to recover.",
               "completed": false
             }
           ]
@@ -2221,11 +2243,11 @@ ${a.join(`
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 2 Mi",
-              "description": "Easy aerobic run at 9:30-10:30/mile. Fully conversational effort. Short easy run. Active recovery from Thursday's tempo.",
+              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Short easy run. Active recovery from Thursday's tempo.",
               "durationMinutes": 21,
               "distanceMeters": 3218,
               "primaryZone": "Zone 2",
-              "humanReadable": "2 miles easy @ 9:30-10:30/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
+              "humanReadable": "2 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
               "completed": false
             }
           ]
@@ -2257,7 +2279,7 @@ ${a.join(`
               "durationMinutes": 141,
               "distanceMeters": 20921,
               "primaryZone": "Zone 2",
-              "humanReadable": "13 miles easy @ 9:30-10:30/mi. Start conservative \u2014 10:30/mi first 2 miles.\nGel or snack if running over 60 minutes (at ~45min mark).\nKnee check at miles 2, 4, and halfway.\nPEAK LONG RUN \u2014 13 miles. This is your final confidence builder before taper. Gel at miles 4-5, 8-9, and 11. You WILL finish this run \u2014 and know you can race the distance.",
+              "humanReadable": "13 miles easy @ 10:00-11:00/mi. Start conservative \u2014 10:30/mi first 2 miles.\nGel or snack if running over 60 minutes (at ~45min mark).\nKnee check at miles 2, 4, and halfway.\nPEAK LONG RUN \u2014 13 miles. This is your final confidence builder before taper. Gel at miles 4-5, 8-9, and 11. You WILL finish this run \u2014 and know you can race the distance.",
               "completed": false
             },
             {
@@ -2316,11 +2338,11 @@ ${a.join(`
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 5 Mi + Strides",
-              "description": "Easy aerobic run at 9:30-10:30/mile. Fully conversational effort. Easy run \u2014 no strides today. Thursday is race simulation.",
+              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Easy run \u2014 no strides today. Thursday is race simulation.",
               "durationMinutes": 52,
               "distanceMeters": 8046,
               "primaryZone": "Zone 2",
-              "humanReadable": "5 miles easy @ 9:30-10:30/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back to recover.",
+              "humanReadable": "5 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back to recover.",
               "completed": false
             }
           ]
@@ -2350,11 +2372,11 @@ ${a.join(`
               "sport": "run",
               "type": "tempo",
               "name": "Race Simulation \u2014 4 Miles at Goal Pace",
-              "description": "Run 4 miles at your goal half marathon pace (8:00-8:20/mile). Teaches your body what race day feels like.",
+              "description": "Run 4 miles at your goal half marathon pace (8:10-8:30/mile). Teaches your body what race day feels like.",
               "durationMinutes": 68,
               "distanceMeters": 11265,
               "primaryZone": "Zone 3-4",
-              "humanReadable": "Warm-up: 2 miles easy\nSimulation: 4 miles at GOAL HM pace (8:00-8:20/mile)\n  Run continuous \u2014 no walking breaks.\nCool-down: 1 mile easy\nGoal pace feel: 3-4 word phrases only. If you can chat, go a touch faster.",
+              "humanReadable": "Warm-up: 2 miles easy\nSimulation: 4 miles at GOAL HM pace (8:10-8:30/mile)\n  Run continuous \u2014 no walking breaks.\nCool-down: 1 mile easy\nGoal pace feel: 3-4 word phrases only. If you can chat, go a touch faster.",
               "completed": false
             }
           ]
@@ -2368,11 +2390,11 @@ ${a.join(`
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 2 Mi",
-              "description": "Easy aerobic run at 9:30-10:30/mile. Fully conversational effort. Short recovery run.",
+              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Short recovery run.",
               "durationMinutes": 21,
               "distanceMeters": 3218,
               "primaryZone": "Zone 2",
-              "humanReadable": "2 miles easy @ 9:30-10:30/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
+              "humanReadable": "2 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
               "completed": false
             }
           ]
@@ -2463,11 +2485,11 @@ ${a.join(`
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 4 Mi + Strides",
-              "description": "Easy aerobic run at 9:30-10:30/mile. Fully conversational effort. Taper week \u2014 you may feel restless. That's normal. Easy + strides.",
+              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Taper week \u2014 you may feel restless. That's normal. Easy + strides.",
               "durationMinutes": 42,
               "distanceMeters": 6437,
               "primaryZone": "Zone 2",
-              "humanReadable": "4 miles easy @ 9:30-10:30/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back to recover.",
+              "humanReadable": "4 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back to recover.",
               "completed": false
             }
           ]
@@ -2501,7 +2523,7 @@ ${a.join(`
               "durationMinutes": 82,
               "distanceMeters": 12874,
               "primaryZone": "Zone 3-4",
-              "humanReadable": "Warm-up: 2 miles easy\nSharpener: 2 x 2.5 miles at GOAL HM pace (8:00-8:20/mi)\n  3min easy jog/walk rest between reps\nCool-down: 1 mile easy\nShould feel hard but controlled \u2014 you're sharpening, not depleting.",
+              "humanReadable": "Warm-up: 2 miles easy\nSharpener: 2 x 2.5 miles at GOAL HM pace (8:10-8:30/mi)\n  3min easy jog/walk rest between reps\nCool-down: 1 mile easy\nShould feel hard but controlled \u2014 you're sharpening, not depleting.",
               "completed": false
             }
           ]
@@ -2547,7 +2569,7 @@ ${a.join(`
               "durationMinutes": 89,
               "distanceMeters": 12874,
               "primaryZone": "Zone 2",
-              "humanReadable": "8 miles easy @ 9:30-10:30/mi. Start conservative \u2014 10:30/mi first 2 miles.\nGel or snack if running over 60 minutes (at ~45min mark).\nKnee check at miles 2, 4, and halfway.\nLast long run before race day. Keep genuinely easy. No quality, no pacing games. Just enjoy it.",
+              "humanReadable": "8 miles easy @ 10:00-11:00/mi. Start conservative \u2014 10:30/mi first 2 miles.\nGel or snack if running over 60 minutes (at ~45min mark).\nKnee check at miles 2, 4, and halfway.\nLast long run before race day. Keep genuinely easy. No quality, no pacing games. Just enjoy it.",
               "completed": false
             },
             {
@@ -2606,11 +2628,11 @@ ${a.join(`
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 4 Mi + Strides",
-              "description": "Easy aerobic run at 9:30-10:30/mile. Fully conversational effort. Taper week 2. Legs should start feeling springy. Easy + strides.",
+              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Taper week 2. Legs should start feeling springy. Easy + strides.",
               "durationMinutes": 42,
               "distanceMeters": 6437,
               "primaryZone": "Zone 2",
-              "humanReadable": "4 miles easy @ 9:30-10:30/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back to recover.",
+              "humanReadable": "4 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back to recover.",
               "completed": false
             }
           ]
@@ -2640,11 +2662,11 @@ ${a.join(`
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 3 Mi + Strides",
-              "description": "Easy aerobic run at 9:30-10:30/mile. Fully conversational effort. Short easy run + strides. Race is 9 days away.",
+              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Short easy run + strides. Race is 9 days away.",
               "durationMinutes": 31,
               "distanceMeters": 4828,
               "primaryZone": "Zone 2",
-              "humanReadable": "3 miles easy @ 9:30-10:30/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back to recover.",
+              "humanReadable": "3 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back to recover.",
               "completed": false
             }
           ]
@@ -2686,11 +2708,11 @@ ${a.join(`
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 5 Mi + Strides",
-              "description": "Easy aerobic run at 9:30-10:30/mile. Fully conversational effort. Easy run with strides. Race week begins in 2 days. Feel the speed \u2014 don't chase it.",
+              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Easy run with strides. Race week begins in 2 days. Feel the speed \u2014 don't chase it.",
               "durationMinutes": 52,
               "distanceMeters": 8046,
               "primaryZone": "Zone 2",
-              "humanReadable": "5 miles easy @ 9:30-10:30/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back to recover.",
+              "humanReadable": "5 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back to recover.",
               "completed": false
             },
             {
@@ -2749,11 +2771,11 @@ ${a.join(`
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 3 Mi",
-              "description": "Easy aerobic run at 9:30-10:30/mile. Fully conversational effort. Short easy run \u2014 last real training run. Visualize your race plan: mile 1, mile 6, mile 10.",
+              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Short easy run \u2014 last real training run. Visualize your race plan: mile 1, mile 6, mile 10.",
               "durationMinutes": 31,
               "distanceMeters": 4828,
               "primaryZone": "Zone 2",
-              "humanReadable": "3 miles easy @ 9:30-10:30/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
+              "humanReadable": "3 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
               "completed": false
             }
           ]
@@ -2861,17 +2883,17 @@ ${a.join(`
       }
     },
     "goals": {
-      "A": "Sub-1:45 (8:00/mi)",
-      "B": "1:45-1:50 (8:00-8:23/mi)",
-      "C": "Sub-2:00 \u2014 finish strong"
+      "A": "Sub-1:48 \u2014 if training goes exceptionally well",
+      "B": "1:48-1:55 (8:10-8:30/mi) \u2014 realistic target based on current fitness",
+      "C": "Sub-2:00 \u2014 finish strong and healthy"
     },
     "pacing": {
       "run": {
-        "miles1to3": "8:20-8:30/mi \u2014 deliberately conservative. Feels too slow? Perfect.",
-        "miles4to7": "8:00-8:15/mi \u2014 settle into goal pace.",
+        "miles1to3": "8:30-8:40/mi \u2014 deliberately conservative.",
+        "miles4to7": "8:10-8:25/mi \u2014 settle into goal pace.",
         "miles8to10": "Maintain form. Shorten stride if struggling. Gel at mile 8-9.",
         "miles11to131": "Empty the tank. Draw on your Sunday long runs.",
-        "targetFinish": "1:45-1:50",
+        "targetFinish": "1:48-1:55",
         "notes": "Biggest risk: going out too fast miles 1-3. Your college instincts will lie to you."
       }
     },
