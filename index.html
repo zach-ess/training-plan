@@ -74,12 +74,13 @@ ${a.join(`
     "athlete": "Zach Essler",
     "event": "Scheels BurliMOT Half Marathon",
     "eventDate": "2026-09-12",
-    "planStartDate": "2026-05-18",
+    "planStartDate": "2026-06-15",
     "planEndDate": "2026-09-13",
     "createdAt": "2026-05-18T00:00:00Z",
-    "updatedAt": "2026-05-19T00:00:00Z",
-    "totalWeeks": 17,
-    "generatedBy": "Claude Coach"
+    "updatedAt": "2026-06-17T00:00:00Z",
+    "totalWeeks": 13,
+    "generatedBy": "Claude Coach",
+    "note": "Rebuilt June 17 after ~10-day break. LIIFT4 resumes BUILD IT W5 on Jun 22; fresh 12.5-week run progression to race day."
   },
   "preferences": {
     "run": "miles",
@@ -115,7 +116,17 @@ ${a.join(`
           "vdot": 37,
           "notes": "Part of separate training plan. May not be true max effort. HR not captured."
         }
-      ]
+      ],
+      "fieldTest": {
+        "date": "2026-06-04",
+        "type": "30-min threshold test",
+        "distance": "3.66 mi",
+        "avgPace": "8:11/mile",
+        "avgHR": 170,
+        "maxHR": 181,
+        "lthr": 171,
+        "notes": "Measured threshold faster than May 19 5K \u2014 confirms that race was not max effort."
+      }
     },
     "strengths": [
       {
@@ -138,8 +149,8 @@ ${a.join(`
   "zones": {
     "run": {
       "hr": {
-        "lthr": 160,
-        "note": "Estimated \u2014 no HR captured during 5K. Confirm with Week 3 field test. LTHR ~160 estimated for VDOT 37.",
+        "lthr": 171,
+        "note": "MEASURED from 30-min field test June 4 2026. LTHR 171 (avg HR 170). Validated data.",
         "zones": [
           {
             "zone": 1,
@@ -147,77 +158,76 @@ ${a.join(`
             "percentLow": 0,
             "percentHigh": 81,
             "hrLow": 0,
-            "hrHigh": 128
+            "hrHigh": 138
           },
           {
             "zone": 2,
             "name": "Aerobic",
             "percentLow": 81,
             "percentHigh": 89,
-            "hrLow": 128,
-            "hrHigh": 141
+            "hrLow": 138,
+            "hrHigh": 152
           },
           {
             "zone": 3,
             "name": "Tempo",
             "percentLow": 90,
             "percentHigh": 93,
-            "hrLow": 141,
-            "hrHigh": 147
+            "hrLow": 153,
+            "hrHigh": 159
           },
           {
             "zone": 4,
             "name": "Sub-threshold",
             "percentLow": 94,
             "percentHigh": 99,
-            "hrLow": 148,
-            "hrHigh": 156
+            "hrLow": 160,
+            "hrHigh": 169
           },
           {
             "zone": "5a",
             "name": "Threshold",
             "percentLow": 100,
             "percentHigh": 102,
-            "hrLow": 157,
-            "hrHigh": 161
+            "hrLow": 171,
+            "hrHigh": 174
           }
         ]
       },
       "pace": {
-        "note": "Calibrated from 5K result (26:33, VDOT 37) on May 19 2026. Re-test after Week 3 field test.",
-        "thresholdPace": "8:50/mile",
-        "vdot": 37,
-        "source": "5K race 26:33 on 2026-05-19",
+        "note": "MEASURED from 30-min field test June 4 2026: 8:11/mile threshold, 170 avg HR. Validated data.",
+        "thresholdPace": "8:10/mile",
+        "source": "30-min field test 2026-06-04: 3.66mi in 30:02, avg HR 170",
         "zones": [
           {
             "zone": "E",
             "name": "Easy",
-            "paceRange": "10:00-11:00/mile",
-            "description": "Fully conversational. Could hold this pace for hours. Zone 2 HR."
+            "paceRange": "9:15-10:00/mile",
+            "description": "Fully conversational. Zone 2 HR."
           },
           {
             "zone": "M",
-            "name": "Goal Race Pace",
-            "paceRange": "8:10-8:30/mile",
-            "description": "Goal half marathon pace. Controlled hard effort \u2014 short phrases only."
+            "name": "Marathon / Goal Pace",
+            "paceRange": "8:30-8:45/mile",
+            "description": "Current race-effort pace. HM goal target 8:10-8:30/mi by race day."
           },
           {
             "zone": "T",
             "name": "Threshold",
-            "paceRange": "8:45-9:00/mile",
-            "description": "Comfortably hard. Few words at a time. 50-60 min race effort. Zone 4-5a."
+            "paceRange": "8:05-8:15/mile",
+            "description": "Comfortably hard. 50-60min race effort. Zone 4-5a. MEASURED."
           },
           {
             "zone": "I",
             "name": "Interval",
-            "paceRange": "8:00-8:15/mile",
+            "paceRange": "7:30-7:40/mile",
             "description": "Hard. VO2max effort. Zone 5b."
           },
           {
             "zone": "R",
             "name": "Rep",
-            "paceRange": "7:45-8:00/mile",
-            "description": "Very hard. Short reps with full recovery."
+            "paceRange": "7:05-7:15/mile",
+            "description": "Very hard. Short reps, full recovery."
           }
         ]
       }
@@ -225,109 +235,76 @@ ${a.join(`
   },
   "phases": [
     {
-      "name": "Base",
+      "name": "Re-entry/Base",
       "startWeek": 1,
-      "endWeek": 5,
-      "focus": "Aerobic foundation alongside LIIFT4 BUILD IT. Long runs on Sunday (protected from Friday leg day).",
+      "endWeek": 3,
+      "focus": "Return from break, rebuild base alongside LIIFT4 BUILD IT",
       "weeklyMilesRange": {
-        "low": 14,
-        "high": 20
-      },
-      "keyWorkouts": [
-        "LIIFT4 Mon/Tue/Thu/Fri",
-        "Wed standalone run",
-        "Sunday long run",
-        "Field test Week 3"
-      ]
+        "low": 11,
+        "high": 19
+      }
     },
     {
       "name": "Build",
-      "startWeek": 6,
-      "endWeek": 14,
-      "focus": "SHRED IT weeks 6-7 (adj around Tue/Fri leg days), then post-LIIFT4 quality build",
+      "startWeek": 4,
+      "endWeek": 10,
+      "focus": "LIIFT4 SHRED IT then post-LIIFT4 tempo build; peak 12mi long run",
       "weeklyMilesRange": {
-        "low": 11,
-        "high": 29
-      },
-      "keyWorkouts": [
-        "LIIFT4 SHRED IT Wks 6-7",
-        "Tempo intervals from Wk 8",
-        "Peak long run 13mi Wk 13",
-        "Race sim Wk 14"
-      ]
+        "low": 13,
+        "high": 26
+      }
     },
     {
       "name": "Taper",
-      "startWeek": 15,
-      "endWeek": 17,
-      "focus": "Volume reduction, race sharpness, freshness for September 12",
+      "startWeek": 11,
+      "endWeek": 13,
+      "focus": "Volume reduction, sharpness, freshness for Sept 12",
       "weeklyMilesRange": {
         "low": 12,
         "high": 20
-      },
-      "keyWorkouts": [
-        "Sharpener Wk 15",
-        "Strides",
-        "Race week shakeout"
-      ]
+      }
     }
   ],
   "weeks": [
     {
       "weekNumber": 1,
-      "startDate": "2026-05-18",
-      "endDate": "2026-05-24",
-      "phase": "Base",
-      "focus": "Week 1 \u2014 LIIFT4 BUILD IT W2, 5K race, establish routine",
-      "targetHours": 3.5,
-      "isRecoveryWeek": false,
+      "startDate": "2026-06-15",
+      "endDate": "2026-06-21",
+      "phase": "Re-entry",
+      "focus": "Return from time off \u2014 easy re-entry, no LIIFT4 yet",
+      "targetHours": 2.8,
+      "isRecoveryWeek": true,
       "days": [
         {
-          "date": "2026-05-18",
+          "date": "2026-06-15",
           "dayOfWeek": "Monday",
           "workouts": [
             {
-              "id": "w1-mon-liift",
-              "sport": "strength",
-              "type": "strength",
-              "name": "LIIFT4 \u2014 Chest/Triceps",
-              "description": "LIIFT 50/50. Week 2 Day 1 \u2014 COMPLETED today.",
-              "durationMinutes": 40,
-              "humanReadable": "Today's LIIFT4: Chest/Triceps (LIIFT 50/50)\nFollow your Beachbody app for the workout.\nWeek 2 Day 1 \u2014 COMPLETED today.",
+              "id": "w1-mon-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Time off \u2014 resuming midweek.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-05-19",
+          "date": "2026-06-16",
           "dayOfWeek": "Tuesday",
           "workouts": [
             {
-              "id": "w1-tue-liift",
-              "sport": "strength",
-              "type": "strength",
-              "name": "LIIFT4 \u2014 Back/Biceps",
-              "description": "Circuit. Upper body only \u2014 legs are fine for the 5K.",
-              "durationMinutes": 40,
-              "humanReadable": "Today's LIIFT4: Back/Biceps (Circuit)\nFollow your Beachbody app for the workout.\nUpper body only \u2014 legs are fine for the 5K.",
-              "completed": false
-            },
-            {
-              "id": "w1-tue-run",
-              "sport": "run",
-              "type": "race",
-              "name": "5K Race \u2014 Baseline Fitness Test",
-              "description": "Race as part of your other training plan. Record your time and HR \u2014 this data calibrates your training zones.",
-              "durationMinutes": 32,
-              "distanceMeters": 4988,
-              "primaryZone": "Zone 5a (race)",
-              "humanReadable": "Warm-up: 10min easy jog + 4x strides\n5K RACE: Your best sustainable effort for 3.1 miles.\nCool-down: 10min easy walk/jog\n\ud83d\udcdd After: note finishing time and avg HR. Share with me to update your zones.",
+              "id": "w1-tue-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Time off \u2014 resuming midweek.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-05-20",
+          "date": "2026-06-17",
           "dayOfWeek": "Wednesday",
           "workouts": [
             {
@@ -335,61 +312,49 @@ ${a.join(`
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 3 Mi",
-              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. LIIFT4 rest day \u2014 standalone run, no doubles today. Note how your knees and legs feel after yesterday's 5K.",
-              "durationMinutes": 31,
+              "description": "Easy aerobic run at 9:15-10:00/mile. Fully conversational. FIRST run back after ~10 days off. Keep it genuinely easy \u2014 this is just waking the legs up. If anything feels off in the knees, cut it short. No making up missed mileage.",
+              "durationMinutes": 30,
               "distanceMeters": 4828,
               "primaryZone": "Zone 2",
-              "humanReadable": "3 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
+              "humanReadable": "3 miles easy @ 9:15-10:00/mi. Walk 2min before starting.\nKnee check at mile 1.\n",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-05-21",
+          "date": "2026-06-18",
           "dayOfWeek": "Thursday",
           "workouts": [
             {
-              "id": "w1-thu-liift",
-              "sport": "strength",
-              "type": "strength",
-              "name": "LIIFT4 \u2014 Shoulders",
-              "description": "LIIFT Intervals. Upper body only \u2014 no leg impact.",
-              "durationMinutes": 40,
-              "humanReadable": "Today's LIIFT4: Shoulders (LIIFT Intervals)\nFollow your Beachbody app for the workout.\nUpper body only \u2014 no leg impact.",
-              "completed": false
-            },
-            {
-              "id": "w1-thu-run",
-              "sport": "run",
-              "type": "aerobic",
-              "name": "Easy Run \u2014 3 Mi",
-              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Double day. Run AFTER LIIFT4 or separated by a few hours if possible.",
-              "durationMinutes": 31,
-              "distanceMeters": 4828,
-              "primaryZone": "Zone 2",
-              "humanReadable": "3 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
+              "id": "w1-thu-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Rest. Let the legs respond to the first run back.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-05-22",
+          "date": "2026-06-19",
           "dayOfWeek": "Friday",
           "workouts": [
             {
-              "id": "w1-fri-liift",
-              "sport": "strength",
-              "type": "strength",
-              "name": "LIIFT4 \u2014 Legs",
-              "description": "LIIFT 50/50. No running today \u2014 leg day before tomorrow's rest. Your long run is Sunday.",
-              "durationMinutes": 40,
-              "humanReadable": "Today's LIIFT4: Legs (LIIFT 50/50)\nFollow your Beachbody app for the workout.\nNo running today \u2014 leg day before tomorrow's rest. Your long run is Sunday.",
+              "id": "w1-fri-run",
+              "sport": "run",
+              "type": "aerobic",
+              "name": "Easy Run \u2014 3 Mi",
+              "description": "Easy aerobic run at 9:15-10:00/mile. Fully conversational. Second easy run back. Same relaxed effort. Notice how the legs and knees feel vs Wednesday.",
+              "durationMinutes": 30,
+              "distanceMeters": 4828,
+              "primaryZone": "Zone 2",
+              "humanReadable": "3 miles easy @ 9:15-10:00/mi. Walk 2min before starting.\nKnee check at mile 1.\n",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-05-23",
+          "date": "2026-06-20",
           "dayOfWeek": "Saturday",
           "workouts": [
             {
@@ -397,13 +362,13 @@ ${a.join(`
               "sport": "rest",
               "type": "rest",
               "name": "Rest Day",
-              "description": "Rest day. Recovery after Friday leg day. Long run is tomorrow.",
+              "description": "Full recovery. Prioritize sleep and nutrition.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-05-24",
+          "date": "2026-06-21",
           "dayOfWeek": "Sunday",
           "workouts": [
             {
@@ -411,11 +376,11 @@ ${a.join(`
               "sport": "run",
               "type": "long",
               "name": "Long Run \u2014 5 Mi",
-              "description": "Long easy run. Build endurance without fatiguing legs from LIIFT4 leg day.",
-              "durationMinutes": 57,
+              "description": "Long easy endurance run.",
+              "durationMinutes": 55,
               "distanceMeters": 8046,
               "primaryZone": "Zone 2",
-              "humanReadable": "5 miles easy @ 10:00-11:00/mi. Start conservative \u2014 10:30/mi first 2 miles.\nGel or snack if running over 60 minutes (at ~45min mark).\nKnee check at miles 2, 4, and halfway.\nFresh legs \u2014 two days after LIIFT4 leg day. Take it easy.",
+              "humanReadable": "5 miles easy @ 9:15-10:00/mi. Start conservative first 2 miles.\nGel/snack if over 60min (~45min mark).\nKnee check at miles 2, 4, halfway.\nGentle re-entry long run. 5 miles easy \u2014 no more than your last long run was. Walk breaks fine if needed.",
               "completed": false
             },
             {
@@ -423,36 +388,36 @@ ${a.join(`
               "sport": "cross",
               "type": "recovery",
               "name": "Mobility & Recovery",
-              "description": "30min gentle movement. Hips, glutes, calves \u2014 essential for knee health.",
+              "description": "30min gentle movement. Hips, glutes, calves \u2014 knee health.",
               "durationMinutes": 30,
-              "humanReadable": "Foam roll (1-1.5min each): IT band, quads, calves, glutes\nStretch (45-60s each side): Hip flexor lunge | Pigeon pose | Seated hamstring | Calf stretch | Figure-four glute\nOptional: 10-15min easy walk. Note any knee tightness or soreness.",
+              "humanReadable": "Foam roll (1-1.5min each): IT band, quads, calves, glutes\nStretch (45-60s each side): Hip flexor lunge | Pigeon | Seated hamstring | Calf stretch | Figure-four glute\nOptional: 10-15min easy walk. Note any knee tightness.",
               "completed": false
             }
           ]
         }
       ],
       "summary": {
-        "totalHours": 3.5,
+        "totalHours": 2.8,
         "bySport": {
           "run": {
-            "sessions": 4,
-            "hours": 2.4,
-            "miles": 14.1
+            "sessions": 3,
+            "hours": 1.8,
+            "miles": 11
           }
         }
       }
     },
     {
       "weekNumber": 2,
-      "startDate": "2026-05-25",
-      "endDate": "2026-05-31",
+      "startDate": "2026-06-22",
+      "endDate": "2026-06-28",
       "phase": "Base",
-      "focus": "Building consistency \u2014 LIIFT4 BUILD IT W3",
-      "targetHours": 3.7,
+      "focus": "LIIFT4 BUILD IT W5 resumes \u2014 rebuild base",
+      "targetHours": 4.0,
       "isRecoveryWeek": false,
       "days": [
         {
-          "date": "2026-05-25",
+          "date": "2026-06-22",
           "dayOfWeek": "Monday",
           "workouts": [
             {
@@ -460,15 +425,15 @@ ${a.join(`
               "sport": "strength",
               "type": "strength",
               "name": "LIIFT4 \u2014 Chest/Triceps",
-              "description": "Circuit. W3 alternates style from W2.",
+              "description": "LIIFT 50/50. LIIFT4 resumes at BUILD IT Week 5 \u2014 pick up where you left off.",
               "durationMinutes": 40,
-              "humanReadable": "Today's LIIFT4: Chest/Triceps (Circuit)\nFollow your Beachbody app for the workout.\nW3 alternates style from W2.",
+              "humanReadable": "Today's LIIFT4: Chest/Triceps (LIIFT 50/50)\nFollow your Beachbody app.\nLIIFT4 resumes at BUILD IT Week 5 \u2014 pick up where you left off.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-05-26",
+          "date": "2026-06-23",
           "dayOfWeek": "Tuesday",
           "workouts": [
             {
@@ -476,45 +441,45 @@ ${a.join(`
               "sport": "strength",
               "type": "strength",
               "name": "LIIFT4 \u2014 Back/Biceps",
-              "description": "LIIFT 50/50",
+              "description": "Circuit.",
               "durationMinutes": 40,
-              "humanReadable": "Today's LIIFT4: Back/Biceps (LIIFT 50/50)\nFollow your Beachbody app for the workout.\n",
+              "humanReadable": "Today's LIIFT4: Back/Biceps (Circuit)\nFollow your Beachbody app.",
               "completed": false
             },
             {
               "id": "w2-tue-run",
               "sport": "run",
               "type": "aerobic",
-              "name": "Easy Run \u2014 3 Mi",
-              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Double day. Upper body lift + easy run.",
-              "durationMinutes": 31,
-              "distanceMeters": 4828,
+              "name": "Easy Run \u2014 4 Mi",
+              "description": "Easy aerobic run at 9:15-10:00/mile. Fully conversational. Double day. Upper body + easy run.",
+              "durationMinutes": 40,
+              "distanceMeters": 6437,
               "primaryZone": "Zone 2",
-              "humanReadable": "3 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
+              "humanReadable": "4 miles easy @ 9:15-10:00/mi. Walk 2min before starting.\nKnee check at mile 1.\n",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-05-27",
+          "date": "2026-06-24",
           "dayOfWeek": "Wednesday",
           "workouts": [
             {
               "id": "w2-wed-run",
               "sport": "run",
               "type": "aerobic",
-              "name": "Easy Run \u2014 3 Mi",
-              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. LIIFT4 rest day \u2014 run only. How are your knees responding to the new schedule?",
-              "durationMinutes": 31,
-              "distanceMeters": 4828,
+              "name": "Easy Run \u2014 4 Mi",
+              "description": "Easy aerobic run at 9:15-10:00/mile. Fully conversational. LIIFT4 rest day \u2014 standalone run.",
+              "durationMinutes": 40,
+              "distanceMeters": 6437,
               "primaryZone": "Zone 2",
-              "humanReadable": "3 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
+              "humanReadable": "4 miles easy @ 9:15-10:00/mi. Walk 2min before starting.\nKnee check at mile 1.\n",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-05-28",
+          "date": "2026-06-25",
           "dayOfWeek": "Thursday",
           "workouts": [
             {
@@ -522,9 +487,9 @@ ${a.join(`
               "sport": "strength",
               "type": "strength",
               "name": "LIIFT4 \u2014 Shoulders",
-              "description": "LIIFT Intervals",
+              "description": "LIIFT Intervals.",
               "durationMinutes": 40,
-              "humanReadable": "Today's LIIFT4: Shoulders (LIIFT Intervals)\nFollow your Beachbody app for the workout.\n",
+              "humanReadable": "Today's LIIFT4: Shoulders (LIIFT Intervals)\nFollow your Beachbody app.",
               "completed": false
             },
             {
@@ -532,17 +497,17 @@ ${a.join(`
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 3 Mi",
-              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Double day. Shoulders + run. Keep run easy.",
-              "durationMinutes": 31,
+              "description": "Easy aerobic run at 9:15-10:00/mile. Fully conversational. Double. Keep run easy.",
+              "durationMinutes": 30,
               "distanceMeters": 4828,
               "primaryZone": "Zone 2",
-              "humanReadable": "3 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
+              "humanReadable": "3 miles easy @ 9:15-10:00/mi. Walk 2min before starting.\nKnee check at mile 1.\n",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-05-29",
+          "date": "2026-06-26",
           "dayOfWeek": "Friday",
           "workouts": [
             {
@@ -550,15 +515,15 @@ ${a.join(`
               "sport": "strength",
               "type": "strength",
               "name": "LIIFT4 \u2014 Legs",
-              "description": "LIIFT 50/50. No running. Protect legs for Sunday long run.",
+              "description": "LIIFT 50/50. No running \u2014 leg day. Long run is Sunday.",
               "durationMinutes": 40,
-              "humanReadable": "Today's LIIFT4: Legs (LIIFT 50/50)\nFollow your Beachbody app for the workout.\nNo running. Protect legs for Sunday long run.",
+              "humanReadable": "Today's LIIFT4: Legs (LIIFT 50/50)\nFollow your Beachbody app.\nNo running \u2014 leg day. Long run is Sunday.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-05-30",
+          "date": "2026-06-27",
           "dayOfWeek": "Saturday",
           "workouts": [
             {
@@ -572,7 +537,7 @@ ${a.join(`
           ]
         },
         {
-          "date": "2026-05-31",
+          "date": "2026-06-28",
           "dayOfWeek": "Sunday",
           "workouts": [
             {
@@ -580,11 +545,11 @@ ${a.join(`
               "sport": "run",
               "type": "long",
               "name": "Long Run \u2014 6 Mi",
-              "description": "Long easy run. Build endurance without fatiguing legs from LIIFT4 leg day.",
-              "durationMinutes": 68,
+              "description": "Long easy endurance run.",
+              "durationMinutes": 65,
               "distanceMeters": 9656,
               "primaryZone": "Zone 2",
-              "humanReadable": "6 miles easy @ 10:00-11:00/mi. Start conservative \u2014 10:30/mi first 2 miles.\nGel or snack if running over 60 minutes (at ~45min mark).\nKnee check at miles 2, 4, and halfway.\nFirst 6-mile long run. Two days off from LIIFT4 legs \u2014 you should feel fresh.",
+              "humanReadable": "6 miles easy @ 9:15-10:00/mi. Start conservative first 2 miles.\nGel/snack if over 60min (~45min mark).\nKnee check at miles 2, 4, halfway.\nBack into the progression. 6 miles easy \u2014 matches your pre-break long run.",
               "completed": false
             },
             {
@@ -592,36 +557,36 @@ ${a.join(`
               "sport": "cross",
               "type": "recovery",
               "name": "Mobility & Recovery",
-              "description": "30min gentle movement. Hips, glutes, calves \u2014 essential for knee health.",
+              "description": "30min gentle movement. Hips, glutes, calves \u2014 knee health.",
               "durationMinutes": 30,
-              "humanReadable": "Foam roll (1-1.5min each): IT band, quads, calves, glutes\nStretch (45-60s each side): Hip flexor lunge | Pigeon pose | Seated hamstring | Calf stretch | Figure-four glute\nOptional: 10-15min easy walk. Note any knee tightness or soreness.",
+              "humanReadable": "Foam roll (1-1.5min each): IT band, quads, calves, glutes\nStretch (45-60s each side): Hip flexor lunge | Pigeon | Seated hamstring | Calf stretch | Figure-four glute\nOptional: 10-15min easy walk. Note any knee tightness.",
               "completed": false
             }
           ]
         }
       ],
       "summary": {
-        "totalHours": 3.7,
+        "totalHours": 4.0,
         "bySport": {
           "run": {
             "sessions": 4,
-            "hours": 2.5,
-            "miles": 15
+            "hours": 2.8,
+            "miles": 17
           }
         }
       }
     },
     {
       "weekNumber": 3,
-      "startDate": "2026-06-01",
-      "endDate": "2026-06-07",
+      "startDate": "2026-06-29",
+      "endDate": "2026-07-05",
       "phase": "Base",
-      "focus": "Field test week \u2014 establish training zones (LIIFT4 BUILD IT W4)",
-      "targetHours": 3.7,
+      "focus": "Final BUILD IT week \u2014 LIIFT4 W6",
+      "targetHours": 4.3,
       "isRecoveryWeek": false,
       "days": [
         {
-          "date": "2026-06-01",
+          "date": "2026-06-29",
           "dayOfWeek": "Monday",
           "workouts": [
             {
@@ -629,15 +594,15 @@ ${a.join(`
               "sport": "strength",
               "type": "strength",
               "name": "LIIFT4 \u2014 Chest/Triceps",
-              "description": "LIIFT 50/50",
+              "description": "Circuit.",
               "durationMinutes": 40,
-              "humanReadable": "Today's LIIFT4: Chest/Triceps (LIIFT 50/50)\nFollow your Beachbody app for the workout.\n",
+              "humanReadable": "Today's LIIFT4: Chest/Triceps (Circuit)\nFollow your Beachbody app.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-06-02",
+          "date": "2026-06-30",
           "dayOfWeek": "Tuesday",
           "workouts": [
             {
@@ -645,45 +610,45 @@ ${a.join(`
               "sport": "strength",
               "type": "strength",
               "name": "LIIFT4 \u2014 Back/Biceps",
-              "description": "Circuit",
+              "description": "LIIFT 50/50.",
               "durationMinutes": 40,
-              "humanReadable": "Today's LIIFT4: Back/Biceps (Circuit)\nFollow your Beachbody app for the workout.\n",
+              "humanReadable": "Today's LIIFT4: Back/Biceps (LIIFT 50/50)\nFollow your Beachbody app.",
               "completed": false
             },
             {
               "id": "w3-tue-run",
               "sport": "run",
               "type": "aerobic",
-              "name": "Easy Run \u2014 3 Mi",
-              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Keep very easy \u2014 field test is Wednesday.",
-              "durationMinutes": 31,
-              "distanceMeters": 4828,
+              "name": "Easy Run \u2014 4 Mi + Strides",
+              "description": "Easy aerobic run at 9:15-10:00/mile. Fully conversational. Double. strides at end.",
+              "durationMinutes": 40,
+              "distanceMeters": 6437,
               "primaryZone": "Zone 2",
-              "humanReadable": "3 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
+              "humanReadable": "4 miles easy @ 9:15-10:00/mi. Walk 2min before starting.\nKnee check at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-06-03",
+          "date": "2026-07-01",
           "dayOfWeek": "Wednesday",
           "workouts": [
             {
               "id": "w3-wed-run",
               "sport": "run",
-              "type": "tempo",
-              "name": "30-Minute Threshold Field Test",
-              "description": "LIIFT4 rest day \u2014 perfect for this test. Establishes your training zones for the whole plan.\n1) Warm up 15min easy\n2) Run 30min as hard as you can sustain\n3) Record avg HR = your LTHR\n4) Record avg pace = your threshold pace\n5) Cool down 10min easy",
-              "durationMinutes": 55,
-              "distanceMeters": 9656,
-              "primaryZone": "Zone 5a (test)",
-              "humanReadable": "Warm-up: 15min easy (~1.5mi)\n\u23f1 30-MIN ALL-OUT: Hardest sustainable pace. Not a sprint \u2014 controlled race effort for the full 30 min.\nRecord: avg HR for 30min = LTHR. Avg pace = threshold pace.\nCool-down: 10min easy (~1mi)\nShare your results so I can update your zones!",
+              "type": "aerobic",
+              "name": "Easy Run \u2014 5 Mi + Strides",
+              "description": "Easy aerobic run at 9:15-10:00/mile. Fully conversational. LIIFT4 rest day \u2014 best quality day. Add strides.",
+              "durationMinutes": 50,
+              "distanceMeters": 8046,
+              "primaryZone": "Zone 2",
+              "humanReadable": "5 miles easy @ 9:15-10:00/mi. Walk 2min before starting.\nKnee check at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-06-04",
+          "date": "2026-07-02",
           "dayOfWeek": "Thursday",
           "workouts": [
             {
@@ -691,27 +656,27 @@ ${a.join(`
               "sport": "strength",
               "type": "strength",
               "name": "LIIFT4 \u2014 Shoulders",
-              "description": "LIIFT Intervals. Legs will be tired from field test \u2014 shoulders only, you're fine.",
+              "description": "LIIFT Intervals.",
               "durationMinutes": 40,
-              "humanReadable": "Today's LIIFT4: Shoulders (LIIFT Intervals)\nFollow your Beachbody app for the workout.\nLegs will be tired from field test \u2014 shoulders only, you're fine.",
+              "humanReadable": "Today's LIIFT4: Shoulders (LIIFT Intervals)\nFollow your Beachbody app.",
               "completed": false
             },
             {
               "id": "w3-thu-run",
               "sport": "run",
               "type": "aerobic",
-              "name": "Easy Run \u2014 2 Mi",
-              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. SHORT \u2014 active recovery after yesterday's test. 2 miles only.",
-              "durationMinutes": 21,
-              "distanceMeters": 3218,
+              "name": "Easy Run \u2014 3 Mi",
+              "description": "Easy aerobic run at 9:15-10:00/mile. Fully conversational. Double. Easy run.",
+              "durationMinutes": 30,
+              "distanceMeters": 4828,
               "primaryZone": "Zone 2",
-              "humanReadable": "2 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
+              "humanReadable": "3 miles easy @ 9:15-10:00/mi. Walk 2min before starting.\nKnee check at mile 1.\n",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-06-05",
+          "date": "2026-07-03",
           "dayOfWeek": "Friday",
           "workouts": [
             {
@@ -719,15 +684,15 @@ ${a.join(`
               "sport": "strength",
               "type": "strength",
               "name": "LIIFT4 \u2014 Legs",
-              "description": "HIIT. No running today.",
+              "description": "HIIT. Final BUILD IT leg day. No running.",
               "durationMinutes": 40,
-              "humanReadable": "Today's LIIFT4: Legs (HIIT)\nFollow your Beachbody app for the workout.\nNo running today.",
+              "humanReadable": "Today's LIIFT4: Legs (HIIT)\nFollow your Beachbody app.\nFinal BUILD IT leg day. No running.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-06-06",
+          "date": "2026-07-04",
           "dayOfWeek": "Saturday",
           "workouts": [
             {
@@ -735,25 +700,25 @@ ${a.join(`
               "sport": "rest",
               "type": "rest",
               "name": "Rest Day",
-              "description": "Rest. Body is adapting to the new schedule and recovering from the field test.",
+              "description": "Full recovery. Prioritize sleep and nutrition.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-06-07",
+          "date": "2026-07-05",
           "dayOfWeek": "Sunday",
           "workouts": [
             {
               "id": "w3-sun-run",
               "sport": "run",
-              "type": "aerobic",
-              "name": "Easy Run \u2014 4 Mi",
-              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Shorter run this week \u2014 field test was demanding. Keep it very easy.",
-              "durationMinutes": 42,
-              "distanceMeters": 6437,
+              "type": "long",
+              "name": "Long Run \u2014 7 Mi",
+              "description": "Long easy endurance run.",
+              "durationMinutes": 75,
+              "distanceMeters": 11265,
               "primaryZone": "Zone 2",
-              "humanReadable": "4 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
+              "humanReadable": "7 miles easy @ 9:15-10:00/mi. Start conservative first 2 miles.\nGel/snack if over 60min (~45min mark).\nKnee check at miles 2, 4, halfway.\n7 miles. Take a gel at mile 4. Aim for the easy end of the range.",
               "completed": false
             },
             {
@@ -761,80 +726,68 @@ ${a.join(`
               "sport": "cross",
               "type": "recovery",
               "name": "Mobility & Recovery",
-              "description": "30min gentle movement. Hips, glutes, calves \u2014 essential for knee health.",
+              "description": "30min gentle movement. Hips, glutes, calves \u2014 knee health.",
               "durationMinutes": 30,
-              "humanReadable": "Foam roll (1-1.5min each): IT band, quads, calves, glutes\nStretch (45-60s each side): Hip flexor lunge | Pigeon pose | Seated hamstring | Calf stretch | Figure-four glute\nOptional: 10-15min easy walk. Note any knee tightness or soreness.",
+              "humanReadable": "Foam roll (1-1.5min each): IT band, quads, calves, glutes\nStretch (45-60s each side): Hip flexor lunge | Pigeon | Seated hamstring | Calf stretch | Figure-four glute\nOptional: 10-15min easy walk. Note any knee tightness.",
               "completed": false
             }
           ]
         }
       ],
       "summary": {
-        "totalHours": 3.7,
+        "totalHours": 4.3,
         "bySport": {
           "run": {
             "sessions": 4,
-            "hours": 2.5,
-            "miles": 15
+            "hours": 3.2,
+            "miles": 19
           }
         }
       }
     },
     {
       "weekNumber": 4,
-      "startDate": "2026-06-08",
-      "endDate": "2026-06-14",
-      "phase": "Base",
-      "focus": "Post-test rebuild with strides \u2014 LIIFT4 BUILD IT W5",
-      "targetHours": 4.2,
+      "startDate": "2026-07-06",
+      "endDate": "2026-07-12",
+      "phase": "Build",
+      "focus": "LIIFT4 SHRED IT W7",
+      "targetHours": 3.7,
       "isRecoveryWeek": false,
       "days": [
         {
-          "date": "2026-06-08",
+          "date": "2026-07-06",
           "dayOfWeek": "Monday",
           "workouts": [
             {
               "id": "w4-mon-liift",
               "sport": "strength",
               "type": "strength",
-              "name": "LIIFT4 \u2014 Chest/Triceps",
-              "description": "Circuit",
+              "name": "LIIFT4 \u2014 Chest/Back",
+              "description": "Circuit. SHRED IT begins \u2014 new combinations.",
               "durationMinutes": 40,
-              "humanReadable": "Today's LIIFT4: Chest/Triceps (Circuit)\nFollow your Beachbody app for the workout.\n",
+              "humanReadable": "Today's LIIFT4: Chest/Back (Circuit)\nFollow your Beachbody app.\nSHRED IT begins \u2014 new combinations.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-06-09",
+          "date": "2026-07-07",
           "dayOfWeek": "Tuesday",
           "workouts": [
             {
               "id": "w4-tue-liift",
               "sport": "strength",
               "type": "strength",
-              "name": "LIIFT4 \u2014 Back/Biceps",
-              "description": "LIIFT 50/50",
+              "name": "LIIFT4 \u2014 Legs",
+              "description": "LIIFT 50/50. No running \u2014 leg day. Run moves to Wednesday this week.",
               "durationMinutes": 40,
-              "humanReadable": "Today's LIIFT4: Back/Biceps (LIIFT 50/50)\nFollow your Beachbody app for the workout.\n",
-              "completed": false
-            },
-            {
-              "id": "w4-tue-run",
-              "sport": "run",
-              "type": "aerobic",
-              "name": "Easy Run \u2014 4 Mi + Strides",
-              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Double day. strides",
-              "durationMinutes": 42,
-              "distanceMeters": 6437,
-              "primaryZone": "Zone 2",
-              "humanReadable": "4 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back to recover.",
+              "humanReadable": "Today's LIIFT4: Legs (LIIFT 50/50)\nFollow your Beachbody app.\nNo running \u2014 leg day. Run moves to Wednesday this week.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-06-10",
+          "date": "2026-07-08",
           "dayOfWeek": "Wednesday",
           "workouts": [
             {
@@ -842,27 +795,27 @@ ${a.join(`
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 4 Mi",
-              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. LIIFT4 rest day \u2014 solo run. Use your new threshold pace to dial in zones.",
-              "durationMinutes": 42,
+              "description": "Easy aerobic run at 9:15-10:00/mile. Fully conversational. LIIFT4 rest day \u2014 only run on a non-leg day this week.",
+              "durationMinutes": 40,
               "distanceMeters": 6437,
               "primaryZone": "Zone 2",
-              "humanReadable": "4 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
+              "humanReadable": "4 miles easy @ 9:15-10:00/mi. Walk 2min before starting.\nKnee check at mile 1.\n",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-06-11",
+          "date": "2026-07-09",
           "dayOfWeek": "Thursday",
           "workouts": [
             {
               "id": "w4-thu-liift",
               "sport": "strength",
               "type": "strength",
-              "name": "LIIFT4 \u2014 Shoulders",
-              "description": "LIIFT Intervals",
+              "name": "LIIFT4 \u2014 Shoulders/Arms",
+              "description": "Circuit.",
               "durationMinutes": 40,
-              "humanReadable": "Today's LIIFT4: Shoulders (LIIFT Intervals)\nFollow your Beachbody app for the workout.\n",
+              "humanReadable": "Today's LIIFT4: Shoulders/Arms (Circuit)\nFollow your Beachbody app.",
               "completed": false
             },
             {
@@ -870,33 +823,33 @@ ${a.join(`
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 3 Mi",
-              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Double day. Shoulders + short easy run.",
-              "durationMinutes": 31,
+              "description": "Easy aerobic run at 9:15-10:00/mile. Fully conversational. Double. Easy run.",
+              "durationMinutes": 30,
               "distanceMeters": 4828,
               "primaryZone": "Zone 2",
-              "humanReadable": "3 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
+              "humanReadable": "3 miles easy @ 9:15-10:00/mi. Walk 2min before starting.\nKnee check at mile 1.\n",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-06-12",
+          "date": "2026-07-10",
           "dayOfWeek": "Friday",
           "workouts": [
             {
               "id": "w4-fri-liift",
               "sport": "strength",
               "type": "strength",
-              "name": "LIIFT4 \u2014 Legs",
-              "description": "LIIFT 50/50. No running today.",
+              "name": "LIIFT4 \u2014 Full Body",
+              "description": "HIIT. No running \u2014 HIIT hits legs. Protect for Sunday.",
               "durationMinutes": 40,
-              "humanReadable": "Today's LIIFT4: Legs (LIIFT 50/50)\nFollow your Beachbody app for the workout.\nNo running today.",
+              "humanReadable": "Today's LIIFT4: Full Body (HIIT)\nFollow your Beachbody app.\nNo running \u2014 HIIT hits legs. Protect for Sunday.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-06-13",
+          "date": "2026-07-11",
           "dayOfWeek": "Saturday",
           "workouts": [
             {
@@ -910,19 +863,19 @@ ${a.join(`
           ]
         },
         {
-          "date": "2026-06-14",
+          "date": "2026-07-12",
           "dayOfWeek": "Sunday",
           "workouts": [
             {
               "id": "w4-sun-run",
               "sport": "run",
               "type": "long",
-              "name": "Long Run \u2014 7 Mi",
-              "description": "Long easy run. Build endurance without fatiguing legs from LIIFT4 leg day.",
-              "durationMinutes": 78,
-              "distanceMeters": 11265,
+              "name": "Long Run \u2014 8 Mi",
+              "description": "Long easy endurance run.",
+              "durationMinutes": 85,
+              "distanceMeters": 12874,
               "primaryZone": "Zone 2",
-              "humanReadable": "7 miles easy @ 10:00-11:00/mi. Start conservative \u2014 10:30/mi first 2 miles.\nGel or snack if running over 60 minutes (at ~45min mark).\nKnee check at miles 2, 4, and halfway.\n7 miles \u2014 solid long run. Take a gel at mile 4. Aim for 9:30-10:00/mile.",
+              "humanReadable": "8 miles easy @ 9:15-10:00/mi. Start conservative first 2 miles.\nGel/snack if over 60min (~45min mark).\nKnee check at miles 2, 4, halfway.\n8 miles \u2014 longest since the break. Gels at miles 4 and 6-7.",
               "completed": false
             },
             {
@@ -930,662 +883,32 @@ ${a.join(`
               "sport": "cross",
               "type": "recovery",
               "name": "Mobility & Recovery",
-              "description": "30min gentle movement. Hips, glutes, calves \u2014 essential for knee health.",
+              "description": "30min gentle movement. Hips, glutes, calves \u2014 knee health.",
               "durationMinutes": 30,
-              "humanReadable": "Foam roll (1-1.5min each): IT band, quads, calves, glutes\nStretch (45-60s each side): Hip flexor lunge | Pigeon pose | Seated hamstring | Calf stretch | Figure-four glute\nOptional: 10-15min easy walk. Note any knee tightness or soreness.",
+              "humanReadable": "Foam roll (1-1.5min each): IT band, quads, calves, glutes\nStretch (45-60s each side): Hip flexor lunge | Pigeon | Seated hamstring | Calf stretch | Figure-four glute\nOptional: 10-15min easy walk. Note any knee tightness.",
               "completed": false
             }
           ]
         }
       ],
       "summary": {
-        "totalHours": 4.2,
+        "totalHours": 3.7,
         "bySport": {
           "run": {
-            "sessions": 4,
-            "hours": 3.0,
-            "miles": 18
+            "sessions": 3,
+            "hours": 2.5,
+            "miles": 15
           }
         }
       }
     },
     {
       "weekNumber": 5,
-      "startDate": "2026-06-15",
-      "endDate": "2026-06-21",
-      "phase": "Base",
-      "focus": "Final BUILD IT week \u2014 highest base volume (LIIFT4 W6)",
-      "targetHours": 4.5,
-      "isRecoveryWeek": false,
-      "days": [
-        {
-          "date": "2026-06-15",
-          "dayOfWeek": "Monday",
-          "workouts": [
-            {
-              "id": "w5-mon-liift",
-              "sport": "strength",
-              "type": "strength",
-              "name": "LIIFT4 \u2014 Chest/Triceps",
-              "description": "LIIFT 50/50",
-              "durationMinutes": 40,
-              "humanReadable": "Today's LIIFT4: Chest/Triceps (LIIFT 50/50)\nFollow your Beachbody app for the workout.\n",
-              "completed": false
-            }
-          ]
-        },
-        {
-          "date": "2026-06-16",
-          "dayOfWeek": "Tuesday",
-          "workouts": [
-            {
-              "id": "w5-tue-liift",
-              "sport": "strength",
-              "type": "strength",
-              "name": "LIIFT4 \u2014 Back/Biceps",
-              "description": "Circuit",
-              "durationMinutes": 40,
-              "humanReadable": "Today's LIIFT4: Back/Biceps (Circuit)\nFollow your Beachbody app for the workout.\n",
-              "completed": false
-            },
-            {
-              "id": "w5-tue-run",
-              "sport": "run",
-              "type": "aerobic",
-              "name": "Easy Run \u2014 4 Mi + Strides",
-              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Double. strides",
-              "durationMinutes": 42,
-              "distanceMeters": 6437,
-              "primaryZone": "Zone 2",
-              "humanReadable": "4 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back to recover.",
-              "completed": false
-            }
-          ]
-        },
-        {
-          "date": "2026-06-17",
-          "dayOfWeek": "Wednesday",
-          "workouts": [
-            {
-              "id": "w5-wed-run",
-              "sport": "run",
-              "type": "aerobic",
-              "name": "Easy Run \u2014 5 Mi + Strides",
-              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. LIIFT4 rest day \u2014 best day for quality. Add strides. This is your sharpest run of the week.",
-              "durationMinutes": 52,
-              "distanceMeters": 8046,
-              "primaryZone": "Zone 2",
-              "humanReadable": "5 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back to recover.",
-              "completed": false
-            }
-          ]
-        },
-        {
-          "date": "2026-06-18",
-          "dayOfWeek": "Thursday",
-          "workouts": [
-            {
-              "id": "w5-thu-liift",
-              "sport": "strength",
-              "type": "strength",
-              "name": "LIIFT4 \u2014 Shoulders",
-              "description": "LIIFT Intervals",
-              "durationMinutes": 40,
-              "humanReadable": "Today's LIIFT4: Shoulders (LIIFT Intervals)\nFollow your Beachbody app for the workout.\n",
-              "completed": false
-            },
-            {
-              "id": "w5-thu-run",
-              "sport": "run",
-              "type": "aerobic",
-              "name": "Easy Run \u2014 3 Mi",
-              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Double. Keep run easy after LIIFT4 shoulders.",
-              "durationMinutes": 31,
-              "distanceMeters": 4828,
-              "primaryZone": "Zone 2",
-              "humanReadable": "3 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
-              "completed": false
-            }
-          ]
-        },
-        {
-          "date": "2026-06-19",
-          "dayOfWeek": "Friday",
-          "workouts": [
-            {
-              "id": "w5-fri-liift",
-              "sport": "strength",
-              "type": "strength",
-              "name": "LIIFT4 \u2014 Legs",
-              "description": "HIIT. Final BUILD IT leg day. No running.",
-              "durationMinutes": 40,
-              "humanReadable": "Today's LIIFT4: Legs (HIIT)\nFollow your Beachbody app for the workout.\nFinal BUILD IT leg day. No running.",
-              "completed": false
-            }
-          ]
-        },
-        {
-          "date": "2026-06-20",
-          "dayOfWeek": "Saturday",
-          "workouts": [
-            {
-              "id": "w5-sat-rest",
-              "sport": "rest",
-              "type": "rest",
-              "name": "Rest Day",
-              "description": "Rest. Tomorrow is 8 miles \u2014 the biggest long run yet.",
-              "completed": false
-            }
-          ]
-        },
-        {
-          "date": "2026-06-21",
-          "dayOfWeek": "Sunday",
-          "workouts": [
-            {
-              "id": "w5-sun-run",
-              "sport": "run",
-              "type": "long",
-              "name": "Long Run \u2014 8 Mi",
-              "description": "Long easy run. Build endurance without fatiguing legs from LIIFT4 leg day.",
-              "durationMinutes": 89,
-              "distanceMeters": 12874,
-              "primaryZone": "Zone 2",
-              "humanReadable": "8 miles easy @ 10:00-11:00/mi. Start conservative \u2014 10:30/mi first 2 miles.\nGel or snack if running over 60 minutes (at ~45min mark).\nKnee check at miles 2, 4, and halfway.\n8 miles! Longest run of your comeback. Take gels at miles 4 and 6-7. Celebrate.",
-              "completed": false
-            },
-            {
-              "id": "w5-sun-mob",
-              "sport": "cross",
-              "type": "recovery",
-              "name": "Mobility & Recovery",
-              "description": "30min gentle movement. Hips, glutes, calves \u2014 essential for knee health.",
-              "durationMinutes": 30,
-              "humanReadable": "Foam roll (1-1.5min each): IT band, quads, calves, glutes\nStretch (45-60s each side): Hip flexor lunge | Pigeon pose | Seated hamstring | Calf stretch | Figure-four glute\nOptional: 10-15min easy walk. Note any knee tightness or soreness.",
-              "completed": false
-            }
-          ]
-        }
-      ],
-      "summary": {
-        "totalHours": 4.5,
-        "bySport": {
-          "run": {
-            "sessions": 4,
-            "hours": 3.3,
-            "miles": 20
-          }
-        }
-      }
-    },
-    {
-      "weekNumber": 6,
-      "startDate": "2026-06-22",
-      "endDate": "2026-06-28",
-      "phase": "Build",
-      "focus": "Recovery week \u2014 LIIFT4 SHRED IT W7 begins",
-      "targetHours": 3.0,
-      "isRecoveryWeek": true,
-      "days": [
-        {
-          "date": "2026-06-22",
-          "dayOfWeek": "Monday",
-          "workouts": [
-            {
-              "id": "w6-mon-liift",
-              "sport": "strength",
-              "type": "strength",
-              "name": "LIIFT4 \u2014 Chest/Back",
-              "description": "Circuit. SHRED IT begins \u2014 new exercise combinations.",
-              "durationMinutes": 40,
-              "humanReadable": "Today's LIIFT4: Chest/Back (Circuit)\nFollow your Beachbody app for the workout.\nSHRED IT begins \u2014 new exercise combinations.",
-              "completed": false
-            }
-          ]
-        },
-        {
-          "date": "2026-06-23",
-          "dayOfWeek": "Tuesday",
-          "workouts": [
-            {
-              "id": "w6-tue-liift",
-              "sport": "strength",
-              "type": "strength",
-              "name": "LIIFT4 \u2014 Legs",
-              "description": "LIIFT 50/50. No running today \u2014 leg day. Running moves to Wednesday this week.",
-              "durationMinutes": 40,
-              "humanReadable": "Today's LIIFT4: Legs (LIIFT 50/50)\nFollow your Beachbody app for the workout.\nNo running today \u2014 leg day. Running moves to Wednesday this week.",
-              "completed": false
-            }
-          ]
-        },
-        {
-          "date": "2026-06-24",
-          "dayOfWeek": "Wednesday",
-          "workouts": [
-            {
-              "id": "w6-wed-run",
-              "sport": "run",
-              "type": "aerobic",
-              "name": "Easy Run \u2014 3 Mi",
-              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. LIIFT4 rest day \u2014 only run this week on a non-leg day. Recovery week: keep it genuinely easy.",
-              "durationMinutes": 31,
-              "distanceMeters": 4828,
-              "primaryZone": "Zone 2",
-              "humanReadable": "3 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
-              "completed": false
-            }
-          ]
-        },
-        {
-          "date": "2026-06-25",
-          "dayOfWeek": "Thursday",
-          "workouts": [
-            {
-              "id": "w6-thu-liift",
-              "sport": "strength",
-              "type": "strength",
-              "name": "LIIFT4 \u2014 Shoulders/Arms",
-              "description": "Circuit",
-              "durationMinutes": 40,
-              "humanReadable": "Today's LIIFT4: Shoulders/Arms (Circuit)\nFollow your Beachbody app for the workout.\n",
-              "completed": false
-            },
-            {
-              "id": "w6-thu-run",
-              "sport": "run",
-              "type": "aerobic",
-              "name": "Easy Run \u2014 3 Mi",
-              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Double. Recovery week \u2014 keep effort low.",
-              "durationMinutes": 31,
-              "distanceMeters": 4828,
-              "primaryZone": "Zone 2",
-              "humanReadable": "3 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
-              "completed": false
-            }
-          ]
-        },
-        {
-          "date": "2026-06-26",
-          "dayOfWeek": "Friday",
-          "workouts": [
-            {
-              "id": "w6-fri-liift",
-              "sport": "strength",
-              "type": "strength",
-              "name": "LIIFT4 \u2014 Full Body",
-              "description": "HIIT. No running. HIIT has leg components \u2014 protect legs for Sunday.",
-              "durationMinutes": 40,
-              "humanReadable": "Today's LIIFT4: Full Body (HIIT)\nFollow your Beachbody app for the workout.\nNo running. HIIT has leg components \u2014 protect legs for Sunday.",
-              "completed": false
-            }
-          ]
-        },
-        {
-          "date": "2026-06-27",
-          "dayOfWeek": "Saturday",
-          "workouts": [
-            {
-              "id": "w6-sat-rest",
-              "sport": "rest",
-              "type": "rest",
-              "name": "Rest Day",
-              "description": "Full recovery. Prioritize sleep and nutrition.",
-              "completed": false
-            }
-          ]
-        },
-        {
-          "date": "2026-06-28",
-          "dayOfWeek": "Sunday",
-          "workouts": [
-            {
-              "id": "w6-sun-run",
-              "sport": "run",
-              "type": "long",
-              "name": "Long Run \u2014 5 Mi",
-              "description": "Long easy run. Build endurance without fatiguing legs from LIIFT4 leg day.",
-              "durationMinutes": 57,
-              "distanceMeters": 8046,
-              "primaryZone": "Zone 2",
-              "humanReadable": "5 miles easy @ 10:00-11:00/mi. Start conservative \u2014 10:30/mi first 2 miles.\nGel or snack if running over 60 minutes (at ~45min mark).\nKnee check at miles 2, 4, and halfway.\nRecovery long run \u2014 shorter this week (5 miles). Should feel easy after last week's 8.",
-              "completed": false
-            },
-            {
-              "id": "w6-sun-mob",
-              "sport": "cross",
-              "type": "recovery",
-              "name": "Mobility & Recovery",
-              "description": "30min gentle movement. Hips, glutes, calves \u2014 essential for knee health.",
-              "durationMinutes": 30,
-              "humanReadable": "Foam roll (1-1.5min each): IT band, quads, calves, glutes\nStretch (45-60s each side): Hip flexor lunge | Pigeon pose | Seated hamstring | Calf stretch | Figure-four glute\nOptional: 10-15min easy walk. Note any knee tightness or soreness.",
-              "completed": false
-            }
-          ]
-        }
-      ],
-      "summary": {
-        "totalHours": 3.0,
-        "bySport": {
-          "run": {
-            "sessions": 3,
-            "hours": 1.8,
-            "miles": 11
-          }
-        }
-      }
-    },
-    {
-      "weekNumber": 7,
-      "startDate": "2026-06-29",
-      "endDate": "2026-07-05",
-      "phase": "Build",
-      "focus": "Final LIIFT4 week \u2014 SHRED IT W8 complete, build continues",
-      "targetHours": 4.0,
-      "isRecoveryWeek": false,
-      "days": [
-        {
-          "date": "2026-06-29",
-          "dayOfWeek": "Monday",
-          "workouts": [
-            {
-              "id": "w7-mon-liift",
-              "sport": "strength",
-              "type": "strength",
-              "name": "LIIFT4 \u2014 Chest/Back",
-              "description": "Circuit. Final week of LIIFT4 \u2014 finish strong.",
-              "durationMinutes": 40,
-              "humanReadable": "Today's LIIFT4: Chest/Back (Circuit)\nFollow your Beachbody app for the workout.\nFinal week of LIIFT4 \u2014 finish strong.",
-              "completed": false
-            }
-          ]
-        },
-        {
-          "date": "2026-06-30",
-          "dayOfWeek": "Tuesday",
-          "workouts": [
-            {
-              "id": "w7-tue-liift",
-              "sport": "strength",
-              "type": "strength",
-              "name": "LIIFT4 \u2014 Legs",
-              "description": "LIIFT 50/50. No running \u2014 leg day. This is the last LIIFT4 leg day!",
-              "durationMinutes": 40,
-              "humanReadable": "Today's LIIFT4: Legs (LIIFT 50/50)\nFollow your Beachbody app for the workout.\nNo running \u2014 leg day. This is the last LIIFT4 leg day!",
-              "completed": false
-            }
-          ]
-        },
-        {
-          "date": "2026-07-01",
-          "dayOfWeek": "Wednesday",
-          "workouts": [
-            {
-              "id": "w7-wed-run",
-              "sport": "run",
-              "type": "aerobic",
-              "name": "Easy Run \u2014 4 Mi + Strides",
-              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. LIIFT4 rest day \u2014 good standalone run. Add strides.",
-              "durationMinutes": 42,
-              "distanceMeters": 6437,
-              "primaryZone": "Zone 2",
-              "humanReadable": "4 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back to recover.",
-              "completed": false
-            }
-          ]
-        },
-        {
-          "date": "2026-07-02",
-          "dayOfWeek": "Thursday",
-          "workouts": [
-            {
-              "id": "w7-thu-liift",
-              "sport": "strength",
-              "type": "strength",
-              "name": "LIIFT4 \u2014 Shoulders/Arms",
-              "description": "Circuit",
-              "durationMinutes": 40,
-              "humanReadable": "Today's LIIFT4: Shoulders/Arms (Circuit)\nFollow your Beachbody app for the workout.\n",
-              "completed": false
-            },
-            {
-              "id": "w7-thu-run",
-              "sport": "run",
-              "type": "aerobic",
-              "name": "Easy Run \u2014 4 Mi",
-              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Double. Final week \u2014 enjoy it.",
-              "durationMinutes": 42,
-              "distanceMeters": 6437,
-              "primaryZone": "Zone 2",
-              "humanReadable": "4 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
-              "completed": false
-            }
-          ]
-        },
-        {
-          "date": "2026-07-03",
-          "dayOfWeek": "Friday",
-          "workouts": [
-            {
-              "id": "w7-fri-liift",
-              "sport": "strength",
-              "type": "strength",
-              "name": "LIIFT4 \u2014 Full Body",
-              "description": "HIIT. \ud83c\udf89 LIIFT4 COMPLETE after today! From Week 8, strength transitions to the run-specific plan.",
-              "durationMinutes": 40,
-              "humanReadable": "Today's LIIFT4: Full Body (HIIT)\nFollow your Beachbody app for the workout.\n\ud83c\udf89 LIIFT4 COMPLETE after today! From Week 8, strength transitions to the run-specific plan.",
-              "completed": false
-            }
-          ]
-        },
-        {
-          "date": "2026-07-04",
-          "dayOfWeek": "Saturday",
-          "workouts": [
-            {
-              "id": "w7-sat-rest",
-              "sport": "rest",
-              "type": "rest",
-              "name": "Rest Day",
-              "description": "LIIFT4 is done. Rest up \u2014 Sunday is a big long run.",
-              "completed": false
-            }
-          ]
-        },
-        {
-          "date": "2026-07-05",
-          "dayOfWeek": "Sunday",
-          "workouts": [
-            {
-              "id": "w7-sun-run",
-              "sport": "run",
-              "type": "long",
-              "name": "Long Run \u2014 9 Mi",
-              "description": "Long easy run. Build endurance without fatiguing legs from LIIFT4 leg day.",
-              "durationMinutes": 99,
-              "distanceMeters": 14484,
-              "primaryZone": "Zone 2",
-              "humanReadable": "9 miles easy @ 10:00-11:00/mi. Start conservative \u2014 10:30/mi first 2 miles.\nGel or snack if running over 60 minutes (at ~45min mark).\nKnee check at miles 2, 4, and halfway.\n9 miles \u2014 welcome to double digits territory. You've now completed LIIFT4 AND built to 9 miles. Huge week.",
-              "completed": false
-            },
-            {
-              "id": "w7-sun-mob",
-              "sport": "cross",
-              "type": "recovery",
-              "name": "Mobility & Recovery",
-              "description": "30min gentle movement. Hips, glutes, calves \u2014 essential for knee health.",
-              "durationMinutes": 30,
-              "humanReadable": "Foam roll (1-1.5min each): IT band, quads, calves, glutes\nStretch (45-60s each side): Hip flexor lunge | Pigeon pose | Seated hamstring | Calf stretch | Figure-four glute\nOptional: 10-15min easy walk. Note any knee tightness or soreness.",
-              "completed": false
-            }
-          ]
-        }
-      ],
-      "summary": {
-        "totalHours": 4.0,
-        "bySport": {
-          "run": {
-            "sessions": 3,
-            "hours": 2.8,
-            "miles": 17
-          }
-        }
-      }
-    },
-    {
-      "weekNumber": 8,
-      "startDate": "2026-07-06",
-      "endDate": "2026-07-12",
-      "phase": "Build",
-      "focus": "First post-LIIFT4 week \u2014 tempo run + 10mi long run",
-      "targetHours": 4.7,
-      "isRecoveryWeek": false,
-      "days": [
-        {
-          "date": "2026-07-06",
-          "dayOfWeek": "Monday",
-          "workouts": [
-            {
-              "id": "w8-mon-rest",
-              "sport": "rest",
-              "type": "rest",
-              "name": "Rest Day",
-              "description": "First week without LIIFT4. Strength moves to Wednesday.",
-              "completed": false
-            }
-          ]
-        },
-        {
-          "date": "2026-07-07",
-          "dayOfWeek": "Tuesday",
-          "workouts": [
-            {
-              "id": "w8-tue-run",
-              "sport": "run",
-              "type": "aerobic",
-              "name": "Easy Run \u2014 4 Mi",
-              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Easy base run. No more doubles \u2014 enjoy the lighter load.",
-              "durationMinutes": 42,
-              "distanceMeters": 6437,
-              "primaryZone": "Zone 2",
-              "humanReadable": "4 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
-              "completed": false
-            }
-          ]
-        },
-        {
-          "date": "2026-07-08",
-          "dayOfWeek": "Wednesday",
-          "workouts": [
-            {
-              "id": "w8-wed-str",
-              "sport": "strength",
-              "type": "strength",
-              "name": "Strength \u2014 Build Phase",
-              "description": "First post-LIIFT4 strength session. Single-leg focus for knee health.",
-              "durationMinutes": 50,
-              "humanReadable": "Warm-up: 5min light cardio\nCore (3 rounds): Plank 60s | Dead bug 12ea | Copenhagen plank 20s ea\nLegs (3 rounds): Single-leg squat x8ea | Romanian deadlift x10 | Walking lunge x12ea | Step-up x10ea | Single-leg calf raise x15ea\nUpper (3 rounds): Push-up x15 | Lat pulldown or band row x10\nCool-down: 5min stretching",
-              "completed": false
-            }
-          ]
-        },
-        {
-          "date": "2026-07-09",
-          "dayOfWeek": "Thursday",
-          "workouts": [
-            {
-              "id": "w8-thu-run",
-              "sport": "run",
-              "type": "tempo",
-              "name": "Tempo Run \u2014 2x1.5 mi @ T pace (2min walk rest)",
-              "description": "Threshold quality session. Use pace from Week 3 field test.",
-              "durationMinutes": 65,
-              "distanceMeters": 8046,
-              "primaryZone": "Zone 4-5a",
-              "humanReadable": "Warm-up: 2 miles easy\nQuality: 2x1.5 mi @ T pace (2min walk rest) at T pace (from field test)\nCool-down: 1 mile easy\nT pace feel: few words at a time, not conversational.",
-              "completed": false
-            }
-          ]
-        },
-        {
-          "date": "2026-07-10",
-          "dayOfWeek": "Friday",
-          "workouts": [
-            {
-              "id": "w8-fri-rest",
-              "sport": "rest",
-              "type": "rest",
-              "name": "Rest Day",
-              "description": "Full recovery. Prioritize sleep and nutrition.",
-              "completed": false
-            }
-          ]
-        },
-        {
-          "date": "2026-07-11",
-          "dayOfWeek": "Saturday",
-          "workouts": [
-            {
-              "id": "w8-sat-run",
-              "sport": "run",
-              "type": "aerobic",
-              "name": "Easy Run \u2014 2 Mi",
-              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Optional. Only if feeling fresh. Skip if tired.",
-              "durationMinutes": 21,
-              "distanceMeters": 3218,
-              "primaryZone": "Zone 2",
-              "humanReadable": "2 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
-              "completed": false
-            }
-          ]
-        },
-        {
-          "date": "2026-07-12",
-          "dayOfWeek": "Sunday",
-          "workouts": [
-            {
-              "id": "w8-sun-run",
-              "sport": "run",
-              "type": "long",
-              "name": "Long Run \u2014 10 Mi",
-              "description": "Long easy run. Build endurance without fatiguing legs from LIIFT4 leg day.",
-              "durationMinutes": 110,
-              "distanceMeters": 16093,
-              "primaryZone": "Zone 2",
-              "humanReadable": "10 miles easy @ 10:00-11:00/mi. Start conservative \u2014 10:30/mi first 2 miles.\nGel or snack if running over 60 minutes (at ~45min mark).\nKnee check at miles 2, 4, and halfway.\n10 miles \u2014 double digits! Take gels at miles 4-5 and 8. First long run without LIIFT4 fatigue in the legs.",
-              "completed": false
-            },
-            {
-              "id": "w8-sun-mob",
-              "sport": "cross",
-              "type": "recovery",
-              "name": "Mobility & Recovery",
-              "description": "30min gentle movement. Hips, glutes, calves \u2014 essential for knee health.",
-              "durationMinutes": 30,
-              "humanReadable": "Foam roll (1-1.5min each): IT band, quads, calves, glutes\nStretch (45-60s each side): Hip flexor lunge | Pigeon pose | Seated hamstring | Calf stretch | Figure-four glute\nOptional: 10-15min easy walk. Note any knee tightness or soreness.",
-              "completed": false
-            }
-          ]
-        }
-      ],
-      "summary": {
-        "totalHours": 4.7,
-        "bySport": {
-          "run": {
-            "sessions": 4,
-            "hours": 3.4,
-            "miles": 21
-          }
-        }
-      }
-    },
-    {
-      "weekNumber": 9,
       "startDate": "2026-07-13",
       "endDate": "2026-07-19",
       "phase": "Build",
-      "focus": "Recovery week",
-      "targetHours": 3.7,
+      "focus": "Final LIIFT4 week + recovery",
+      "targetHours": 3.3,
       "isRecoveryWeek": true,
       "days": [
         {
@@ -1593,11 +916,13 @@ ${a.join(`
           "dayOfWeek": "Monday",
           "workouts": [
             {
-              "id": "w9-mon-rest",
-              "sport": "rest",
-              "type": "rest",
-              "name": "Rest Day",
-              "description": "Full recovery. Prioritize sleep and nutrition.",
+              "id": "w5-mon-liift",
+              "sport": "strength",
+              "type": "strength",
+              "name": "LIIFT4 \u2014 Chest/Back",
+              "description": "Circuit. Final week of LIIFT4!",
+              "durationMinutes": 40,
+              "humanReadable": "Today's LIIFT4: Chest/Back (Circuit)\nFollow your Beachbody app.\nFinal week of LIIFT4!",
               "completed": false
             }
           ]
@@ -1607,15 +932,13 @@ ${a.join(`
           "dayOfWeek": "Tuesday",
           "workouts": [
             {
-              "id": "w9-tue-run",
-              "sport": "run",
-              "type": "aerobic",
-              "name": "Easy Run \u2014 4 Mi + Strides",
-              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Recovery week. Easy and conversational. strides",
-              "durationMinutes": 42,
-              "distanceMeters": 6437,
-              "primaryZone": "Zone 2",
-              "humanReadable": "4 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back to recover.",
+              "id": "w5-tue-liift",
+              "sport": "strength",
+              "type": "strength",
+              "name": "LIIFT4 \u2014 Legs",
+              "description": "LIIFT 50/50. No running \u2014 last LIIFT4 leg day!",
+              "durationMinutes": 40,
+              "humanReadable": "Today's LIIFT4: Legs (LIIFT 50/50)\nFollow your Beachbody app.\nNo running \u2014 last LIIFT4 leg day!",
               "completed": false
             }
           ]
@@ -1625,13 +948,15 @@ ${a.join(`
           "dayOfWeek": "Wednesday",
           "workouts": [
             {
-              "id": "w9-wed-str",
-              "sport": "strength",
-              "type": "strength",
-              "name": "Strength \u2014 Build Phase (Moderate)",
-              "description": "3 sets but don't push to failure. Recovery week.",
-              "durationMinutes": 50,
-              "humanReadable": "Warm-up: 5min light cardio\nCore (3 rounds): Plank 60s | Dead bug 12ea | Copenhagen plank 20s ea\nLegs (3 rounds): Single-leg squat x8ea | Romanian deadlift x10 | Walking lunge x12ea | Step-up x10ea | Single-leg calf raise x15ea\nUpper (3 rounds): Push-up x15 | Lat pulldown or band row x10\nCool-down: 5min stretching",
+              "id": "w5-wed-run",
+              "sport": "run",
+              "type": "aerobic",
+              "name": "Easy Run \u2014 4 Mi",
+              "description": "Easy aerobic run at 9:15-10:00/mile. Fully conversational. LIIFT4 rest day. Recovery week \u2014 keep easy.",
+              "durationMinutes": 40,
+              "distanceMeters": 6437,
+              "primaryZone": "Zone 2",
+              "humanReadable": "4 miles easy @ 9:15-10:00/mi. Walk 2min before starting.\nKnee check at mile 1.\n",
               "completed": false
             }
           ]
@@ -1641,15 +966,25 @@ ${a.join(`
           "dayOfWeek": "Thursday",
           "workouts": [
             {
-              "id": "w9-thu-run",
+              "id": "w5-thu-liift",
+              "sport": "strength",
+              "type": "strength",
+              "name": "LIIFT4 \u2014 Shoulders/Arms",
+              "description": "Circuit.",
+              "durationMinutes": 40,
+              "humanReadable": "Today's LIIFT4: Shoulders/Arms (Circuit)\nFollow your Beachbody app.",
+              "completed": false
+            },
+            {
+              "id": "w5-thu-run",
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 3 Mi",
-              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Easy only \u2014 no tempo this week. Let the adaptation happen.",
-              "durationMinutes": 31,
+              "description": "Easy aerobic run at 9:15-10:00/mile. Fully conversational. Double. Easy.",
+              "durationMinutes": 30,
               "distanceMeters": 4828,
               "primaryZone": "Zone 2",
-              "humanReadable": "3 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
+              "humanReadable": "3 miles easy @ 9:15-10:00/mi. Walk 2min before starting.\nKnee check at mile 1.\n",
               "completed": false
             }
           ]
@@ -1659,11 +994,13 @@ ${a.join(`
           "dayOfWeek": "Friday",
           "workouts": [
             {
-              "id": "w9-fri-rest",
-              "sport": "rest",
-              "type": "rest",
-              "name": "Rest Day",
-              "description": "Full recovery. Prioritize sleep and nutrition.",
+              "id": "w5-fri-liift",
+              "sport": "strength",
+              "type": "strength",
+              "name": "LIIFT4 \u2014 Full Body",
+              "description": "HIIT. \ud83c\udf89 LIIFT4 COMPLETE after today! Run strength takes over next week.",
+              "durationMinutes": 40,
+              "humanReadable": "Today's LIIFT4: Full Body (HIIT)\nFollow your Beachbody app.\n\ud83c\udf89 LIIFT4 COMPLETE after today! Run strength takes over next week.",
               "completed": false
             }
           ]
@@ -1673,7 +1010,7 @@ ${a.join(`
           "dayOfWeek": "Saturday",
           "workouts": [
             {
-              "id": "w9-sat-rest",
+              "id": "w5-sat-rest",
               "sport": "rest",
               "type": "rest",
               "name": "Rest Day",
@@ -1687,25 +1024,462 @@ ${a.join(`
           "dayOfWeek": "Sunday",
           "workouts": [
             {
-              "id": "w9-sun-run",
+              "id": "w5-sun-run",
               "sport": "run",
               "type": "long",
-              "name": "Long Run \u2014 7 Mi",
-              "description": "Long easy run. Build endurance without fatiguing legs from LIIFT4 leg day.",
-              "durationMinutes": 78,
-              "distanceMeters": 11265,
+              "name": "Long Run \u2014 6 Mi",
+              "description": "Long easy endurance run.",
+              "durationMinutes": 65,
+              "distanceMeters": 9656,
               "primaryZone": "Zone 2",
-              "humanReadable": "7 miles easy @ 10:00-11:00/mi. Start conservative \u2014 10:30/mi first 2 miles.\nGel or snack if running over 60 minutes (at ~45min mark).\nKnee check at miles 2, 4, and halfway.\nRecovery long run. Should feel much easier than last week's 10.",
+              "humanReadable": "6 miles easy @ 9:15-10:00/mi. Start conservative first 2 miles.\nGel/snack if over 60min (~45min mark).\nKnee check at miles 2, 4, halfway.\nRecovery long run \u2014 shorter (6mi). Should feel easy.",
               "completed": false
             },
             {
-              "id": "w9-sun-mob",
+              "id": "w5-sun-mob",
               "sport": "cross",
               "type": "recovery",
               "name": "Mobility & Recovery",
-              "description": "30min gentle movement. Hips, glutes, calves \u2014 essential for knee health.",
+              "description": "30min gentle movement. Hips, glutes, calves \u2014 knee health.",
               "durationMinutes": 30,
-              "humanReadable": "Foam roll (1-1.5min each): IT band, quads, calves, glutes\nStretch (45-60s each side): Hip flexor lunge | Pigeon pose | Seated hamstring | Calf stretch | Figure-four glute\nOptional: 10-15min easy walk. Note any knee tightness or soreness.",
+              "humanReadable": "Foam roll (1-1.5min each): IT band, quads, calves, glutes\nStretch (45-60s each side): Hip flexor lunge | Pigeon | Seated hamstring | Calf stretch | Figure-four glute\nOptional: 10-15min easy walk. Note any knee tightness.",
+              "completed": false
+            }
+          ]
+        }
+      ],
+      "summary": {
+        "totalHours": 3.3,
+        "bySport": {
+          "run": {
+            "sessions": 3,
+            "hours": 2.2,
+            "miles": 13
+          }
+        }
+      }
+    },
+    {
+      "weekNumber": 6,
+      "startDate": "2026-07-20",
+      "endDate": "2026-07-26",
+      "phase": "Build",
+      "focus": "First post-LIIFT4 week \u2014 tempo + 9mi long run",
+      "targetHours": 4.9,
+      "isRecoveryWeek": false,
+      "days": [
+        {
+          "date": "2026-07-20",
+          "dayOfWeek": "Monday",
+          "workouts": [
+            {
+              "id": "w6-mon-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "First week without LIIFT4. Strength moves to Wednesday.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-07-21",
+          "dayOfWeek": "Tuesday",
+          "workouts": [
+            {
+              "id": "w6-tue-run",
+              "sport": "run",
+              "type": "aerobic",
+              "name": "Easy Run \u2014 5 Mi",
+              "description": "Easy aerobic run at 9:15-10:00/mile. Fully conversational. Easy base run. No more doubles.",
+              "durationMinutes": 50,
+              "distanceMeters": 8046,
+              "primaryZone": "Zone 2",
+              "humanReadable": "5 miles easy @ 9:15-10:00/mi. Walk 2min before starting.\nKnee check at mile 1.\n",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-07-22",
+          "dayOfWeek": "Wednesday",
+          "workouts": [
+            {
+              "id": "w6-wed-str",
+              "sport": "strength",
+              "type": "strength",
+              "name": "Strength \u2014 Build Phase",
+              "description": "First post-LIIFT4 session. Single-leg focus for knees.",
+              "durationMinutes": 50,
+              "humanReadable": "Warm-up: 5min light cardio\nCore (3 rounds): Plank 60s | Dead bug 12ea | Copenhagen plank 20s ea\nLegs (3 rounds): Single-leg squat x8ea | Romanian deadlift x10 | Walking lunge x12ea | Step-up x10ea | Single-leg calf raise x15ea\nUpper (3 rounds): Push-up x15 | Lat pulldown or band row x10\nCool-down: 5min stretching",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-07-23",
+          "dayOfWeek": "Thursday",
+          "workouts": [
+            {
+              "id": "w6-thu-run",
+              "sport": "run",
+              "type": "tempo",
+              "name": "Tempo Run \u2014 2x2 mi @ T pace (2min walk rest)",
+              "description": "Threshold quality session at measured T pace.",
+              "durationMinutes": 68,
+              "distanceMeters": 9656,
+              "primaryZone": "Zone 4-5a",
+              "humanReadable": "Warm-up: 2 miles easy\nQuality: 2x2 mi @ T pace (2min walk rest) at T pace (8:05-8:15/mile)\nCool-down: 1 mile easy\nT pace feel: few words at a time, not conversational.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-07-24",
+          "dayOfWeek": "Friday",
+          "workouts": [
+            {
+              "id": "w6-fri-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Full recovery. Prioritize sleep and nutrition.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-07-25",
+          "dayOfWeek": "Saturday",
+          "workouts": [
+            {
+              "id": "w6-sat-run",
+              "sport": "run",
+              "type": "aerobic",
+              "name": "Easy Run \u2014 2 Mi",
+              "description": "Easy aerobic run at 9:15-10:00/mile. Fully conversational. Optional. Only if fresh. Skip if tired.",
+              "durationMinutes": 20,
+              "distanceMeters": 3218,
+              "primaryZone": "Zone 2",
+              "humanReadable": "2 miles easy @ 9:15-10:00/mi. Walk 2min before starting.\nKnee check at mile 1.\n",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-07-26",
+          "dayOfWeek": "Sunday",
+          "workouts": [
+            {
+              "id": "w6-sun-run",
+              "sport": "run",
+              "type": "long",
+              "name": "Long Run \u2014 9 Mi",
+              "description": "Long easy endurance run.",
+              "durationMinutes": 95,
+              "distanceMeters": 14484,
+              "primaryZone": "Zone 2",
+              "humanReadable": "9 miles easy @ 9:15-10:00/mi. Start conservative first 2 miles.\nGel/snack if over 60min (~45min mark).\nKnee check at miles 2, 4, halfway.\n9 miles. Gels at miles 4-5 and 8. First long run without LIIFT4 fatigue.",
+              "completed": false
+            },
+            {
+              "id": "w6-sun-mob",
+              "sport": "cross",
+              "type": "recovery",
+              "name": "Mobility & Recovery",
+              "description": "30min gentle movement. Hips, glutes, calves \u2014 knee health.",
+              "durationMinutes": 30,
+              "humanReadable": "Foam roll (1-1.5min each): IT band, quads, calves, glutes\nStretch (45-60s each side): Hip flexor lunge | Pigeon | Seated hamstring | Calf stretch | Figure-four glute\nOptional: 10-15min easy walk. Note any knee tightness.",
+              "completed": false
+            }
+          ]
+        }
+      ],
+      "summary": {
+        "totalHours": 4.9,
+        "bySport": {
+          "run": {
+            "sessions": 4,
+            "hours": 3.6,
+            "miles": 22
+          }
+        }
+      }
+    },
+    {
+      "weekNumber": 7,
+      "startDate": "2026-07-27",
+      "endDate": "2026-08-02",
+      "phase": "Build",
+      "focus": "4x1mi tempo + 10mi long run",
+      "targetHours": 5.2,
+      "isRecoveryWeek": false,
+      "days": [
+        {
+          "date": "2026-07-27",
+          "dayOfWeek": "Monday",
+          "workouts": [
+            {
+              "id": "w7-mon-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Full recovery. Prioritize sleep and nutrition.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-07-28",
+          "dayOfWeek": "Tuesday",
+          "workouts": [
+            {
+              "id": "w7-tue-run",
+              "sport": "run",
+              "type": "aerobic",
+              "name": "Easy Run \u2014 5 Mi + Strides",
+              "description": "Easy aerobic run at 9:15-10:00/mile. Fully conversational. Easy + strides. strides",
+              "durationMinutes": 50,
+              "distanceMeters": 8046,
+              "primaryZone": "Zone 2",
+              "humanReadable": "5 miles easy @ 9:15-10:00/mi. Walk 2min before starting.\nKnee check at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-07-29",
+          "dayOfWeek": "Wednesday",
+          "workouts": [
+            {
+              "id": "w7-wed-str",
+              "sport": "strength",
+              "type": "strength",
+              "name": "Strength \u2014 Build Phase",
+              "description": "Progress single-leg depth and lunge range.",
+              "durationMinutes": 50,
+              "humanReadable": "Warm-up: 5min light cardio\nCore (3 rounds): Plank 60s | Dead bug 12ea | Copenhagen plank 20s ea\nLegs (3 rounds): Single-leg squat x8ea | Romanian deadlift x10 | Walking lunge x12ea | Step-up x10ea | Single-leg calf raise x15ea\nUpper (3 rounds): Push-up x15 | Lat pulldown or band row x10\nCool-down: 5min stretching",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-07-30",
+          "dayOfWeek": "Thursday",
+          "workouts": [
+            {
+              "id": "w7-thu-run",
+              "sport": "run",
+              "type": "tempo",
+              "name": "Tempo Run \u2014 4x1 mi @ T pace (90s jog rest)",
+              "description": "Threshold quality session at measured T pace.",
+              "durationMinutes": 72,
+              "distanceMeters": 11265,
+              "primaryZone": "Zone 4-5a",
+              "humanReadable": "Warm-up: 2 miles easy\nQuality: 4x1 mi @ T pace (90s jog rest) at T pace (8:05-8:15/mile)\nCool-down: 1 mile easy\nT pace feel: few words at a time, not conversational.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-07-31",
+          "dayOfWeek": "Friday",
+          "workouts": [
+            {
+              "id": "w7-fri-run",
+              "sport": "run",
+              "type": "aerobic",
+              "name": "Easy Run \u2014 2 Mi",
+              "description": "Easy aerobic run at 9:15-10:00/mile. Fully conversational. Optional easy run. Only if knees feel good.",
+              "durationMinutes": 20,
+              "distanceMeters": 3218,
+              "primaryZone": "Zone 2",
+              "humanReadable": "2 miles easy @ 9:15-10:00/mi. Walk 2min before starting.\nKnee check at mile 1.\n",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-08-01",
+          "dayOfWeek": "Saturday",
+          "workouts": [
+            {
+              "id": "w7-sat-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Full recovery. Prioritize sleep and nutrition.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-08-02",
+          "dayOfWeek": "Sunday",
+          "workouts": [
+            {
+              "id": "w7-sun-run",
+              "sport": "run",
+              "type": "long",
+              "name": "Long Run \u2014 10 Mi",
+              "description": "Long easy endurance run.",
+              "durationMinutes": 105,
+              "distanceMeters": 16093,
+              "primaryZone": "Zone 2",
+              "humanReadable": "10 miles easy @ 9:15-10:00/mi. Start conservative first 2 miles.\nGel/snack if over 60min (~45min mark).\nKnee check at miles 2, 4, halfway.\n10 miles \u2014 double digits. Gels at miles 4-5 and 8-9. Final 2mi can drift to 9:00/mi if strong.",
+              "completed": false
+            },
+            {
+              "id": "w7-sun-mob",
+              "sport": "cross",
+              "type": "recovery",
+              "name": "Mobility & Recovery",
+              "description": "30min gentle movement. Hips, glutes, calves \u2014 knee health.",
+              "durationMinutes": 30,
+              "humanReadable": "Foam roll (1-1.5min each): IT band, quads, calves, glutes\nStretch (45-60s each side): Hip flexor lunge | Pigeon | Seated hamstring | Calf stretch | Figure-four glute\nOptional: 10-15min easy walk. Note any knee tightness.",
+              "completed": false
+            }
+          ]
+        }
+      ],
+      "summary": {
+        "totalHours": 5.2,
+        "bySport": {
+          "run": {
+            "sessions": 4,
+            "hours": 3.9,
+            "miles": 24
+          }
+        }
+      }
+    },
+    {
+      "weekNumber": 8,
+      "startDate": "2026-08-03",
+      "endDate": "2026-08-09",
+      "phase": "Build",
+      "focus": "Recovery week",
+      "targetHours": 3.7,
+      "isRecoveryWeek": true,
+      "days": [
+        {
+          "date": "2026-08-03",
+          "dayOfWeek": "Monday",
+          "workouts": [
+            {
+              "id": "w8-mon-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Full recovery. Prioritize sleep and nutrition.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-08-04",
+          "dayOfWeek": "Tuesday",
+          "workouts": [
+            {
+              "id": "w8-tue-run",
+              "sport": "run",
+              "type": "aerobic",
+              "name": "Easy Run \u2014 4 Mi",
+              "description": "Easy aerobic run at 9:15-10:00/mile. Fully conversational. Recovery week. Easy and conversational.",
+              "durationMinutes": 40,
+              "distanceMeters": 6437,
+              "primaryZone": "Zone 2",
+              "humanReadable": "4 miles easy @ 9:15-10:00/mi. Walk 2min before starting.\nKnee check at mile 1.\n",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-08-05",
+          "dayOfWeek": "Wednesday",
+          "workouts": [
+            {
+              "id": "w8-wed-str",
+              "sport": "strength",
+              "type": "strength",
+              "name": "Strength \u2014 Build (Moderate)",
+              "description": "3 sets, don't push to failure. Recovery week.",
+              "durationMinutes": 50,
+              "humanReadable": "Warm-up: 5min light cardio\nCore (3 rounds): Plank 60s | Dead bug 12ea | Copenhagen plank 20s ea\nLegs (3 rounds): Single-leg squat x8ea | Romanian deadlift x10 | Walking lunge x12ea | Step-up x10ea | Single-leg calf raise x15ea\nUpper (3 rounds): Push-up x15 | Lat pulldown or band row x10\nCool-down: 5min stretching",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-08-06",
+          "dayOfWeek": "Thursday",
+          "workouts": [
+            {
+              "id": "w8-thu-run",
+              "sport": "run",
+              "type": "aerobic",
+              "name": "Easy Run \u2014 3 Mi",
+              "description": "Easy aerobic run at 9:15-10:00/mile. Fully conversational. Easy only \u2014 no tempo this week.",
+              "durationMinutes": 30,
+              "distanceMeters": 4828,
+              "primaryZone": "Zone 2",
+              "humanReadable": "3 miles easy @ 9:15-10:00/mi. Walk 2min before starting.\nKnee check at mile 1.\n",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-08-07",
+          "dayOfWeek": "Friday",
+          "workouts": [
+            {
+              "id": "w8-fri-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Full recovery. Prioritize sleep and nutrition.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-08-08",
+          "dayOfWeek": "Saturday",
+          "workouts": [
+            {
+              "id": "w8-sat-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Full recovery. Prioritize sleep and nutrition.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-08-09",
+          "dayOfWeek": "Sunday",
+          "workouts": [
+            {
+              "id": "w8-sun-run",
+              "sport": "run",
+              "type": "long",
+              "name": "Long Run \u2014 7 Mi",
+              "description": "Long easy endurance run.",
+              "durationMinutes": 75,
+              "distanceMeters": 11265,
+              "primaryZone": "Zone 2",
+              "humanReadable": "7 miles easy @ 9:15-10:00/mi. Start conservative first 2 miles.\nGel/snack if over 60min (~45min mark).\nKnee check at miles 2, 4, halfway.\nRecovery long run. Easier than last week's 10.",
+              "completed": false
+            },
+            {
+              "id": "w8-sun-mob",
+              "sport": "cross",
+              "type": "recovery",
+              "name": "Mobility & Recovery",
+              "description": "30min gentle movement. Hips, glutes, calves \u2014 knee health.",
+              "durationMinutes": 30,
+              "humanReadable": "Foam roll (1-1.5min each): IT band, quads, calves, glutes\nStretch (45-60s each side): Hip flexor lunge | Pigeon | Seated hamstring | Calf stretch | Figure-four glute\nOptional: 10-15min easy walk. Note any knee tightness.",
               "completed": false
             }
           ]
@@ -1723,449 +1497,12 @@ ${a.join(`
       }
     },
     {
-      "weekNumber": 10,
-      "startDate": "2026-07-20",
-      "endDate": "2026-07-26",
-      "phase": "Build",
-      "focus": "4x1mi tempo + 11mi long run",
-      "targetHours": 5.3,
-      "isRecoveryWeek": false,
-      "days": [
-        {
-          "date": "2026-07-20",
-          "dayOfWeek": "Monday",
-          "workouts": [
-            {
-              "id": "w10-mon-rest",
-              "sport": "rest",
-              "type": "rest",
-              "name": "Rest Day",
-              "description": "Full recovery. Prioritize sleep and nutrition.",
-              "completed": false
-            }
-          ]
-        },
-        {
-          "date": "2026-07-21",
-          "dayOfWeek": "Tuesday",
-          "workouts": [
-            {
-              "id": "w10-tue-run",
-              "sport": "run",
-              "type": "aerobic",
-              "name": "Easy Run \u2014 5 Mi + Strides",
-              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Easy + strides. Fresh from recovery week.",
-              "durationMinutes": 52,
-              "distanceMeters": 8046,
-              "primaryZone": "Zone 2",
-              "humanReadable": "5 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back to recover.",
-              "completed": false
-            }
-          ]
-        },
-        {
-          "date": "2026-07-22",
-          "dayOfWeek": "Wednesday",
-          "workouts": [
-            {
-              "id": "w10-wed-str",
-              "sport": "strength",
-              "type": "strength",
-              "name": "Strength \u2014 Build Phase",
-              "description": "Progress single-leg squat depth and lunge range.",
-              "durationMinutes": 50,
-              "humanReadable": "Warm-up: 5min light cardio\nCore (3 rounds): Plank 60s | Dead bug 12ea | Copenhagen plank 20s ea\nLegs (3 rounds): Single-leg squat x8ea | Romanian deadlift x10 | Walking lunge x12ea | Step-up x10ea | Single-leg calf raise x15ea\nUpper (3 rounds): Push-up x15 | Lat pulldown or band row x10\nCool-down: 5min stretching",
-              "completed": false
-            }
-          ]
-        },
-        {
-          "date": "2026-07-23",
-          "dayOfWeek": "Thursday",
-          "workouts": [
-            {
-              "id": "w10-thu-run",
-              "sport": "run",
-              "type": "tempo",
-              "name": "Tempo Run \u2014 4x1 mi @ T pace (90s jog rest)",
-              "description": "Threshold quality session. Use pace from Week 3 field test.",
-              "durationMinutes": 70,
-              "distanceMeters": 11265,
-              "primaryZone": "Zone 4-5a",
-              "humanReadable": "Warm-up: 2 miles easy\nQuality: 4x1 mi @ T pace (90s jog rest) at T pace (from field test)\nCool-down: 1 mile easy\nT pace feel: few words at a time, not conversational.",
-              "completed": false
-            }
-          ]
-        },
-        {
-          "date": "2026-07-24",
-          "dayOfWeek": "Friday",
-          "workouts": [
-            {
-              "id": "w10-fri-run",
-              "sport": "run",
-              "type": "aerobic",
-              "name": "Easy Run \u2014 2 Mi",
-              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Optional easy run. Only if knees and legs feel good.",
-              "durationMinutes": 21,
-              "distanceMeters": 3218,
-              "primaryZone": "Zone 2",
-              "humanReadable": "2 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
-              "completed": false
-            }
-          ]
-        },
-        {
-          "date": "2026-07-25",
-          "dayOfWeek": "Saturday",
-          "workouts": [
-            {
-              "id": "w10-sat-rest",
-              "sport": "rest",
-              "type": "rest",
-              "name": "Rest Day",
-              "description": "Full recovery. Prioritize sleep and nutrition.",
-              "completed": false
-            }
-          ]
-        },
-        {
-          "date": "2026-07-26",
-          "dayOfWeek": "Sunday",
-          "workouts": [
-            {
-              "id": "w10-sun-run",
-              "sport": "run",
-              "type": "long",
-              "name": "Long Run \u2014 11 Mi",
-              "description": "Long easy run. Build endurance without fatiguing legs from LIIFT4 leg day.",
-              "durationMinutes": 120,
-              "distanceMeters": 17702,
-              "primaryZone": "Zone 2",
-              "humanReadable": "11 miles easy @ 10:00-11:00/mi. Start conservative \u2014 10:30/mi first 2 miles.\nGel or snack if running over 60 minutes (at ~45min mark).\nKnee check at miles 2, 4, and halfway.\n11 miles. Gel at miles 4-5 and 8-9. Final 2 miles can drift to 9:00/mi if feeling strong.",
-              "completed": false
-            },
-            {
-              "id": "w10-sun-mob",
-              "sport": "cross",
-              "type": "recovery",
-              "name": "Mobility & Recovery",
-              "description": "30min gentle movement. Hips, glutes, calves \u2014 essential for knee health.",
-              "durationMinutes": 30,
-              "humanReadable": "Foam roll (1-1.5min each): IT band, quads, calves, glutes\nStretch (45-60s each side): Hip flexor lunge | Pigeon pose | Seated hamstring | Calf stretch | Figure-four glute\nOptional: 10-15min easy walk. Note any knee tightness or soreness.",
-              "completed": false
-            }
-          ]
-        }
-      ],
-      "summary": {
-        "totalHours": 5.3,
-        "bySport": {
-          "run": {
-            "sessions": 4,
-            "hours": 4.0,
-            "miles": 25
-          }
-        }
-      }
-    },
-    {
-      "weekNumber": 11,
-      "startDate": "2026-07-27",
-      "endDate": "2026-08-02",
-      "phase": "Build",
-      "focus": "Peak build \u2014 5x1mi + 12mi long run",
-      "targetHours": 5.7,
-      "isRecoveryWeek": false,
-      "days": [
-        {
-          "date": "2026-07-27",
-          "dayOfWeek": "Monday",
-          "workouts": [
-            {
-              "id": "w11-mon-rest",
-              "sport": "rest",
-              "type": "rest",
-              "name": "Rest Day",
-              "description": "Full recovery. Prioritize sleep and nutrition.",
-              "completed": false
-            }
-          ]
-        },
-        {
-          "date": "2026-07-28",
-          "dayOfWeek": "Tuesday",
-          "workouts": [
-            {
-              "id": "w11-tue-run",
-              "sport": "run",
-              "type": "aerobic",
-              "name": "Easy Run \u2014 5 Mi + Strides",
-              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Easy + strides.",
-              "durationMinutes": 52,
-              "distanceMeters": 8046,
-              "primaryZone": "Zone 2",
-              "humanReadable": "5 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back to recover.",
-              "completed": false
-            }
-          ]
-        },
-        {
-          "date": "2026-07-29",
-          "dayOfWeek": "Wednesday",
-          "workouts": [
-            {
-              "id": "w11-wed-str",
-              "sport": "strength",
-              "type": "strength",
-              "name": "Strength \u2014 Build Phase",
-              "description": "These exercises are now familiar \u2014 maximize quality.",
-              "durationMinutes": 50,
-              "humanReadable": "Warm-up: 5min light cardio\nCore (3 rounds): Plank 60s | Dead bug 12ea | Copenhagen plank 20s ea\nLegs (3 rounds): Single-leg squat x8ea | Romanian deadlift x10 | Walking lunge x12ea | Step-up x10ea | Single-leg calf raise x15ea\nUpper (3 rounds): Push-up x15 | Lat pulldown or band row x10\nCool-down: 5min stretching",
-              "completed": false
-            }
-          ]
-        },
-        {
-          "date": "2026-07-30",
-          "dayOfWeek": "Thursday",
-          "workouts": [
-            {
-              "id": "w11-thu-run",
-              "sport": "run",
-              "type": "tempo",
-              "name": "Tempo Run \u2014 5x1 mi @ T pace (90s jog rest)",
-              "description": "Threshold quality session. Use pace from Week 3 field test.",
-              "durationMinutes": 80,
-              "distanceMeters": 12874,
-              "primaryZone": "Zone 4-5a",
-              "humanReadable": "Warm-up: 2 miles easy\nQuality: 5x1 mi @ T pace (90s jog rest) at T pace (from field test)\nCool-down: 1 mile easy\nT pace feel: few words at a time, not conversational.",
-              "completed": false
-            }
-          ]
-        },
-        {
-          "date": "2026-07-31",
-          "dayOfWeek": "Friday",
-          "workouts": [
-            {
-              "id": "w11-fri-run",
-              "sport": "run",
-              "type": "aerobic",
-              "name": "Easy Run \u2014 2 Mi",
-              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Optional. Skip if Thursday felt hard.",
-              "durationMinutes": 21,
-              "distanceMeters": 3218,
-              "primaryZone": "Zone 2",
-              "humanReadable": "2 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
-              "completed": false
-            }
-          ]
-        },
-        {
-          "date": "2026-08-01",
-          "dayOfWeek": "Saturday",
-          "workouts": [
-            {
-              "id": "w11-sat-rest",
-              "sport": "rest",
-              "type": "rest",
-              "name": "Rest Day",
-              "description": "Full recovery. Prioritize sleep and nutrition.",
-              "completed": false
-            }
-          ]
-        },
-        {
-          "date": "2026-08-02",
-          "dayOfWeek": "Sunday",
-          "workouts": [
-            {
-              "id": "w11-sun-run",
-              "sport": "run",
-              "type": "long",
-              "name": "Long Run \u2014 12 Mi",
-              "description": "Long easy run. Build endurance without fatiguing legs from LIIFT4 leg day.",
-              "durationMinutes": 131,
-              "distanceMeters": 19312,
-              "primaryZone": "Zone 2",
-              "humanReadable": "12 miles easy @ 10:00-11:00/mi. Start conservative \u2014 10:30/mi first 2 miles.\nGel or snack if running over 60 minutes (at ~45min mark).\nKnee check at miles 2, 4, and halfway.\n12 miles \u2014 the longest run of the plan so far. Gel at miles 4, 7-8, and optionally 10. Trust your training.",
-              "completed": false
-            },
-            {
-              "id": "w11-sun-mob",
-              "sport": "cross",
-              "type": "recovery",
-              "name": "Mobility & Recovery",
-              "description": "30min gentle movement. Hips, glutes, calves \u2014 essential for knee health.",
-              "durationMinutes": 30,
-              "humanReadable": "Foam roll (1-1.5min each): IT band, quads, calves, glutes\nStretch (45-60s each side): Hip flexor lunge | Pigeon pose | Seated hamstring | Calf stretch | Figure-four glute\nOptional: 10-15min easy walk. Note any knee tightness or soreness.",
-              "completed": false
-            }
-          ]
-        }
-      ],
-      "summary": {
-        "totalHours": 5.7,
-        "bySport": {
-          "run": {
-            "sessions": 4,
-            "hours": 4.3,
-            "miles": 27
-          }
-        }
-      }
-    },
-    {
-      "weekNumber": 12,
-      "startDate": "2026-08-03",
-      "endDate": "2026-08-09",
-      "phase": "Build",
-      "focus": "Recovery week",
-      "targetHours": 3.9,
-      "isRecoveryWeek": true,
-      "days": [
-        {
-          "date": "2026-08-03",
-          "dayOfWeek": "Monday",
-          "workouts": [
-            {
-              "id": "w12-mon-rest",
-              "sport": "rest",
-              "type": "rest",
-              "name": "Rest Day",
-              "description": "Full recovery. Prioritize sleep and nutrition.",
-              "completed": false
-            }
-          ]
-        },
-        {
-          "date": "2026-08-04",
-          "dayOfWeek": "Tuesday",
-          "workouts": [
-            {
-              "id": "w12-tue-run",
-              "sport": "run",
-              "type": "aerobic",
-              "name": "Easy Run \u2014 4 Mi + Strides",
-              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Recovery week. Easy only \u2014 no strides.",
-              "durationMinutes": 42,
-              "distanceMeters": 6437,
-              "primaryZone": "Zone 2",
-              "humanReadable": "4 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back to recover.",
-              "completed": false
-            }
-          ]
-        },
-        {
-          "date": "2026-08-05",
-          "dayOfWeek": "Wednesday",
-          "workouts": [
-            {
-              "id": "w12-wed-str",
-              "sport": "strength",
-              "type": "strength",
-              "name": "Strength \u2014 Build Phase (Lighter)",
-              "description": "2-3 sets only. Reduce weight/reps. Legs need recovery.",
-              "durationMinutes": 50,
-              "humanReadable": "Warm-up: 5min light cardio\nCore (3 rounds): Plank 60s | Dead bug 12ea | Copenhagen plank 20s ea\nLegs (3 rounds): Single-leg squat x8ea | Romanian deadlift x10 | Walking lunge x12ea | Step-up x10ea | Single-leg calf raise x15ea\nUpper (3 rounds): Push-up x15 | Lat pulldown or band row x10\nCool-down: 5min stretching",
-              "completed": false
-            }
-          ]
-        },
-        {
-          "date": "2026-08-06",
-          "dayOfWeek": "Thursday",
-          "workouts": [
-            {
-              "id": "w12-thu-run",
-              "sport": "run",
-              "type": "aerobic",
-              "name": "Easy Run \u2014 4 Mi + Strides",
-              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Easy + strides.",
-              "durationMinutes": 42,
-              "distanceMeters": 6437,
-              "primaryZone": "Zone 2",
-              "humanReadable": "4 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back to recover.",
-              "completed": false
-            }
-          ]
-        },
-        {
-          "date": "2026-08-07",
-          "dayOfWeek": "Friday",
-          "workouts": [
-            {
-              "id": "w12-fri-rest",
-              "sport": "rest",
-              "type": "rest",
-              "name": "Rest Day",
-              "description": "Full recovery. Prioritize sleep and nutrition.",
-              "completed": false
-            }
-          ]
-        },
-        {
-          "date": "2026-08-08",
-          "dayOfWeek": "Saturday",
-          "workouts": [
-            {
-              "id": "w12-sat-rest",
-              "sport": "rest",
-              "type": "rest",
-              "name": "Rest Day",
-              "description": "Full recovery. Prioritize sleep and nutrition.",
-              "completed": false
-            }
-          ]
-        },
-        {
-          "date": "2026-08-09",
-          "dayOfWeek": "Sunday",
-          "workouts": [
-            {
-              "id": "w12-sun-run",
-              "sport": "run",
-              "type": "long",
-              "name": "Long Run \u2014 8 Mi",
-              "description": "Long easy run. Build endurance without fatiguing legs from LIIFT4 leg day.",
-              "durationMinutes": 89,
-              "distanceMeters": 12874,
-              "primaryZone": "Zone 2",
-              "humanReadable": "8 miles easy @ 10:00-11:00/mi. Start conservative \u2014 10:30/mi first 2 miles.\nGel or snack if running over 60 minutes (at ~45min mark).\nKnee check at miles 2, 4, and halfway.\nRecovery long run. Should feel significantly easier than last week's 12.",
-              "completed": false
-            },
-            {
-              "id": "w12-sun-mob",
-              "sport": "cross",
-              "type": "recovery",
-              "name": "Mobility & Recovery",
-              "description": "30min gentle movement. Hips, glutes, calves \u2014 essential for knee health.",
-              "durationMinutes": 30,
-              "humanReadable": "Foam roll (1-1.5min each): IT band, quads, calves, glutes\nStretch (45-60s each side): Hip flexor lunge | Pigeon pose | Seated hamstring | Calf stretch | Figure-four glute\nOptional: 10-15min easy walk. Note any knee tightness or soreness.",
-              "completed": false
-            }
-          ]
-        }
-      ],
-      "summary": {
-        "totalHours": 3.9,
-        "bySport": {
-          "run": {
-            "sessions": 3,
-            "hours": 2.7,
-            "miles": 16
-          }
-        }
-      }
-    },
-    {
-      "weekNumber": 13,
+      "weekNumber": 9,
       "startDate": "2026-08-10",
       "endDate": "2026-08-16",
       "phase": "Build",
-      "focus": "Peak volume \u2014 4x1.5mi tempo + 13mi long run",
-      "targetHours": 6.0,
+      "focus": "Peak quality \u2014 4x1.5mi tempo + 11mi long run",
+      "targetHours": 5.6,
       "isRecoveryWeek": false,
       "days": [
         {
@@ -2173,7 +1510,7 @@ ${a.join(`
           "dayOfWeek": "Monday",
           "workouts": [
             {
-              "id": "w13-mon-rest",
+              "id": "w9-mon-rest",
               "sport": "rest",
               "type": "rest",
               "name": "Rest Day",
@@ -2187,15 +1524,15 @@ ${a.join(`
           "dayOfWeek": "Tuesday",
           "workouts": [
             {
-              "id": "w13-tue-run",
+              "id": "w9-tue-run",
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 5 Mi + Strides",
-              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Easy + strides. Fresh from recovery \u2014 use that energy for crisp strides.",
-              "durationMinutes": 52,
+              "description": "Easy aerobic run at 9:15-10:00/mile. Fully conversational. Easy + strides. Fresh from recovery. strides",
+              "durationMinutes": 50,
               "distanceMeters": 8046,
               "primaryZone": "Zone 2",
-              "humanReadable": "5 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back to recover.",
+              "humanReadable": "5 miles easy @ 9:15-10:00/mi. Walk 2min before starting.\nKnee check at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back.",
               "completed": false
             }
           ]
@@ -2205,11 +1542,11 @@ ${a.join(`
           "dayOfWeek": "Wednesday",
           "workouts": [
             {
-              "id": "w13-wed-str",
+              "id": "w9-wed-str",
               "sport": "strength",
               "type": "strength",
               "name": "Strength \u2014 Build Phase",
-              "description": "Final week of full build strength. Next week transitions to maintenance.",
+              "description": "Maximize quality \u2014 familiar exercises now.",
               "durationMinutes": 50,
               "humanReadable": "Warm-up: 5min light cardio\nCore (3 rounds): Plank 60s | Dead bug 12ea | Copenhagen plank 20s ea\nLegs (3 rounds): Single-leg squat x8ea | Romanian deadlift x10 | Walking lunge x12ea | Step-up x10ea | Single-leg calf raise x15ea\nUpper (3 rounds): Push-up x15 | Lat pulldown or band row x10\nCool-down: 5min stretching",
               "completed": false
@@ -2221,15 +1558,15 @@ ${a.join(`
           "dayOfWeek": "Thursday",
           "workouts": [
             {
-              "id": "w13-thu-run",
+              "id": "w9-thu-run",
               "sport": "run",
               "type": "tempo",
               "name": "Tempo Run \u2014 4x1.5 mi @ T pace (2min walk rest)",
-              "description": "Threshold quality session. Use pace from Week 3 field test.",
-              "durationMinutes": 92,
-              "distanceMeters": 14484,
+              "description": "Threshold quality session at measured T pace.",
+              "durationMinutes": 90,
+              "distanceMeters": 12874,
               "primaryZone": "Zone 4-5a",
-              "humanReadable": "Warm-up: 2 miles easy\nQuality: 4x1.5 mi @ T pace (2min walk rest) at T pace (from field test)\nCool-down: 1 mile easy\nT pace feel: few words at a time, not conversational.",
+              "humanReadable": "Warm-up: 2 miles easy\nQuality: 4x1.5 mi @ T pace (2min walk rest) at T pace (8:05-8:15/mile)\nCool-down: 1 mile easy\nT pace feel: few words at a time, not conversational.",
               "completed": false
             }
           ]
@@ -2239,15 +1576,15 @@ ${a.join(`
           "dayOfWeek": "Friday",
           "workouts": [
             {
-              "id": "w13-fri-run",
+              "id": "w9-fri-run",
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 2 Mi",
-              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Short easy run. Active recovery from Thursday's tempo.",
-              "durationMinutes": 21,
+              "description": "Easy aerobic run at 9:15-10:00/mile. Fully conversational. Short easy. Active recovery from Thursday.",
+              "durationMinutes": 20,
               "distanceMeters": 3218,
               "primaryZone": "Zone 2",
-              "humanReadable": "2 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
+              "humanReadable": "2 miles easy @ 9:15-10:00/mi. Walk 2min before starting.\nKnee check at mile 1.\n",
               "completed": false
             }
           ]
@@ -2257,11 +1594,11 @@ ${a.join(`
           "dayOfWeek": "Saturday",
           "workouts": [
             {
-              "id": "w13-sat-rest",
+              "id": "w9-sat-rest",
               "sport": "rest",
               "type": "rest",
               "name": "Rest Day",
-              "description": "Rest. Tomorrow is your peak long run \u2014 13 miles.",
+              "description": "Full recovery. Prioritize sleep and nutrition.",
               "completed": false
             }
           ]
@@ -2271,47 +1608,47 @@ ${a.join(`
           "dayOfWeek": "Sunday",
           "workouts": [
             {
-              "id": "w13-sun-run",
+              "id": "w9-sun-run",
               "sport": "run",
               "type": "long",
-              "name": "Long Run \u2014 13 Mi",
-              "description": "Long easy run. Build endurance without fatiguing legs from LIIFT4 leg day.",
-              "durationMinutes": 141,
-              "distanceMeters": 20921,
+              "name": "Long Run \u2014 11 Mi",
+              "description": "Long easy endurance run.",
+              "durationMinutes": 115,
+              "distanceMeters": 17702,
               "primaryZone": "Zone 2",
-              "humanReadable": "13 miles easy @ 10:00-11:00/mi. Start conservative \u2014 10:30/mi first 2 miles.\nGel or snack if running over 60 minutes (at ~45min mark).\nKnee check at miles 2, 4, and halfway.\nPEAK LONG RUN \u2014 13 miles. This is your final confidence builder before taper. Gel at miles 4-5, 8-9, and 11. You WILL finish this run \u2014 and know you can race the distance.",
+              "humanReadable": "11 miles easy @ 9:15-10:00/mi. Start conservative first 2 miles.\nGel/snack if over 60min (~45min mark).\nKnee check at miles 2, 4, halfway.\n11 miles. Gels at miles 4, 7-8. Build confidence for the distance.",
               "completed": false
             },
             {
-              "id": "w13-sun-mob",
+              "id": "w9-sun-mob",
               "sport": "cross",
               "type": "recovery",
               "name": "Mobility & Recovery",
-              "description": "30min gentle movement. Hips, glutes, calves \u2014 essential for knee health.",
+              "description": "30min gentle movement. Hips, glutes, calves \u2014 knee health.",
               "durationMinutes": 30,
-              "humanReadable": "Foam roll (1-1.5min each): IT band, quads, calves, glutes\nStretch (45-60s each side): Hip flexor lunge | Pigeon pose | Seated hamstring | Calf stretch | Figure-four glute\nOptional: 10-15min easy walk. Note any knee tightness or soreness.",
+              "humanReadable": "Foam roll (1-1.5min each): IT band, quads, calves, glutes\nStretch (45-60s each side): Hip flexor lunge | Pigeon | Seated hamstring | Calf stretch | Figure-four glute\nOptional: 10-15min easy walk. Note any knee tightness.",
               "completed": false
             }
           ]
         }
       ],
       "summary": {
-        "totalHours": 6.0,
+        "totalHours": 5.6,
         "bySport": {
           "run": {
             "sessions": 4,
-            "hours": 4.7,
-            "miles": 29
+            "hours": 4.3,
+            "miles": 26.5
           }
         }
       }
     },
     {
-      "weekNumber": 14,
+      "weekNumber": 10,
       "startDate": "2026-08-17",
       "endDate": "2026-08-23",
       "phase": "Build",
-      "focus": "Race simulation \u2014 goal pace work",
+      "focus": "Peak \u2014 race sim + 12mi peak long run",
       "targetHours": 5.1,
       "isRecoveryWeek": false,
       "days": [
@@ -2320,7 +1657,7 @@ ${a.join(`
           "dayOfWeek": "Monday",
           "workouts": [
             {
-              "id": "w14-mon-rest",
+              "id": "w10-mon-rest",
               "sport": "rest",
               "type": "rest",
               "name": "Rest Day",
@@ -2334,15 +1671,15 @@ ${a.join(`
           "dayOfWeek": "Tuesday",
           "workouts": [
             {
-              "id": "w14-tue-run",
+              "id": "w10-tue-run",
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 5 Mi + Strides",
-              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Easy run \u2014 no strides today. Thursday is race simulation.",
-              "durationMinutes": 52,
+              "description": "Easy aerobic run at 9:15-10:00/mile. Fully conversational. Easy run. No strides \u2014 race sim Thursday.",
+              "durationMinutes": 50,
               "distanceMeters": 8046,
               "primaryZone": "Zone 2",
-              "humanReadable": "5 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back to recover.",
+              "humanReadable": "5 miles easy @ 9:15-10:00/mi. Walk 2min before starting.\nKnee check at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back.",
               "completed": false
             }
           ]
@@ -2352,11 +1689,11 @@ ${a.join(`
           "dayOfWeek": "Wednesday",
           "workouts": [
             {
-              "id": "w14-wed-str",
+              "id": "w10-wed-str",
               "sport": "strength",
               "type": "strength",
               "name": "Strength \u2014 Maintenance",
-              "description": "Switching to maintenance. Shorter session, no fatigue.",
+              "description": "Switch to maintenance. Shorter, no fatigue.",
               "durationMinutes": 35,
               "humanReadable": "Quick maintenance \u2014 30min, no fatigue\nCore (2 rounds): Plank 45s | Bird dog 10ea\nLegs (2 rounds): Goblet squat x10 | Glute bridge x15 | Calf raise x15\nUpper (2 rounds): Push-up x10",
               "completed": false
@@ -2368,15 +1705,15 @@ ${a.join(`
           "dayOfWeek": "Thursday",
           "workouts": [
             {
-              "id": "w14-thu-run",
+              "id": "w10-thu-run",
               "sport": "run",
               "type": "tempo",
               "name": "Race Simulation \u2014 4 Miles at Goal Pace",
-              "description": "Run 4 miles at your goal half marathon pace (8:10-8:30/mile). Teaches your body what race day feels like.",
+              "description": "4 miles at goal HM pace (8:10-8:30/mile). Teaches race-day feel.",
               "durationMinutes": 68,
               "distanceMeters": 11265,
               "primaryZone": "Zone 3-4",
-              "humanReadable": "Warm-up: 2 miles easy\nSimulation: 4 miles at GOAL HM pace (8:10-8:30/mile)\n  Run continuous \u2014 no walking breaks.\nCool-down: 1 mile easy\nGoal pace feel: 3-4 word phrases only. If you can chat, go a touch faster.",
+              "humanReadable": "Warm-up: 2 miles easy\nSimulation: 4 miles at GOAL HM pace (8:10-8:30/mi), continuous\nCool-down: 1 mile easy\nGoal feel: 3-4 word phrases only.",
               "completed": false
             }
           ]
@@ -2386,15 +1723,15 @@ ${a.join(`
           "dayOfWeek": "Friday",
           "workouts": [
             {
-              "id": "w14-fri-run",
+              "id": "w10-fri-run",
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 2 Mi",
-              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Short recovery run.",
-              "durationMinutes": 21,
+              "description": "Easy aerobic run at 9:15-10:00/mile. Fully conversational. Short recovery run.",
+              "durationMinutes": 20,
               "distanceMeters": 3218,
               "primaryZone": "Zone 2",
-              "humanReadable": "2 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
+              "humanReadable": "2 miles easy @ 9:15-10:00/mi. Walk 2min before starting.\nKnee check at mile 1.\n",
               "completed": false
             }
           ]
@@ -2404,7 +1741,7 @@ ${a.join(`
           "dayOfWeek": "Saturday",
           "workouts": [
             {
-              "id": "w14-sat-rest",
+              "id": "w10-sat-rest",
               "sport": "rest",
               "type": "rest",
               "name": "Rest Day",
@@ -2418,25 +1755,25 @@ ${a.join(`
           "dayOfWeek": "Sunday",
           "workouts": [
             {
-              "id": "w14-sun-run",
+              "id": "w10-sun-run",
               "sport": "run",
               "type": "long",
-              "name": "Progressive Long Run \u2014 11 Miles",
-              "description": "Last major long run before taper. Start easy, finish at goal pace.",
-              "durationMinutes": 112,
-              "distanceMeters": 17702,
-              "primaryZone": "Zone 2 \u2192 Zone 3",
-              "humanReadable": "Miles 1-7: Easy @ 9:30-10:00/mi\nMiles 8-9: Steady @ ~9:00/mi\nMiles 10-11: Goal HM pace @ 8:00-8:20/mi\nGel at miles 3-4 and 7-8.",
+              "name": "Peak Long Run \u2014 12 Miles",
+              "description": "Your peak long run. Given the layoff, 12 is the smart ceiling \u2014 and plenty to race well.",
+              "durationMinutes": 125,
+              "distanceMeters": 19312,
+              "primaryZone": "Zone 2",
+              "humanReadable": "Miles 1-9: Easy @ 9:15-10:00/mi\nMiles 10-12: Steady, drift toward 9:00/mi if good.\nGels at miles 4-5, 8-9. You WILL finish this \u2014 and know you can race 13.1.",
               "completed": false
             },
             {
-              "id": "w14-sun-mob",
+              "id": "w10-sun-mob",
               "sport": "cross",
               "type": "recovery",
               "name": "Mobility & Recovery",
-              "description": "30min gentle movement. Hips, glutes, calves \u2014 essential for knee health.",
+              "description": "30min gentle movement. Hips, glutes, calves \u2014 knee health.",
               "durationMinutes": 30,
-              "humanReadable": "Foam roll (1-1.5min each): IT band, quads, calves, glutes\nStretch (45-60s each side): Hip flexor lunge | Pigeon pose | Seated hamstring | Calf stretch | Figure-four glute\nOptional: 10-15min easy walk. Note any knee tightness or soreness.",
+              "humanReadable": "Foam roll (1-1.5min each): IT band, quads, calves, glutes\nStretch (45-60s each side): Hip flexor lunge | Pigeon | Seated hamstring | Calf stretch | Figure-four glute\nOptional: 10-15min easy walk. Note any knee tightness.",
               "completed": false
             }
           ]
@@ -2454,11 +1791,11 @@ ${a.join(`
       }
     },
     {
-      "weekNumber": 15,
+      "weekNumber": 11,
       "startDate": "2026-08-24",
       "endDate": "2026-08-30",
       "phase": "Taper",
-      "focus": "Taper begins \u2014 volume drops, sharpness maintained",
+      "focus": "Taper begins \u2014 volume drops, sharpness kept",
       "targetHours": 4.4,
       "isRecoveryWeek": false,
       "days": [
@@ -2467,11 +1804,11 @@ ${a.join(`
           "dayOfWeek": "Monday",
           "workouts": [
             {
-              "id": "w15-mon-rest",
+              "id": "w11-mon-rest",
               "sport": "rest",
               "type": "rest",
               "name": "Rest Day",
-              "description": "TAPER BEGINS. Volume drops \u2014 trust the process.",
+              "description": "TAPER BEGINS. Volume drops \u2014 trust it.",
               "completed": false
             }
           ]
@@ -2481,15 +1818,15 @@ ${a.join(`
           "dayOfWeek": "Tuesday",
           "workouts": [
             {
-              "id": "w15-tue-run",
+              "id": "w11-tue-run",
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 4 Mi + Strides",
-              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Taper week \u2014 you may feel restless. That's normal. Easy + strides.",
-              "durationMinutes": 42,
+              "description": "Easy aerobic run at 9:15-10:00/mile. Fully conversational. Taper \u2014 may feel restless. Easy + strides. strides",
+              "durationMinutes": 40,
               "distanceMeters": 6437,
               "primaryZone": "Zone 2",
-              "humanReadable": "4 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back to recover.",
+              "humanReadable": "4 miles easy @ 9:15-10:00/mi. Walk 2min before starting.\nKnee check at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back.",
               "completed": false
             }
           ]
@@ -2499,11 +1836,11 @@ ${a.join(`
           "dayOfWeek": "Wednesday",
           "workouts": [
             {
-              "id": "w15-wed-str",
+              "id": "w11-wed-str",
               "sport": "strength",
               "type": "strength",
               "name": "Strength \u2014 Maintenance",
-              "description": "Light maintenance. No soreness this close to race day.",
+              "description": "Light. No soreness this close to race.",
               "durationMinutes": 35,
               "humanReadable": "Quick maintenance \u2014 30min, no fatigue\nCore (2 rounds): Plank 45s | Bird dog 10ea\nLegs (2 rounds): Goblet squat x10 | Glute bridge x15 | Calf raise x15\nUpper (2 rounds): Push-up x10",
               "completed": false
@@ -2515,15 +1852,15 @@ ${a.join(`
           "dayOfWeek": "Thursday",
           "workouts": [
             {
-              "id": "w15-thu-run",
+              "id": "w11-thu-run",
               "sport": "run",
               "type": "tempo",
-              "name": "Taper Sharpener \u2014 2x2.5 Miles at Goal Pace",
-              "description": "Last quality session. Goal pace work \u2014 controlled and sharp, not all-out.",
+              "name": "Taper Sharpener \u2014 2x2.5 Mi at Goal Pace",
+              "description": "Last real quality session. Goal pace, controlled and sharp.",
               "durationMinutes": 82,
               "distanceMeters": 12874,
               "primaryZone": "Zone 3-4",
-              "humanReadable": "Warm-up: 2 miles easy\nSharpener: 2 x 2.5 miles at GOAL HM pace (8:10-8:30/mi)\n  3min easy jog/walk rest between reps\nCool-down: 1 mile easy\nShould feel hard but controlled \u2014 you're sharpening, not depleting.",
+              "humanReadable": "Warm-up: 2 miles easy\nSharpener: 2 x 2.5 miles at GOAL HM pace (8:10-8:30/mi), 3min rest\nCool-down: 1 mile easy\nHard but controlled \u2014 sharpening, not depleting.",
               "completed": false
             }
           ]
@@ -2533,7 +1870,7 @@ ${a.join(`
           "dayOfWeek": "Friday",
           "workouts": [
             {
-              "id": "w15-fri-rest",
+              "id": "w11-fri-rest",
               "sport": "rest",
               "type": "rest",
               "name": "Rest Day",
@@ -2547,7 +1884,7 @@ ${a.join(`
           "dayOfWeek": "Saturday",
           "workouts": [
             {
-              "id": "w15-sat-rest",
+              "id": "w11-sat-rest",
               "sport": "rest",
               "type": "rest",
               "name": "Rest Day",
@@ -2561,25 +1898,25 @@ ${a.join(`
           "dayOfWeek": "Sunday",
           "workouts": [
             {
-              "id": "w15-sun-run",
+              "id": "w11-sun-run",
               "sport": "run",
               "type": "long",
               "name": "Long Run \u2014 8 Mi",
-              "description": "Long easy run. Build endurance without fatiguing legs from LIIFT4 leg day.",
-              "durationMinutes": 89,
+              "description": "Long easy endurance run.",
+              "durationMinutes": 85,
               "distanceMeters": 12874,
               "primaryZone": "Zone 2",
-              "humanReadable": "8 miles easy @ 10:00-11:00/mi. Start conservative \u2014 10:30/mi first 2 miles.\nGel or snack if running over 60 minutes (at ~45min mark).\nKnee check at miles 2, 4, and halfway.\nLast long run before race day. Keep genuinely easy. No quality, no pacing games. Just enjoy it.",
+              "humanReadable": "8 miles easy @ 9:15-10:00/mi. Start conservative first 2 miles.\nGel/snack if over 60min (~45min mark).\nKnee check at miles 2, 4, halfway.\nLast long run before race. Genuinely easy. Enjoy it.",
               "completed": false
             },
             {
-              "id": "w15-sun-mob",
+              "id": "w11-sun-mob",
               "sport": "cross",
               "type": "recovery",
               "name": "Mobility & Recovery",
-              "description": "30min gentle movement. Hips, glutes, calves \u2014 essential for knee health.",
+              "description": "30min gentle movement. Hips, glutes, calves \u2014 knee health.",
               "durationMinutes": 30,
-              "humanReadable": "Foam roll (1-1.5min each): IT band, quads, calves, glutes\nStretch (45-60s each side): Hip flexor lunge | Pigeon pose | Seated hamstring | Calf stretch | Figure-four glute\nOptional: 10-15min easy walk. Note any knee tightness or soreness.",
+              "humanReadable": "Foam roll (1-1.5min each): IT band, quads, calves, glutes\nStretch (45-60s each side): Hip flexor lunge | Pigeon | Seated hamstring | Calf stretch | Figure-four glute\nOptional: 10-15min easy walk. Note any knee tightness.",
               "completed": false
             }
           ]
@@ -2597,11 +1934,11 @@ ${a.join(`
       }
     },
     {
-      "weekNumber": 16,
+      "weekNumber": 12,
       "startDate": "2026-08-31",
       "endDate": "2026-09-06",
       "phase": "Taper",
-      "focus": "Taper \u2014 volume at 45% of peak",
+      "focus": "Taper \u2014 volume ~45% of peak",
       "targetHours": 3.0,
       "isRecoveryWeek": false,
       "days": [
@@ -2610,7 +1947,7 @@ ${a.join(`
           "dayOfWeek": "Monday",
           "workouts": [
             {
-              "id": "w16-mon-rest",
+              "id": "w12-mon-rest",
               "sport": "rest",
               "type": "rest",
               "name": "Rest Day",
@@ -2624,15 +1961,15 @@ ${a.join(`
           "dayOfWeek": "Tuesday",
           "workouts": [
             {
-              "id": "w16-tue-run",
+              "id": "w12-tue-run",
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 4 Mi + Strides",
-              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Taper week 2. Legs should start feeling springy. Easy + strides.",
-              "durationMinutes": 42,
+              "description": "Easy aerobic run at 9:15-10:00/mile. Fully conversational. Legs should feel springy. Easy + strides. strides",
+              "durationMinutes": 40,
               "distanceMeters": 6437,
               "primaryZone": "Zone 2",
-              "humanReadable": "4 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back to recover.",
+              "humanReadable": "4 miles easy @ 9:15-10:00/mi. Walk 2min before starting.\nKnee check at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back.",
               "completed": false
             }
           ]
@@ -2642,11 +1979,11 @@ ${a.join(`
           "dayOfWeek": "Wednesday",
           "workouts": [
             {
-              "id": "w16-wed-str",
+              "id": "w12-wed-str",
               "sport": "strength",
               "type": "strength",
               "name": "Strength \u2014 Light Maintenance",
-              "description": "Very light \u2014 goal is activation only, zero fatigue.",
+              "description": "Very light \u2014 activation only, zero fatigue.",
               "durationMinutes": 30,
               "humanReadable": "Quick maintenance \u2014 30min, no fatigue\nCore (2 rounds): Plank 45s | Bird dog 10ea\nLegs (2 rounds): Goblet squat x10 | Glute bridge x15 | Calf raise x15\nUpper (2 rounds): Push-up x10",
               "completed": false
@@ -2658,15 +1995,15 @@ ${a.join(`
           "dayOfWeek": "Thursday",
           "workouts": [
             {
-              "id": "w16-thu-run",
+              "id": "w12-thu-run",
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 3 Mi + Strides",
-              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Short easy run + strides. Race is 9 days away.",
-              "durationMinutes": 31,
+              "description": "Easy aerobic run at 9:15-10:00/mile. Fully conversational. Short easy + strides. Race in 9 days. strides",
+              "durationMinutes": 30,
               "distanceMeters": 4828,
               "primaryZone": "Zone 2",
-              "humanReadable": "3 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back to recover.",
+              "humanReadable": "3 miles easy @ 9:15-10:00/mi. Walk 2min before starting.\nKnee check at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back.",
               "completed": false
             }
           ]
@@ -2676,7 +2013,7 @@ ${a.join(`
           "dayOfWeek": "Friday",
           "workouts": [
             {
-              "id": "w16-fri-rest",
+              "id": "w12-fri-rest",
               "sport": "rest",
               "type": "rest",
               "name": "Rest Day",
@@ -2690,7 +2027,7 @@ ${a.join(`
           "dayOfWeek": "Saturday",
           "workouts": [
             {
-              "id": "w16-sat-rest",
+              "id": "w12-sat-rest",
               "sport": "rest",
               "type": "rest",
               "name": "Rest Day",
@@ -2704,25 +2041,25 @@ ${a.join(`
           "dayOfWeek": "Sunday",
           "workouts": [
             {
-              "id": "w16-sun-run",
+              "id": "w12-sun-run",
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 5 Mi + Strides",
-              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Easy run with strides. Race week begins in 2 days. Feel the speed \u2014 don't chase it.",
-              "durationMinutes": 52,
+              "description": "Easy aerobic run at 9:15-10:00/mile. Fully conversational. Easy + strides. Race week begins in 2 days. Feel the speed, don't chase it. strides",
+              "durationMinutes": 50,
               "distanceMeters": 8046,
               "primaryZone": "Zone 2",
-              "humanReadable": "5 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back to recover.",
+              "humanReadable": "5 miles easy @ 9:15-10:00/mi. Walk 2min before starting.\nKnee check at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back.",
               "completed": false
             },
             {
-              "id": "w16-sun-mob",
+              "id": "w12-sun-mob",
               "sport": "cross",
               "type": "recovery",
               "name": "Mobility & Recovery",
-              "description": "30min gentle movement. Hips, glutes, calves \u2014 essential for knee health.",
+              "description": "30min gentle movement. Hips, glutes, calves \u2014 knee health.",
               "durationMinutes": 30,
-              "humanReadable": "Foam roll (1-1.5min each): IT band, quads, calves, glutes\nStretch (45-60s each side): Hip flexor lunge | Pigeon pose | Seated hamstring | Calf stretch | Figure-four glute\nOptional: 10-15min easy walk. Note any knee tightness or soreness.",
+              "humanReadable": "Foam roll (1-1.5min each): IT band, quads, calves, glutes\nStretch (45-60s each side): Hip flexor lunge | Pigeon | Seated hamstring | Calf stretch | Figure-four glute\nOptional: 10-15min easy walk. Note any knee tightness.",
               "completed": false
             }
           ]
@@ -2740,11 +2077,11 @@ ${a.join(`
       }
     },
     {
-      "weekNumber": 17,
+      "weekNumber": 13,
       "startDate": "2026-09-07",
       "endDate": "2026-09-13",
       "phase": "Taper",
-      "focus": "Race week \u2014 stay fresh, execute the plan",
+      "focus": "Race week \u2014 stay fresh, execute",
       "targetHours": 2.6,
       "isRecoveryWeek": false,
       "days": [
@@ -2753,11 +2090,11 @@ ${a.join(`
           "dayOfWeek": "Monday",
           "workouts": [
             {
-              "id": "w17-mon-rest",
+              "id": "w13-mon-rest",
               "sport": "rest",
               "type": "rest",
               "name": "Rest Day",
-              "description": "Full rest. No running. Sleep, eat well, hydrate. Lay out your race kit.",
+              "description": "Full rest. Sleep, eat, hydrate. Lay out race kit.",
               "completed": false
             }
           ]
@@ -2767,15 +2104,15 @@ ${a.join(`
           "dayOfWeek": "Tuesday",
           "workouts": [
             {
-              "id": "w17-tue-run",
+              "id": "w13-tue-run",
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 3 Mi",
-              "description": "Easy aerobic run at 10:00-11:00/mile. Fully conversational effort. Short easy run \u2014 last real training run. Visualize your race plan: mile 1, mile 6, mile 10.",
-              "durationMinutes": 31,
+              "description": "Easy aerobic run at 9:15-10:00/mile. Fully conversational. Last real training run. Visualize miles 1, 6, 10.",
+              "durationMinutes": 30,
               "distanceMeters": 4828,
               "primaryZone": "Zone 2",
-              "humanReadable": "3 miles easy @ 10:00-11:00/mi. Walk 2min before starting.\nCheck in on knees at mile 1.\n",
+              "humanReadable": "3 miles easy @ 9:15-10:00/mi. Walk 2min before starting.\nKnee check at mile 1.\n",
               "completed": false
             }
           ]
@@ -2785,11 +2122,11 @@ ${a.join(`
           "dayOfWeek": "Wednesday",
           "workouts": [
             {
-              "id": "w17-wed-rest",
+              "id": "w13-wed-rest",
               "sport": "rest",
               "type": "rest",
               "name": "Rest Day",
-              "description": "Rest. Hydrate all day \u2014 aim for clear/pale yellow. Eat carb-rich meals.",
+              "description": "Rest. Hydrate all day. Carb-rich meals.",
               "completed": false
             }
           ]
@@ -2799,15 +2136,15 @@ ${a.join(`
           "dayOfWeek": "Thursday",
           "workouts": [
             {
-              "id": "w17-thu-run",
+              "id": "w13-thu-run",
               "sport": "run",
               "type": "aerobic",
               "name": "Shakeout \u2014 2 Miles + Strides",
-              "description": "Short shakeout to stay loose. Nothing hard.",
+              "description": "Short shakeout. Nothing hard.",
               "durationMinutes": 22,
               "distanceMeters": 3218,
               "primaryZone": "Zone 1",
-              "humanReadable": "2 miles very easy + 4x strides\nAfter: pack your race bag, confirm your alarm, lay out race kit.",
+              "humanReadable": "2 miles very easy + 4x strides\nAfter: pack race bag, confirm alarm.",
               "completed": false
             }
           ]
@@ -2817,11 +2154,11 @@ ${a.join(`
           "dayOfWeek": "Friday",
           "workouts": [
             {
-              "id": "w17-fri-rest",
+              "id": "w13-fri-rest",
               "sport": "rest",
               "type": "rest",
               "name": "Rest Day",
-              "description": "Rest. Pre-race meal tonight: pasta, rice, or bread \u2014 familiar foods only. Early bed.",
+              "description": "Rest. Pre-race meal: pasta/rice/bread \u2014 familiar foods only. Early bed.",
               "completed": false
             }
           ]
@@ -2831,7 +2168,7 @@ ${a.join(`
           "dayOfWeek": "Saturday",
           "workouts": [
             {
-              "id": "w17-sat-run",
+              "id": "w13-sat-run",
               "sport": "run",
               "type": "race",
               "name": "\ud83c\udfc1 RACE DAY \u2014 Scheels BurliMOT Half Marathon",
@@ -2839,7 +2176,7 @@ ${a.join(`
               "durationMinutes": 130,
               "distanceMeters": 21082,
               "primaryZone": "Race",
-              "humanReadable": "Pre-race (2-3hr before): 100-150g carbs (oatmeal, banana, toast). Coffee if you drink it. Sip water.\n\nWarm-up (20min before): 10min easy jog + 4x strides.\n\nRace strategy:\n  Miles 1-3: START CONSERVATIVE \u2014 8:20-8:30/mi. Feels too slow? Perfect.\n  Miles 4-7: Settle into goal pace 8:00-8:15/mi. Find your rhythm.\n  Miles 8-10: Hold form. Gel at mile 8-9. Shorten stride if tiring.\n  Miles 11-13.1: Empty the tank. Draw on every long run you've done.\n\nNutrition: Gel at miles 4-5 and optional at mile 8-9. Water at every aid station.\n\nMantras: 'I've done the work.' | 'One mile at a time.' | 'Trust the Sunday runs.'",
+              "humanReadable": "Pre-race (2-3hr before): 100-150g carbs. Coffee if you drink it. Sip water.\n\nWarm-up (20min before): 10min easy jog + 4x strides.\n\nRace strategy:\n  Miles 1-3: 8:20-8:30/mi \u2014 conservative. Feels too slow? Perfect.\n  Miles 4-7: 8:00-8:15/mi \u2014 settle into goal pace.\n  Miles 8-10: Hold form. Gel at mile 8-9. Shorten stride if tiring.\n  Miles 11-13.1: Empty the tank.\n\nNutrition: Gel at miles 4-5 and 8-9. Water at every aid station.\n\nMantras: 'I've done the work.' | 'One mile at a time.' | 'Trust the Sunday runs.'",
               "completed": false
             }
           ]
@@ -2849,13 +2186,13 @@ ${a.join(`
           "dayOfWeek": "Sunday",
           "workouts": [
             {
-              "id": "w17-sun-rec",
+              "id": "w13-sun-rec",
               "sport": "cross",
               "type": "recovery",
               "name": "Post-Race Recovery",
-              "description": "Congratulations! Walk gently, eat well, drink plenty. You earned it.",
+              "description": "Congratulations! Walk gently, eat well, hydrate.",
               "durationMinutes": 30,
-              "humanReadable": "Walk 20-30min gentle\nEat a real meal and celebrate\nDon't run for 7-10 days after a half marathon.",
+              "humanReadable": "Walk 20-30min gentle\nEat a real meal and celebrate\nDon't run for 7-10 days after the half.",
               "completed": false
             }
           ]
@@ -2883,17 +2220,17 @@ ${a.join(`
       }
     },
     "goals": {
-      "A": "Sub-1:48 \u2014 if training goes exceptionally well",
-      "B": "1:48-1:55 (8:10-8:30/mi) \u2014 realistic target based on current fitness",
-      "C": "Sub-2:00 \u2014 finish strong and healthy"
+      "A": "Sub-1:45 \u2014 realistic given strong field test",
+      "B": "1:45-1:50 (8:00-8:23/mi) \u2014 primary target",
+      "C": "Sub-1:55 \u2014 conservative floor"
     },
     "pacing": {
       "run": {
-        "miles1to3": "8:30-8:40/mi \u2014 deliberately conservative.",
-        "miles4to7": "8:10-8:25/mi \u2014 settle into goal pace.",
+        "miles1to3": "8:20-8:30/mi \u2014 conservative start.",
+        "miles4to7": "8:00-8:15/mi \u2014 settle into goal pace.",
         "miles8to10": "Maintain form. Shorten stride if struggling. Gel at mile 8-9.",
         "miles11to131": "Empty the tank. Draw on your Sunday long runs.",
-        "targetFinish": "1:48-1:55",
+        "targetFinish": "1:45-1:50",
         "notes": "Biggest risk: going out too fast miles 1-3. Your college instincts will lie to you."
       }
     },
