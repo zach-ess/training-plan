@@ -74,13 +74,13 @@ ${a.join(`
     "athlete": "Zach Essler",
     "event": "Scheels BurliMOT Half Marathon",
     "eventDate": "2026-09-12",
-    "planStartDate": "2026-06-15",
+    "planStartDate": "2026-06-22",
     "planEndDate": "2026-09-13",
     "createdAt": "2026-05-18T00:00:00Z",
-    "updatedAt": "2026-06-17T00:00:00Z",
-    "totalWeeks": 13,
+    "updatedAt": "2026-06-22T00:00:00Z",
+    "totalWeeks": 12,
     "generatedBy": "Claude Coach",
-    "note": "Rebuilt June 17 after ~10-day break. LIIFT4 resumes BUILD IT W5 on Jun 22; fresh 12.5-week run progression to race day."
+    "note": "Rebuilt June 22 after second break. LIIFT4 resumes BUILD IT W5 today; 11.5-week run progression to race day."
   },
   "preferences": {
     "run": "miles",
@@ -237,27 +237,27 @@ ${a.join(`
     {
       "name": "Re-entry/Base",
       "startWeek": 1,
-      "endWeek": 3,
-      "focus": "Return from break, rebuild base alongside LIIFT4 BUILD IT",
+      "endWeek": 4,
+      "focus": "Return from break, rebuild base alongside LIIFT4 (BUILD IT W5-6, SHRED IT W7-8)",
       "weeklyMilesRange": {
-        "low": 11,
-        "high": 19
+        "low": 14,
+        "high": 17
       }
     },
     {
       "name": "Build",
-      "startWeek": 4,
-      "endWeek": 10,
-      "focus": "LIIFT4 SHRED IT then post-LIIFT4 tempo build; peak 12mi long run",
+      "startWeek": 5,
+      "endWeek": 9,
+      "focus": "Post-LIIFT4 tempo build; peak 12mi long run + race sim",
       "weeklyMilesRange": {
-        "low": 13,
+        "low": 14,
         "high": 26
       }
     },
     {
       "name": "Taper",
-      "startWeek": 11,
-      "endWeek": 13,
+      "startWeek": 10,
+      "endWeek": 12,
       "focus": "Volume reduction, sharpness, freshness for Sept 12",
       "weeklyMilesRange": {
         "low": 12,
@@ -268,43 +268,59 @@ ${a.join(`
   "weeks": [
     {
       "weekNumber": 1,
-      "startDate": "2026-06-15",
-      "endDate": "2026-06-21",
+      "startDate": "2026-06-22",
+      "endDate": "2026-06-28",
       "phase": "Re-entry",
-      "focus": "Return from time off \u2014 easy re-entry, no LIIFT4 yet",
-      "targetHours": 2.8,
+      "focus": "Return from break \u2014 re-entry runs + LIIFT4 BUILD IT W5 resumes",
+      "targetHours": 3.5,
       "isRecoveryWeek": true,
       "days": [
         {
-          "date": "2026-06-15",
+          "date": "2026-06-22",
           "dayOfWeek": "Monday",
           "workouts": [
             {
-              "id": "w1-mon-rest",
-              "sport": "rest",
-              "type": "rest",
-              "name": "Rest Day",
-              "description": "Time off \u2014 resuming midweek.",
+              "id": "w1-mon-liift",
+              "sport": "strength",
+              "type": "strength",
+              "name": "LIIFT4 \u2014 Chest/Triceps",
+              "description": "LIIFT 50/50. LIIFT4 resumes at BUILD IT W5. No running today \u2014 first day back, just lift.",
+              "durationMinutes": 40,
+              "humanReadable": "Today's LIIFT4: Chest/Triceps (LIIFT 50/50)\nFollow your Beachbody app.\nLIIFT4 resumes at BUILD IT W5. No running today \u2014 first day back, just lift.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-06-16",
+          "date": "2026-06-23",
           "dayOfWeek": "Tuesday",
           "workouts": [
             {
-              "id": "w1-tue-rest",
-              "sport": "rest",
-              "type": "rest",
-              "name": "Rest Day",
-              "description": "Time off \u2014 resuming midweek.",
+              "id": "w1-tue-liift",
+              "sport": "strength",
+              "type": "strength",
+              "name": "LIIFT4 \u2014 Back/Biceps",
+              "description": "Circuit.",
+              "durationMinutes": 40,
+              "humanReadable": "Today's LIIFT4: Back/Biceps (Circuit)\nFollow your Beachbody app.",
+              "completed": false
+            },
+            {
+              "id": "w1-tue-run",
+              "sport": "run",
+              "type": "aerobic",
+              "name": "Easy Run \u2014 3 Mi",
+              "description": "Easy aerobic run at 9:15-10:00/mile. Fully conversational. FIRST run back after ~2.5 weeks off. Keep it genuinely easy. Cut short if knees complain. No making up lost mileage.",
+              "durationMinutes": 30,
+              "distanceMeters": 4828,
+              "primaryZone": "Zone 2",
+              "humanReadable": "3 miles easy @ 9:15-10:00/mi. Walk 2min before starting.\nKnee check at mile 1.\n",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-06-17",
+          "date": "2026-06-24",
           "dayOfWeek": "Wednesday",
           "workouts": [
             {
@@ -312,7 +328,7 @@ ${a.join(`
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 3 Mi",
-              "description": "Easy aerobic run at 9:15-10:00/mile. Fully conversational. FIRST run back after ~10 days off. Keep it genuinely easy \u2014 this is just waking the legs up. If anything feels off in the knees, cut it short. No making up missed mileage.",
+              "description": "Easy aerobic run at 9:15-10:00/mile. Fully conversational. LIIFT4 rest day \u2014 standalone easy run. Notice how knees feel vs yesterday.",
               "durationMinutes": 30,
               "distanceMeters": 4828,
               "primaryZone": "Zone 2",
@@ -322,29 +338,25 @@ ${a.join(`
           ]
         },
         {
-          "date": "2026-06-18",
+          "date": "2026-06-25",
           "dayOfWeek": "Thursday",
           "workouts": [
             {
-              "id": "w1-thu-rest",
-              "sport": "rest",
-              "type": "rest",
-              "name": "Rest Day",
-              "description": "Rest. Let the legs respond to the first run back.",
+              "id": "w1-thu-liift",
+              "sport": "strength",
+              "type": "strength",
+              "name": "LIIFT4 \u2014 Shoulders",
+              "description": "LIIFT Intervals.",
+              "durationMinutes": 40,
+              "humanReadable": "Today's LIIFT4: Shoulders (LIIFT Intervals)\nFollow your Beachbody app.",
               "completed": false
-            }
-          ]
-        },
-        {
-          "date": "2026-06-19",
-          "dayOfWeek": "Friday",
-          "workouts": [
+            },
             {
-              "id": "w1-fri-run",
+              "id": "w1-thu-run",
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 3 Mi",
-              "description": "Easy aerobic run at 9:15-10:00/mile. Fully conversational. Second easy run back. Same relaxed effort. Notice how the legs and knees feel vs Wednesday.",
+              "description": "Easy aerobic run at 9:15-10:00/mile. Fully conversational. Double. Easy run after upper-body lift.",
               "durationMinutes": 30,
               "distanceMeters": 4828,
               "primaryZone": "Zone 2",
@@ -354,7 +366,23 @@ ${a.join(`
           ]
         },
         {
-          "date": "2026-06-20",
+          "date": "2026-06-26",
+          "dayOfWeek": "Friday",
+          "workouts": [
+            {
+              "id": "w1-fri-liift",
+              "sport": "strength",
+              "type": "strength",
+              "name": "LIIFT4 \u2014 Legs",
+              "description": "LIIFT 50/50. No running \u2014 leg day. Long run is Sunday.",
+              "durationMinutes": 40,
+              "humanReadable": "Today's LIIFT4: Legs (LIIFT 50/50)\nFollow your Beachbody app.\nNo running \u2014 leg day. Long run is Sunday.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-06-27",
           "dayOfWeek": "Saturday",
           "workouts": [
             {
@@ -368,7 +396,7 @@ ${a.join(`
           ]
         },
         {
-          "date": "2026-06-21",
+          "date": "2026-06-28",
           "dayOfWeek": "Sunday",
           "workouts": [
             {
@@ -380,7 +408,7 @@ ${a.join(`
               "durationMinutes": 55,
               "distanceMeters": 8046,
               "primaryZone": "Zone 2",
-              "humanReadable": "5 miles easy @ 9:15-10:00/mi. Start conservative first 2 miles.\nGel/snack if over 60min (~45min mark).\nKnee check at miles 2, 4, halfway.\nGentle re-entry long run. 5 miles easy \u2014 no more than your last long run was. Walk breaks fine if needed.",
+              "humanReadable": "5 miles easy @ 9:15-10:00/mi. Start conservative first 2 miles.\nGel/snack if over 60min.\nKnee check at miles 2, 4, halfway.\nGentle re-entry long run. 5 miles easy. Walk breaks fine if needed.",
               "completed": false
             },
             {
@@ -397,27 +425,27 @@ ${a.join(`
         }
       ],
       "summary": {
-        "totalHours": 2.8,
+        "totalHours": 3.5,
         "bySport": {
           "run": {
-            "sessions": 3,
-            "hours": 1.8,
-            "miles": 11
+            "sessions": 4,
+            "hours": 2.3,
+            "miles": 14
           }
         }
       }
     },
     {
       "weekNumber": 2,
-      "startDate": "2026-06-22",
-      "endDate": "2026-06-28",
+      "startDate": "2026-06-29",
+      "endDate": "2026-07-05",
       "phase": "Base",
-      "focus": "LIIFT4 BUILD IT W5 resumes \u2014 rebuild base",
+      "focus": "Final BUILD IT week \u2014 LIIFT4 W6",
       "targetHours": 4.0,
       "isRecoveryWeek": false,
       "days": [
         {
-          "date": "2026-06-22",
+          "date": "2026-06-29",
           "dayOfWeek": "Monday",
           "workouts": [
             {
@@ -425,15 +453,15 @@ ${a.join(`
               "sport": "strength",
               "type": "strength",
               "name": "LIIFT4 \u2014 Chest/Triceps",
-              "description": "LIIFT 50/50. LIIFT4 resumes at BUILD IT Week 5 \u2014 pick up where you left off.",
+              "description": "Circuit.",
               "durationMinutes": 40,
-              "humanReadable": "Today's LIIFT4: Chest/Triceps (LIIFT 50/50)\nFollow your Beachbody app.\nLIIFT4 resumes at BUILD IT Week 5 \u2014 pick up where you left off.",
+              "humanReadable": "Today's LIIFT4: Chest/Triceps (Circuit)\nFollow your Beachbody app.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-06-23",
+          "date": "2026-06-30",
           "dayOfWeek": "Tuesday",
           "workouts": [
             {
@@ -441,9 +469,9 @@ ${a.join(`
               "sport": "strength",
               "type": "strength",
               "name": "LIIFT4 \u2014 Back/Biceps",
-              "description": "Circuit.",
+              "description": "LIIFT 50/50.",
               "durationMinutes": 40,
-              "humanReadable": "Today's LIIFT4: Back/Biceps (Circuit)\nFollow your Beachbody app.",
+              "humanReadable": "Today's LIIFT4: Back/Biceps (LIIFT 50/50)\nFollow your Beachbody app.",
               "completed": false
             },
             {
@@ -451,7 +479,7 @@ ${a.join(`
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 4 Mi",
-              "description": "Easy aerobic run at 9:15-10:00/mile. Fully conversational. Double day. Upper body + easy run.",
+              "description": "Easy aerobic run at 9:15-10:00/mile. Fully conversational. Double. Easy run.",
               "durationMinutes": 40,
               "distanceMeters": 6437,
               "primaryZone": "Zone 2",
@@ -461,25 +489,25 @@ ${a.join(`
           ]
         },
         {
-          "date": "2026-06-24",
+          "date": "2026-07-01",
           "dayOfWeek": "Wednesday",
           "workouts": [
             {
               "id": "w2-wed-run",
               "sport": "run",
               "type": "aerobic",
-              "name": "Easy Run \u2014 4 Mi",
-              "description": "Easy aerobic run at 9:15-10:00/mile. Fully conversational. LIIFT4 rest day \u2014 standalone run.",
+              "name": "Easy Run \u2014 4 Mi + Strides",
+              "description": "Easy aerobic run at 9:15-10:00/mile. Fully conversational. LIIFT4 rest day \u2014 standalone run. Add strides.",
               "durationMinutes": 40,
               "distanceMeters": 6437,
               "primaryZone": "Zone 2",
-              "humanReadable": "4 miles easy @ 9:15-10:00/mi. Walk 2min before starting.\nKnee check at mile 1.\n",
+              "humanReadable": "4 miles easy @ 9:15-10:00/mi. Walk 2min before starting.\nKnee check at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-06-25",
+          "date": "2026-07-02",
           "dayOfWeek": "Thursday",
           "workouts": [
             {
@@ -497,7 +525,7 @@ ${a.join(`
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 3 Mi",
-              "description": "Easy aerobic run at 9:15-10:00/mile. Fully conversational. Double. Keep run easy.",
+              "description": "Easy aerobic run at 9:15-10:00/mile. Fully conversational. Double. Easy.",
               "durationMinutes": 30,
               "distanceMeters": 4828,
               "primaryZone": "Zone 2",
@@ -507,7 +535,7 @@ ${a.join(`
           ]
         },
         {
-          "date": "2026-06-26",
+          "date": "2026-07-03",
           "dayOfWeek": "Friday",
           "workouts": [
             {
@@ -515,15 +543,15 @@ ${a.join(`
               "sport": "strength",
               "type": "strength",
               "name": "LIIFT4 \u2014 Legs",
-              "description": "LIIFT 50/50. No running \u2014 leg day. Long run is Sunday.",
+              "description": "HIIT. Final BUILD IT leg day. No running.",
               "durationMinutes": 40,
-              "humanReadable": "Today's LIIFT4: Legs (LIIFT 50/50)\nFollow your Beachbody app.\nNo running \u2014 leg day. Long run is Sunday.",
+              "humanReadable": "Today's LIIFT4: Legs (HIIT)\nFollow your Beachbody app.\nFinal BUILD IT leg day. No running.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-06-27",
+          "date": "2026-07-04",
           "dayOfWeek": "Saturday",
           "workouts": [
             {
@@ -537,7 +565,7 @@ ${a.join(`
           ]
         },
         {
-          "date": "2026-06-28",
+          "date": "2026-07-05",
           "dayOfWeek": "Sunday",
           "workouts": [
             {
@@ -549,7 +577,7 @@ ${a.join(`
               "durationMinutes": 65,
               "distanceMeters": 9656,
               "primaryZone": "Zone 2",
-              "humanReadable": "6 miles easy @ 9:15-10:00/mi. Start conservative first 2 miles.\nGel/snack if over 60min (~45min mark).\nKnee check at miles 2, 4, halfway.\nBack into the progression. 6 miles easy \u2014 matches your pre-break long run.",
+              "humanReadable": "6 miles easy @ 9:15-10:00/mi. Start conservative first 2 miles.\nGel/snack if over 60min.\nKnee check at miles 2, 4, halfway.\n6 miles easy. Gel at mile 4.",
               "completed": false
             },
             {
@@ -578,178 +606,9 @@ ${a.join(`
     },
     {
       "weekNumber": 3,
-      "startDate": "2026-06-29",
-      "endDate": "2026-07-05",
-      "phase": "Base",
-      "focus": "Final BUILD IT week \u2014 LIIFT4 W6",
-      "targetHours": 4.3,
-      "isRecoveryWeek": false,
-      "days": [
-        {
-          "date": "2026-06-29",
-          "dayOfWeek": "Monday",
-          "workouts": [
-            {
-              "id": "w3-mon-liift",
-              "sport": "strength",
-              "type": "strength",
-              "name": "LIIFT4 \u2014 Chest/Triceps",
-              "description": "Circuit.",
-              "durationMinutes": 40,
-              "humanReadable": "Today's LIIFT4: Chest/Triceps (Circuit)\nFollow your Beachbody app.",
-              "completed": false
-            }
-          ]
-        },
-        {
-          "date": "2026-06-30",
-          "dayOfWeek": "Tuesday",
-          "workouts": [
-            {
-              "id": "w3-tue-liift",
-              "sport": "strength",
-              "type": "strength",
-              "name": "LIIFT4 \u2014 Back/Biceps",
-              "description": "LIIFT 50/50.",
-              "durationMinutes": 40,
-              "humanReadable": "Today's LIIFT4: Back/Biceps (LIIFT 50/50)\nFollow your Beachbody app.",
-              "completed": false
-            },
-            {
-              "id": "w3-tue-run",
-              "sport": "run",
-              "type": "aerobic",
-              "name": "Easy Run \u2014 4 Mi + Strides",
-              "description": "Easy aerobic run at 9:15-10:00/mile. Fully conversational. Double. strides at end.",
-              "durationMinutes": 40,
-              "distanceMeters": 6437,
-              "primaryZone": "Zone 2",
-              "humanReadable": "4 miles easy @ 9:15-10:00/mi. Walk 2min before starting.\nKnee check at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back.",
-              "completed": false
-            }
-          ]
-        },
-        {
-          "date": "2026-07-01",
-          "dayOfWeek": "Wednesday",
-          "workouts": [
-            {
-              "id": "w3-wed-run",
-              "sport": "run",
-              "type": "aerobic",
-              "name": "Easy Run \u2014 5 Mi + Strides",
-              "description": "Easy aerobic run at 9:15-10:00/mile. Fully conversational. LIIFT4 rest day \u2014 best quality day. Add strides.",
-              "durationMinutes": 50,
-              "distanceMeters": 8046,
-              "primaryZone": "Zone 2",
-              "humanReadable": "5 miles easy @ 9:15-10:00/mi. Walk 2min before starting.\nKnee check at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back.",
-              "completed": false
-            }
-          ]
-        },
-        {
-          "date": "2026-07-02",
-          "dayOfWeek": "Thursday",
-          "workouts": [
-            {
-              "id": "w3-thu-liift",
-              "sport": "strength",
-              "type": "strength",
-              "name": "LIIFT4 \u2014 Shoulders",
-              "description": "LIIFT Intervals.",
-              "durationMinutes": 40,
-              "humanReadable": "Today's LIIFT4: Shoulders (LIIFT Intervals)\nFollow your Beachbody app.",
-              "completed": false
-            },
-            {
-              "id": "w3-thu-run",
-              "sport": "run",
-              "type": "aerobic",
-              "name": "Easy Run \u2014 3 Mi",
-              "description": "Easy aerobic run at 9:15-10:00/mile. Fully conversational. Double. Easy run.",
-              "durationMinutes": 30,
-              "distanceMeters": 4828,
-              "primaryZone": "Zone 2",
-              "humanReadable": "3 miles easy @ 9:15-10:00/mi. Walk 2min before starting.\nKnee check at mile 1.\n",
-              "completed": false
-            }
-          ]
-        },
-        {
-          "date": "2026-07-03",
-          "dayOfWeek": "Friday",
-          "workouts": [
-            {
-              "id": "w3-fri-liift",
-              "sport": "strength",
-              "type": "strength",
-              "name": "LIIFT4 \u2014 Legs",
-              "description": "HIIT. Final BUILD IT leg day. No running.",
-              "durationMinutes": 40,
-              "humanReadable": "Today's LIIFT4: Legs (HIIT)\nFollow your Beachbody app.\nFinal BUILD IT leg day. No running.",
-              "completed": false
-            }
-          ]
-        },
-        {
-          "date": "2026-07-04",
-          "dayOfWeek": "Saturday",
-          "workouts": [
-            {
-              "id": "w3-sat-rest",
-              "sport": "rest",
-              "type": "rest",
-              "name": "Rest Day",
-              "description": "Full recovery. Prioritize sleep and nutrition.",
-              "completed": false
-            }
-          ]
-        },
-        {
-          "date": "2026-07-05",
-          "dayOfWeek": "Sunday",
-          "workouts": [
-            {
-              "id": "w3-sun-run",
-              "sport": "run",
-              "type": "long",
-              "name": "Long Run \u2014 7 Mi",
-              "description": "Long easy endurance run.",
-              "durationMinutes": 75,
-              "distanceMeters": 11265,
-              "primaryZone": "Zone 2",
-              "humanReadable": "7 miles easy @ 9:15-10:00/mi. Start conservative first 2 miles.\nGel/snack if over 60min (~45min mark).\nKnee check at miles 2, 4, halfway.\n7 miles. Take a gel at mile 4. Aim for the easy end of the range.",
-              "completed": false
-            },
-            {
-              "id": "w3-sun-mob",
-              "sport": "cross",
-              "type": "recovery",
-              "name": "Mobility & Recovery",
-              "description": "30min gentle movement. Hips, glutes, calves \u2014 knee health.",
-              "durationMinutes": 30,
-              "humanReadable": "Foam roll (1-1.5min each): IT band, quads, calves, glutes\nStretch (45-60s each side): Hip flexor lunge | Pigeon | Seated hamstring | Calf stretch | Figure-four glute\nOptional: 10-15min easy walk. Note any knee tightness.",
-              "completed": false
-            }
-          ]
-        }
-      ],
-      "summary": {
-        "totalHours": 4.3,
-        "bySport": {
-          "run": {
-            "sessions": 4,
-            "hours": 3.2,
-            "miles": 19
-          }
-        }
-      }
-    },
-    {
-      "weekNumber": 4,
       "startDate": "2026-07-06",
       "endDate": "2026-07-12",
-      "phase": "Build",
+      "phase": "Base",
       "focus": "LIIFT4 SHRED IT W7",
       "targetHours": 3.7,
       "isRecoveryWeek": false,
@@ -759,13 +618,13 @@ ${a.join(`
           "dayOfWeek": "Monday",
           "workouts": [
             {
-              "id": "w4-mon-liift",
+              "id": "w3-mon-liift",
               "sport": "strength",
               "type": "strength",
               "name": "LIIFT4 \u2014 Chest/Back",
-              "description": "Circuit. SHRED IT begins \u2014 new combinations.",
+              "description": "Circuit. SHRED IT begins.",
               "durationMinutes": 40,
-              "humanReadable": "Today's LIIFT4: Chest/Back (Circuit)\nFollow your Beachbody app.\nSHRED IT begins \u2014 new combinations.",
+              "humanReadable": "Today's LIIFT4: Chest/Back (Circuit)\nFollow your Beachbody app.\nSHRED IT begins.",
               "completed": false
             }
           ]
@@ -775,13 +634,13 @@ ${a.join(`
           "dayOfWeek": "Tuesday",
           "workouts": [
             {
-              "id": "w4-tue-liift",
+              "id": "w3-tue-liift",
               "sport": "strength",
               "type": "strength",
               "name": "LIIFT4 \u2014 Legs",
-              "description": "LIIFT 50/50. No running \u2014 leg day. Run moves to Wednesday this week.",
+              "description": "LIIFT 50/50. No running \u2014 leg day. Run moves to Wednesday.",
               "durationMinutes": 40,
-              "humanReadable": "Today's LIIFT4: Legs (LIIFT 50/50)\nFollow your Beachbody app.\nNo running \u2014 leg day. Run moves to Wednesday this week.",
+              "humanReadable": "Today's LIIFT4: Legs (LIIFT 50/50)\nFollow your Beachbody app.\nNo running \u2014 leg day. Run moves to Wednesday.",
               "completed": false
             }
           ]
@@ -791,15 +650,15 @@ ${a.join(`
           "dayOfWeek": "Wednesday",
           "workouts": [
             {
-              "id": "w4-wed-run",
+              "id": "w3-wed-run",
               "sport": "run",
               "type": "aerobic",
-              "name": "Easy Run \u2014 4 Mi",
-              "description": "Easy aerobic run at 9:15-10:00/mile. Fully conversational. LIIFT4 rest day \u2014 only run on a non-leg day this week.",
-              "durationMinutes": 40,
-              "distanceMeters": 6437,
+              "name": "Easy Run \u2014 5 Mi + Strides",
+              "description": "Easy aerobic run at 9:15-10:00/mile. Fully conversational. LIIFT4 rest day \u2014 only run on non-leg day this week. Add strides.",
+              "durationMinutes": 50,
+              "distanceMeters": 8046,
               "primaryZone": "Zone 2",
-              "humanReadable": "4 miles easy @ 9:15-10:00/mi. Walk 2min before starting.\nKnee check at mile 1.\n",
+              "humanReadable": "5 miles easy @ 9:15-10:00/mi. Walk 2min before starting.\nKnee check at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back.",
               "completed": false
             }
           ]
@@ -809,7 +668,7 @@ ${a.join(`
           "dayOfWeek": "Thursday",
           "workouts": [
             {
-              "id": "w4-thu-liift",
+              "id": "w3-thu-liift",
               "sport": "strength",
               "type": "strength",
               "name": "LIIFT4 \u2014 Shoulders/Arms",
@@ -819,11 +678,11 @@ ${a.join(`
               "completed": false
             },
             {
-              "id": "w4-thu-run",
+              "id": "w3-thu-run",
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 3 Mi",
-              "description": "Easy aerobic run at 9:15-10:00/mile. Fully conversational. Double. Easy run.",
+              "description": "Easy aerobic run at 9:15-10:00/mile. Fully conversational. Double. Easy.",
               "durationMinutes": 30,
               "distanceMeters": 4828,
               "primaryZone": "Zone 2",
@@ -837,7 +696,7 @@ ${a.join(`
           "dayOfWeek": "Friday",
           "workouts": [
             {
-              "id": "w4-fri-liift",
+              "id": "w3-fri-liift",
               "sport": "strength",
               "type": "strength",
               "name": "LIIFT4 \u2014 Full Body",
@@ -853,7 +712,7 @@ ${a.join(`
           "dayOfWeek": "Saturday",
           "workouts": [
             {
-              "id": "w4-sat-rest",
+              "id": "w3-sat-rest",
               "sport": "rest",
               "type": "rest",
               "name": "Rest Day",
@@ -867,19 +726,19 @@ ${a.join(`
           "dayOfWeek": "Sunday",
           "workouts": [
             {
-              "id": "w4-sun-run",
+              "id": "w3-sun-run",
               "sport": "run",
               "type": "long",
-              "name": "Long Run \u2014 8 Mi",
+              "name": "Long Run \u2014 7 Mi",
               "description": "Long easy endurance run.",
-              "durationMinutes": 85,
-              "distanceMeters": 12874,
+              "durationMinutes": 75,
+              "distanceMeters": 11265,
               "primaryZone": "Zone 2",
-              "humanReadable": "8 miles easy @ 9:15-10:00/mi. Start conservative first 2 miles.\nGel/snack if over 60min (~45min mark).\nKnee check at miles 2, 4, halfway.\n8 miles \u2014 longest since the break. Gels at miles 4 and 6-7.",
+              "humanReadable": "7 miles easy @ 9:15-10:00/mi. Start conservative first 2 miles.\nGel/snack if over 60min.\nKnee check at miles 2, 4, halfway.\n7 miles. Gel at mile 4.",
               "completed": false
             },
             {
-              "id": "w4-sun-mob",
+              "id": "w3-sun-mob",
               "sport": "cross",
               "type": "recovery",
               "name": "Mobility & Recovery",
@@ -903,20 +762,20 @@ ${a.join(`
       }
     },
     {
-      "weekNumber": 5,
+      "weekNumber": 4,
       "startDate": "2026-07-13",
       "endDate": "2026-07-19",
       "phase": "Build",
-      "focus": "Final LIIFT4 week + recovery",
-      "targetHours": 3.3,
-      "isRecoveryWeek": true,
+      "focus": "Final LIIFT4 week \u2014 SHRED IT W8",
+      "targetHours": 3.8,
+      "isRecoveryWeek": false,
       "days": [
         {
           "date": "2026-07-13",
           "dayOfWeek": "Monday",
           "workouts": [
             {
-              "id": "w5-mon-liift",
+              "id": "w4-mon-liift",
               "sport": "strength",
               "type": "strength",
               "name": "LIIFT4 \u2014 Chest/Back",
@@ -932,7 +791,7 @@ ${a.join(`
           "dayOfWeek": "Tuesday",
           "workouts": [
             {
-              "id": "w5-tue-liift",
+              "id": "w4-tue-liift",
               "sport": "strength",
               "type": "strength",
               "name": "LIIFT4 \u2014 Legs",
@@ -948,15 +807,15 @@ ${a.join(`
           "dayOfWeek": "Wednesday",
           "workouts": [
             {
-              "id": "w5-wed-run",
+              "id": "w4-wed-run",
               "sport": "run",
               "type": "aerobic",
-              "name": "Easy Run \u2014 4 Mi",
-              "description": "Easy aerobic run at 9:15-10:00/mile. Fully conversational. LIIFT4 rest day. Recovery week \u2014 keep easy.",
-              "durationMinutes": 40,
-              "distanceMeters": 6437,
+              "name": "Easy Run \u2014 5 Mi + Strides",
+              "description": "Easy aerobic run at 9:15-10:00/mile. Fully conversational. LIIFT4 rest day. Add strides.",
+              "durationMinutes": 50,
+              "distanceMeters": 8046,
               "primaryZone": "Zone 2",
-              "humanReadable": "4 miles easy @ 9:15-10:00/mi. Walk 2min before starting.\nKnee check at mile 1.\n",
+              "humanReadable": "5 miles easy @ 9:15-10:00/mi. Walk 2min before starting.\nKnee check at mile 1.\nFinish with 4x100m strides: smooth acceleration, walk back.",
               "completed": false
             }
           ]
@@ -966,7 +825,7 @@ ${a.join(`
           "dayOfWeek": "Thursday",
           "workouts": [
             {
-              "id": "w5-thu-liift",
+              "id": "w4-thu-liift",
               "sport": "strength",
               "type": "strength",
               "name": "LIIFT4 \u2014 Shoulders/Arms",
@@ -976,15 +835,15 @@ ${a.join(`
               "completed": false
             },
             {
-              "id": "w5-thu-run",
+              "id": "w4-thu-run",
               "sport": "run",
               "type": "aerobic",
-              "name": "Easy Run \u2014 3 Mi",
+              "name": "Easy Run \u2014 4 Mi",
               "description": "Easy aerobic run at 9:15-10:00/mile. Fully conversational. Double. Easy.",
-              "durationMinutes": 30,
-              "distanceMeters": 4828,
+              "durationMinutes": 40,
+              "distanceMeters": 6437,
               "primaryZone": "Zone 2",
-              "humanReadable": "3 miles easy @ 9:15-10:00/mi. Walk 2min before starting.\nKnee check at mile 1.\n",
+              "humanReadable": "4 miles easy @ 9:15-10:00/mi. Walk 2min before starting.\nKnee check at mile 1.\n",
               "completed": false
             }
           ]
@@ -994,7 +853,7 @@ ${a.join(`
           "dayOfWeek": "Friday",
           "workouts": [
             {
-              "id": "w5-fri-liift",
+              "id": "w4-fri-liift",
               "sport": "strength",
               "type": "strength",
               "name": "LIIFT4 \u2014 Full Body",
@@ -1010,7 +869,7 @@ ${a.join(`
           "dayOfWeek": "Saturday",
           "workouts": [
             {
-              "id": "w5-sat-rest",
+              "id": "w4-sat-rest",
               "sport": "rest",
               "type": "rest",
               "name": "Rest Day",
@@ -1024,19 +883,19 @@ ${a.join(`
           "dayOfWeek": "Sunday",
           "workouts": [
             {
-              "id": "w5-sun-run",
+              "id": "w4-sun-run",
               "sport": "run",
               "type": "long",
-              "name": "Long Run \u2014 6 Mi",
+              "name": "Long Run \u2014 8 Mi",
               "description": "Long easy endurance run.",
-              "durationMinutes": 65,
-              "distanceMeters": 9656,
+              "durationMinutes": 85,
+              "distanceMeters": 12874,
               "primaryZone": "Zone 2",
-              "humanReadable": "6 miles easy @ 9:15-10:00/mi. Start conservative first 2 miles.\nGel/snack if over 60min (~45min mark).\nKnee check at miles 2, 4, halfway.\nRecovery long run \u2014 shorter (6mi). Should feel easy.",
+              "humanReadable": "8 miles easy @ 9:15-10:00/mi. Start conservative first 2 miles.\nGel/snack if over 60min.\nKnee check at miles 2, 4, halfway.\n8 miles. Gels at miles 4 and 6-7.",
               "completed": false
             },
             {
-              "id": "w5-sun-mob",
+              "id": "w4-sun-mob",
               "sport": "cross",
               "type": "recovery",
               "name": "Mobility & Recovery",
@@ -1049,18 +908,18 @@ ${a.join(`
         }
       ],
       "summary": {
-        "totalHours": 3.3,
+        "totalHours": 3.8,
         "bySport": {
           "run": {
             "sessions": 3,
-            "hours": 2.2,
-            "miles": 13
+            "hours": 2.7,
+            "miles": 16
           }
         }
       }
     },
     {
-      "weekNumber": 6,
+      "weekNumber": 5,
       "startDate": "2026-07-20",
       "endDate": "2026-07-26",
       "phase": "Build",
@@ -1073,7 +932,7 @@ ${a.join(`
           "dayOfWeek": "Monday",
           "workouts": [
             {
-              "id": "w6-mon-rest",
+              "id": "w5-mon-rest",
               "sport": "rest",
               "type": "rest",
               "name": "Rest Day",
@@ -1087,7 +946,7 @@ ${a.join(`
           "dayOfWeek": "Tuesday",
           "workouts": [
             {
-              "id": "w6-tue-run",
+              "id": "w5-tue-run",
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 5 Mi",
@@ -1105,7 +964,7 @@ ${a.join(`
           "dayOfWeek": "Wednesday",
           "workouts": [
             {
-              "id": "w6-wed-str",
+              "id": "w5-wed-str",
               "sport": "strength",
               "type": "strength",
               "name": "Strength \u2014 Build Phase",
@@ -1121,15 +980,15 @@ ${a.join(`
           "dayOfWeek": "Thursday",
           "workouts": [
             {
-              "id": "w6-thu-run",
+              "id": "w5-thu-run",
               "sport": "run",
               "type": "tempo",
               "name": "Tempo Run \u2014 2x2 mi @ T pace (2min walk rest)",
-              "description": "Threshold quality session at measured T pace.",
+              "description": "Threshold quality at measured T pace.",
               "durationMinutes": 68,
               "distanceMeters": 9656,
               "primaryZone": "Zone 4-5a",
-              "humanReadable": "Warm-up: 2 miles easy\nQuality: 2x2 mi @ T pace (2min walk rest) at T pace (8:05-8:15/mile)\nCool-down: 1 mile easy\nT pace feel: few words at a time, not conversational.",
+              "humanReadable": "Warm-up: 2 miles easy\nQuality: 2x2 mi @ T pace (2min walk rest) at T pace (8:05-8:15/mile)\nCool-down: 1 mile easy\nT pace feel: few words at a time.",
               "completed": false
             }
           ]
@@ -1139,7 +998,7 @@ ${a.join(`
           "dayOfWeek": "Friday",
           "workouts": [
             {
-              "id": "w6-fri-rest",
+              "id": "w5-fri-rest",
               "sport": "rest",
               "type": "rest",
               "name": "Rest Day",
@@ -1153,7 +1012,7 @@ ${a.join(`
           "dayOfWeek": "Saturday",
           "workouts": [
             {
-              "id": "w6-sat-run",
+              "id": "w5-sat-run",
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 2 Mi",
@@ -1171,7 +1030,7 @@ ${a.join(`
           "dayOfWeek": "Sunday",
           "workouts": [
             {
-              "id": "w6-sun-run",
+              "id": "w5-sun-run",
               "sport": "run",
               "type": "long",
               "name": "Long Run \u2014 9 Mi",
@@ -1179,11 +1038,11 @@ ${a.join(`
               "durationMinutes": 95,
               "distanceMeters": 14484,
               "primaryZone": "Zone 2",
-              "humanReadable": "9 miles easy @ 9:15-10:00/mi. Start conservative first 2 miles.\nGel/snack if over 60min (~45min mark).\nKnee check at miles 2, 4, halfway.\n9 miles. Gels at miles 4-5 and 8. First long run without LIIFT4 fatigue.",
+              "humanReadable": "9 miles easy @ 9:15-10:00/mi. Start conservative first 2 miles.\nGel/snack if over 60min.\nKnee check at miles 2, 4, halfway.\n9 miles. Gels at miles 4-5 and 8. First long run without LIIFT4 fatigue.",
               "completed": false
             },
             {
-              "id": "w6-sun-mob",
+              "id": "w5-sun-mob",
               "sport": "cross",
               "type": "recovery",
               "name": "Mobility & Recovery",
@@ -1207,7 +1066,7 @@ ${a.join(`
       }
     },
     {
-      "weekNumber": 7,
+      "weekNumber": 6,
       "startDate": "2026-07-27",
       "endDate": "2026-08-02",
       "phase": "Build",
@@ -1220,7 +1079,7 @@ ${a.join(`
           "dayOfWeek": "Monday",
           "workouts": [
             {
-              "id": "w7-mon-rest",
+              "id": "w6-mon-rest",
               "sport": "rest",
               "type": "rest",
               "name": "Rest Day",
@@ -1234,7 +1093,7 @@ ${a.join(`
           "dayOfWeek": "Tuesday",
           "workouts": [
             {
-              "id": "w7-tue-run",
+              "id": "w6-tue-run",
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 5 Mi + Strides",
@@ -1252,7 +1111,7 @@ ${a.join(`
           "dayOfWeek": "Wednesday",
           "workouts": [
             {
-              "id": "w7-wed-str",
+              "id": "w6-wed-str",
               "sport": "strength",
               "type": "strength",
               "name": "Strength \u2014 Build Phase",
@@ -1268,15 +1127,15 @@ ${a.join(`
           "dayOfWeek": "Thursday",
           "workouts": [
             {
-              "id": "w7-thu-run",
+              "id": "w6-thu-run",
               "sport": "run",
               "type": "tempo",
               "name": "Tempo Run \u2014 4x1 mi @ T pace (90s jog rest)",
-              "description": "Threshold quality session at measured T pace.",
+              "description": "Threshold quality at measured T pace.",
               "durationMinutes": 72,
               "distanceMeters": 11265,
               "primaryZone": "Zone 4-5a",
-              "humanReadable": "Warm-up: 2 miles easy\nQuality: 4x1 mi @ T pace (90s jog rest) at T pace (8:05-8:15/mile)\nCool-down: 1 mile easy\nT pace feel: few words at a time, not conversational.",
+              "humanReadable": "Warm-up: 2 miles easy\nQuality: 4x1 mi @ T pace (90s jog rest) at T pace (8:05-8:15/mile)\nCool-down: 1 mile easy\nT pace feel: few words at a time.",
               "completed": false
             }
           ]
@@ -1286,7 +1145,7 @@ ${a.join(`
           "dayOfWeek": "Friday",
           "workouts": [
             {
-              "id": "w7-fri-run",
+              "id": "w6-fri-run",
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 2 Mi",
@@ -1304,7 +1163,7 @@ ${a.join(`
           "dayOfWeek": "Saturday",
           "workouts": [
             {
-              "id": "w7-sat-rest",
+              "id": "w6-sat-rest",
               "sport": "rest",
               "type": "rest",
               "name": "Rest Day",
@@ -1318,7 +1177,7 @@ ${a.join(`
           "dayOfWeek": "Sunday",
           "workouts": [
             {
-              "id": "w7-sun-run",
+              "id": "w6-sun-run",
               "sport": "run",
               "type": "long",
               "name": "Long Run \u2014 10 Mi",
@@ -1326,11 +1185,11 @@ ${a.join(`
               "durationMinutes": 105,
               "distanceMeters": 16093,
               "primaryZone": "Zone 2",
-              "humanReadable": "10 miles easy @ 9:15-10:00/mi. Start conservative first 2 miles.\nGel/snack if over 60min (~45min mark).\nKnee check at miles 2, 4, halfway.\n10 miles \u2014 double digits. Gels at miles 4-5 and 8-9. Final 2mi can drift to 9:00/mi if strong.",
+              "humanReadable": "10 miles easy @ 9:15-10:00/mi. Start conservative first 2 miles.\nGel/snack if over 60min.\nKnee check at miles 2, 4, halfway.\n10 miles \u2014 double digits. Gels at miles 4-5 and 8-9. Last 2mi can drift to 9:00/mi if strong.",
               "completed": false
             },
             {
-              "id": "w7-sun-mob",
+              "id": "w6-sun-mob",
               "sport": "cross",
               "type": "recovery",
               "name": "Mobility & Recovery",
@@ -1354,7 +1213,7 @@ ${a.join(`
       }
     },
     {
-      "weekNumber": 8,
+      "weekNumber": 7,
       "startDate": "2026-08-03",
       "endDate": "2026-08-09",
       "phase": "Build",
@@ -1367,7 +1226,7 @@ ${a.join(`
           "dayOfWeek": "Monday",
           "workouts": [
             {
-              "id": "w8-mon-rest",
+              "id": "w7-mon-rest",
               "sport": "rest",
               "type": "rest",
               "name": "Rest Day",
@@ -1381,7 +1240,7 @@ ${a.join(`
           "dayOfWeek": "Tuesday",
           "workouts": [
             {
-              "id": "w8-tue-run",
+              "id": "w7-tue-run",
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 4 Mi",
@@ -1399,11 +1258,11 @@ ${a.join(`
           "dayOfWeek": "Wednesday",
           "workouts": [
             {
-              "id": "w8-wed-str",
+              "id": "w7-wed-str",
               "sport": "strength",
               "type": "strength",
               "name": "Strength \u2014 Build (Moderate)",
-              "description": "3 sets, don't push to failure. Recovery week.",
+              "description": "3 sets, don't push to failure.",
               "durationMinutes": 50,
               "humanReadable": "Warm-up: 5min light cardio\nCore (3 rounds): Plank 60s | Dead bug 12ea | Copenhagen plank 20s ea\nLegs (3 rounds): Single-leg squat x8ea | Romanian deadlift x10 | Walking lunge x12ea | Step-up x10ea | Single-leg calf raise x15ea\nUpper (3 rounds): Push-up x15 | Lat pulldown or band row x10\nCool-down: 5min stretching",
               "completed": false
@@ -1415,7 +1274,7 @@ ${a.join(`
           "dayOfWeek": "Thursday",
           "workouts": [
             {
-              "id": "w8-thu-run",
+              "id": "w7-thu-run",
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 3 Mi",
@@ -1433,7 +1292,7 @@ ${a.join(`
           "dayOfWeek": "Friday",
           "workouts": [
             {
-              "id": "w8-fri-rest",
+              "id": "w7-fri-rest",
               "sport": "rest",
               "type": "rest",
               "name": "Rest Day",
@@ -1447,7 +1306,7 @@ ${a.join(`
           "dayOfWeek": "Saturday",
           "workouts": [
             {
-              "id": "w8-sat-rest",
+              "id": "w7-sat-rest",
               "sport": "rest",
               "type": "rest",
               "name": "Rest Day",
@@ -1461,7 +1320,7 @@ ${a.join(`
           "dayOfWeek": "Sunday",
           "workouts": [
             {
-              "id": "w8-sun-run",
+              "id": "w7-sun-run",
               "sport": "run",
               "type": "long",
               "name": "Long Run \u2014 7 Mi",
@@ -1469,11 +1328,11 @@ ${a.join(`
               "durationMinutes": 75,
               "distanceMeters": 11265,
               "primaryZone": "Zone 2",
-              "humanReadable": "7 miles easy @ 9:15-10:00/mi. Start conservative first 2 miles.\nGel/snack if over 60min (~45min mark).\nKnee check at miles 2, 4, halfway.\nRecovery long run. Easier than last week's 10.",
+              "humanReadable": "7 miles easy @ 9:15-10:00/mi. Start conservative first 2 miles.\nGel/snack if over 60min.\nKnee check at miles 2, 4, halfway.\nRecovery long run. Easier than last week's 10.",
               "completed": false
             },
             {
-              "id": "w8-sun-mob",
+              "id": "w7-sun-mob",
               "sport": "cross",
               "type": "recovery",
               "name": "Mobility & Recovery",
@@ -1497,7 +1356,7 @@ ${a.join(`
       }
     },
     {
-      "weekNumber": 9,
+      "weekNumber": 8,
       "startDate": "2026-08-10",
       "endDate": "2026-08-16",
       "phase": "Build",
@@ -1510,7 +1369,7 @@ ${a.join(`
           "dayOfWeek": "Monday",
           "workouts": [
             {
-              "id": "w9-mon-rest",
+              "id": "w8-mon-rest",
               "sport": "rest",
               "type": "rest",
               "name": "Rest Day",
@@ -1524,7 +1383,7 @@ ${a.join(`
           "dayOfWeek": "Tuesday",
           "workouts": [
             {
-              "id": "w9-tue-run",
+              "id": "w8-tue-run",
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 5 Mi + Strides",
@@ -1542,11 +1401,11 @@ ${a.join(`
           "dayOfWeek": "Wednesday",
           "workouts": [
             {
-              "id": "w9-wed-str",
+              "id": "w8-wed-str",
               "sport": "strength",
               "type": "strength",
               "name": "Strength \u2014 Build Phase",
-              "description": "Maximize quality \u2014 familiar exercises now.",
+              "description": "Maximize quality.",
               "durationMinutes": 50,
               "humanReadable": "Warm-up: 5min light cardio\nCore (3 rounds): Plank 60s | Dead bug 12ea | Copenhagen plank 20s ea\nLegs (3 rounds): Single-leg squat x8ea | Romanian deadlift x10 | Walking lunge x12ea | Step-up x10ea | Single-leg calf raise x15ea\nUpper (3 rounds): Push-up x15 | Lat pulldown or band row x10\nCool-down: 5min stretching",
               "completed": false
@@ -1558,15 +1417,15 @@ ${a.join(`
           "dayOfWeek": "Thursday",
           "workouts": [
             {
-              "id": "w9-thu-run",
+              "id": "w8-thu-run",
               "sport": "run",
               "type": "tempo",
               "name": "Tempo Run \u2014 4x1.5 mi @ T pace (2min walk rest)",
-              "description": "Threshold quality session at measured T pace.",
+              "description": "Threshold quality at measured T pace.",
               "durationMinutes": 90,
               "distanceMeters": 12874,
               "primaryZone": "Zone 4-5a",
-              "humanReadable": "Warm-up: 2 miles easy\nQuality: 4x1.5 mi @ T pace (2min walk rest) at T pace (8:05-8:15/mile)\nCool-down: 1 mile easy\nT pace feel: few words at a time, not conversational.",
+              "humanReadable": "Warm-up: 2 miles easy\nQuality: 4x1.5 mi @ T pace (2min walk rest) at T pace (8:05-8:15/mile)\nCool-down: 1 mile easy\nT pace feel: few words at a time.",
               "completed": false
             }
           ]
@@ -1576,7 +1435,7 @@ ${a.join(`
           "dayOfWeek": "Friday",
           "workouts": [
             {
-              "id": "w9-fri-run",
+              "id": "w8-fri-run",
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 2 Mi",
@@ -1594,7 +1453,7 @@ ${a.join(`
           "dayOfWeek": "Saturday",
           "workouts": [
             {
-              "id": "w9-sat-rest",
+              "id": "w8-sat-rest",
               "sport": "rest",
               "type": "rest",
               "name": "Rest Day",
@@ -1608,7 +1467,7 @@ ${a.join(`
           "dayOfWeek": "Sunday",
           "workouts": [
             {
-              "id": "w9-sun-run",
+              "id": "w8-sun-run",
               "sport": "run",
               "type": "long",
               "name": "Long Run \u2014 11 Mi",
@@ -1616,11 +1475,11 @@ ${a.join(`
               "durationMinutes": 115,
               "distanceMeters": 17702,
               "primaryZone": "Zone 2",
-              "humanReadable": "11 miles easy @ 9:15-10:00/mi. Start conservative first 2 miles.\nGel/snack if over 60min (~45min mark).\nKnee check at miles 2, 4, halfway.\n11 miles. Gels at miles 4, 7-8. Build confidence for the distance.",
+              "humanReadable": "11 miles easy @ 9:15-10:00/mi. Start conservative first 2 miles.\nGel/snack if over 60min.\nKnee check at miles 2, 4, halfway.\n11 miles. Gels at miles 4, 7-8. Build distance confidence.",
               "completed": false
             },
             {
-              "id": "w9-sun-mob",
+              "id": "w8-sun-mob",
               "sport": "cross",
               "type": "recovery",
               "name": "Mobility & Recovery",
@@ -1644,7 +1503,7 @@ ${a.join(`
       }
     },
     {
-      "weekNumber": 10,
+      "weekNumber": 9,
       "startDate": "2026-08-17",
       "endDate": "2026-08-23",
       "phase": "Build",
@@ -1657,7 +1516,7 @@ ${a.join(`
           "dayOfWeek": "Monday",
           "workouts": [
             {
-              "id": "w10-mon-rest",
+              "id": "w9-mon-rest",
               "sport": "rest",
               "type": "rest",
               "name": "Rest Day",
@@ -1671,7 +1530,7 @@ ${a.join(`
           "dayOfWeek": "Tuesday",
           "workouts": [
             {
-              "id": "w10-tue-run",
+              "id": "w9-tue-run",
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 5 Mi + Strides",
@@ -1689,7 +1548,7 @@ ${a.join(`
           "dayOfWeek": "Wednesday",
           "workouts": [
             {
-              "id": "w10-wed-str",
+              "id": "w9-wed-str",
               "sport": "strength",
               "type": "strength",
               "name": "Strength \u2014 Maintenance",
@@ -1705,11 +1564,11 @@ ${a.join(`
           "dayOfWeek": "Thursday",
           "workouts": [
             {
-              "id": "w10-thu-run",
+              "id": "w9-thu-run",
               "sport": "run",
               "type": "tempo",
               "name": "Race Simulation \u2014 4 Miles at Goal Pace",
-              "description": "4 miles at goal HM pace (8:10-8:30/mile). Teaches race-day feel.",
+              "description": "4 miles at goal HM pace (8:10-8:30/mile).",
               "durationMinutes": 68,
               "distanceMeters": 11265,
               "primaryZone": "Zone 3-4",
@@ -1723,7 +1582,7 @@ ${a.join(`
           "dayOfWeek": "Friday",
           "workouts": [
             {
-              "id": "w10-fri-run",
+              "id": "w9-fri-run",
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 2 Mi",
@@ -1741,7 +1600,7 @@ ${a.join(`
           "dayOfWeek": "Saturday",
           "workouts": [
             {
-              "id": "w10-sat-rest",
+              "id": "w9-sat-rest",
               "sport": "rest",
               "type": "rest",
               "name": "Rest Day",
@@ -1755,19 +1614,19 @@ ${a.join(`
           "dayOfWeek": "Sunday",
           "workouts": [
             {
-              "id": "w10-sun-run",
+              "id": "w9-sun-run",
               "sport": "run",
               "type": "long",
               "name": "Peak Long Run \u2014 12 Miles",
-              "description": "Your peak long run. Given the layoff, 12 is the smart ceiling \u2014 and plenty to race well.",
+              "description": "Your peak long run. 12 is the smart ceiling given the breaks \u2014 plenty to race well.",
               "durationMinutes": 125,
               "distanceMeters": 19312,
               "primaryZone": "Zone 2",
-              "humanReadable": "Miles 1-9: Easy @ 9:15-10:00/mi\nMiles 10-12: Steady, drift toward 9:00/mi if good.\nGels at miles 4-5, 8-9. You WILL finish this \u2014 and know you can race 13.1.",
+              "humanReadable": "Miles 1-9: Easy @ 9:15-10:00/mi\nMiles 10-12: Steady, drift toward 9:00/mi if good.\nGels at miles 4-5, 8-9. You WILL finish \u2014 and know you can race 13.1.",
               "completed": false
             },
             {
-              "id": "w10-sun-mob",
+              "id": "w9-sun-mob",
               "sport": "cross",
               "type": "recovery",
               "name": "Mobility & Recovery",
@@ -1791,7 +1650,7 @@ ${a.join(`
       }
     },
     {
-      "weekNumber": 11,
+      "weekNumber": 10,
       "startDate": "2026-08-24",
       "endDate": "2026-08-30",
       "phase": "Taper",
@@ -1804,7 +1663,7 @@ ${a.join(`
           "dayOfWeek": "Monday",
           "workouts": [
             {
-              "id": "w11-mon-rest",
+              "id": "w10-mon-rest",
               "sport": "rest",
               "type": "rest",
               "name": "Rest Day",
@@ -1818,7 +1677,7 @@ ${a.join(`
           "dayOfWeek": "Tuesday",
           "workouts": [
             {
-              "id": "w11-tue-run",
+              "id": "w10-tue-run",
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 4 Mi + Strides",
@@ -1836,7 +1695,7 @@ ${a.join(`
           "dayOfWeek": "Wednesday",
           "workouts": [
             {
-              "id": "w11-wed-str",
+              "id": "w10-wed-str",
               "sport": "strength",
               "type": "strength",
               "name": "Strength \u2014 Maintenance",
@@ -1852,7 +1711,7 @@ ${a.join(`
           "dayOfWeek": "Thursday",
           "workouts": [
             {
-              "id": "w11-thu-run",
+              "id": "w10-thu-run",
               "sport": "run",
               "type": "tempo",
               "name": "Taper Sharpener \u2014 2x2.5 Mi at Goal Pace",
@@ -1870,7 +1729,7 @@ ${a.join(`
           "dayOfWeek": "Friday",
           "workouts": [
             {
-              "id": "w11-fri-rest",
+              "id": "w10-fri-rest",
               "sport": "rest",
               "type": "rest",
               "name": "Rest Day",
@@ -1884,7 +1743,7 @@ ${a.join(`
           "dayOfWeek": "Saturday",
           "workouts": [
             {
-              "id": "w11-sat-rest",
+              "id": "w10-sat-rest",
               "sport": "rest",
               "type": "rest",
               "name": "Rest Day",
@@ -1898,7 +1757,7 @@ ${a.join(`
           "dayOfWeek": "Sunday",
           "workouts": [
             {
-              "id": "w11-sun-run",
+              "id": "w10-sun-run",
               "sport": "run",
               "type": "long",
               "name": "Long Run \u2014 8 Mi",
@@ -1906,11 +1765,11 @@ ${a.join(`
               "durationMinutes": 85,
               "distanceMeters": 12874,
               "primaryZone": "Zone 2",
-              "humanReadable": "8 miles easy @ 9:15-10:00/mi. Start conservative first 2 miles.\nGel/snack if over 60min (~45min mark).\nKnee check at miles 2, 4, halfway.\nLast long run before race. Genuinely easy. Enjoy it.",
+              "humanReadable": "8 miles easy @ 9:15-10:00/mi. Start conservative first 2 miles.\nGel/snack if over 60min.\nKnee check at miles 2, 4, halfway.\nLast long run before race. Genuinely easy. Enjoy it.",
               "completed": false
             },
             {
-              "id": "w11-sun-mob",
+              "id": "w10-sun-mob",
               "sport": "cross",
               "type": "recovery",
               "name": "Mobility & Recovery",
@@ -1934,7 +1793,7 @@ ${a.join(`
       }
     },
     {
-      "weekNumber": 12,
+      "weekNumber": 11,
       "startDate": "2026-08-31",
       "endDate": "2026-09-06",
       "phase": "Taper",
@@ -1947,7 +1806,7 @@ ${a.join(`
           "dayOfWeek": "Monday",
           "workouts": [
             {
-              "id": "w12-mon-rest",
+              "id": "w11-mon-rest",
               "sport": "rest",
               "type": "rest",
               "name": "Rest Day",
@@ -1961,7 +1820,7 @@ ${a.join(`
           "dayOfWeek": "Tuesday",
           "workouts": [
             {
-              "id": "w12-tue-run",
+              "id": "w11-tue-run",
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 4 Mi + Strides",
@@ -1979,11 +1838,11 @@ ${a.join(`
           "dayOfWeek": "Wednesday",
           "workouts": [
             {
-              "id": "w12-wed-str",
+              "id": "w11-wed-str",
               "sport": "strength",
               "type": "strength",
               "name": "Strength \u2014 Light Maintenance",
-              "description": "Very light \u2014 activation only, zero fatigue.",
+              "description": "Very light \u2014 activation only.",
               "durationMinutes": 30,
               "humanReadable": "Quick maintenance \u2014 30min, no fatigue\nCore (2 rounds): Plank 45s | Bird dog 10ea\nLegs (2 rounds): Goblet squat x10 | Glute bridge x15 | Calf raise x15\nUpper (2 rounds): Push-up x10",
               "completed": false
@@ -1995,7 +1854,7 @@ ${a.join(`
           "dayOfWeek": "Thursday",
           "workouts": [
             {
-              "id": "w12-thu-run",
+              "id": "w11-thu-run",
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 3 Mi + Strides",
@@ -2013,7 +1872,7 @@ ${a.join(`
           "dayOfWeek": "Friday",
           "workouts": [
             {
-              "id": "w12-fri-rest",
+              "id": "w11-fri-rest",
               "sport": "rest",
               "type": "rest",
               "name": "Rest Day",
@@ -2027,7 +1886,7 @@ ${a.join(`
           "dayOfWeek": "Saturday",
           "workouts": [
             {
-              "id": "w12-sat-rest",
+              "id": "w11-sat-rest",
               "sport": "rest",
               "type": "rest",
               "name": "Rest Day",
@@ -2041,11 +1900,11 @@ ${a.join(`
           "dayOfWeek": "Sunday",
           "workouts": [
             {
-              "id": "w12-sun-run",
+              "id": "w11-sun-run",
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 5 Mi + Strides",
-              "description": "Easy aerobic run at 9:15-10:00/mile. Fully conversational. Easy + strides. Race week begins in 2 days. Feel the speed, don't chase it. strides",
+              "description": "Easy aerobic run at 9:15-10:00/mile. Fully conversational. Easy + strides. Race week in 2 days. Feel the speed, don't chase it. strides",
               "durationMinutes": 50,
               "distanceMeters": 8046,
               "primaryZone": "Zone 2",
@@ -2053,7 +1912,7 @@ ${a.join(`
               "completed": false
             },
             {
-              "id": "w12-sun-mob",
+              "id": "w11-sun-mob",
               "sport": "cross",
               "type": "recovery",
               "name": "Mobility & Recovery",
@@ -2077,7 +1936,7 @@ ${a.join(`
       }
     },
     {
-      "weekNumber": 13,
+      "weekNumber": 12,
       "startDate": "2026-09-07",
       "endDate": "2026-09-13",
       "phase": "Taper",
@@ -2090,7 +1949,7 @@ ${a.join(`
           "dayOfWeek": "Monday",
           "workouts": [
             {
-              "id": "w13-mon-rest",
+              "id": "w12-mon-rest",
               "sport": "rest",
               "type": "rest",
               "name": "Rest Day",
@@ -2104,7 +1963,7 @@ ${a.join(`
           "dayOfWeek": "Tuesday",
           "workouts": [
             {
-              "id": "w13-tue-run",
+              "id": "w12-tue-run",
               "sport": "run",
               "type": "aerobic",
               "name": "Easy Run \u2014 3 Mi",
@@ -2122,7 +1981,7 @@ ${a.join(`
           "dayOfWeek": "Wednesday",
           "workouts": [
             {
-              "id": "w13-wed-rest",
+              "id": "w12-wed-rest",
               "sport": "rest",
               "type": "rest",
               "name": "Rest Day",
@@ -2136,7 +1995,7 @@ ${a.join(`
           "dayOfWeek": "Thursday",
           "workouts": [
             {
-              "id": "w13-thu-run",
+              "id": "w12-thu-run",
               "sport": "run",
               "type": "aerobic",
               "name": "Shakeout \u2014 2 Miles + Strides",
@@ -2154,7 +2013,7 @@ ${a.join(`
           "dayOfWeek": "Friday",
           "workouts": [
             {
-              "id": "w13-fri-rest",
+              "id": "w12-fri-rest",
               "sport": "rest",
               "type": "rest",
               "name": "Rest Day",
@@ -2168,7 +2027,7 @@ ${a.join(`
           "dayOfWeek": "Saturday",
           "workouts": [
             {
-              "id": "w13-sat-run",
+              "id": "w12-sat-run",
               "sport": "run",
               "type": "race",
               "name": "\ud83c\udfc1 RACE DAY \u2014 Scheels BurliMOT Half Marathon",
@@ -2186,7 +2045,7 @@ ${a.join(`
           "dayOfWeek": "Sunday",
           "workouts": [
             {
-              "id": "w13-sun-rec",
+              "id": "w12-sun-rec",
               "sport": "cross",
               "type": "recovery",
               "name": "Post-Race Recovery",
