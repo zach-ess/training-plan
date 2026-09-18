@@ -1,0 +1,10 @@
+{
+  "planName": "Placeholder Plan",
+  "workouts": [
+    {
+      "date": "2026-09-18",
+      "type": "Run",
+      "duration": "30 min"
+    }
+  ]
+}
