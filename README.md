@@ -56,11 +56,15 @@ in one `@media (prefers-color-scheme: dark)` block.
 npm run test:tokens
 ```
 
-Asserts that `src/app.css`'s token values, and the `--surface` hex duplicated into
-`index.html`'s `theme-color` meta tags and `vite.config.ts`'s manifest colors, match
-`spec-1-2-design-token-system.md`'s frozen tables exactly -- catching a token edit
-that forgets to update one of those duplicates. It also runs as part of `npm run
-check`.
+Checks `src/app.css`'s token values against the script's own hardcoded transcription
+of `spec-1-2-design-token-system.md`'s frozen tables -- this catches the script and
+`app.css` drifting apart from each other, not either one drifting from the spec
+document itself (still worth an occasional manual diff against the spec). It
+separately checks `index.html`'s `theme-color` meta tags and `vite.config.ts`'s
+manifest `background_color`/`theme_color` directly against `app.css`'s live
+`--surface`/`--background` values, and checks that `src/App.svelte`'s `<style>`
+block routes every declaration through a `var(--...)` token instead of a literal.
+It also runs as part of `npm run check`.
 
 ## Deploy (manual -- no CI/CD, by design)
 

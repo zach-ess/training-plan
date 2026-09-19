@@ -20,13 +20,16 @@ export default defineConfig({
         start_url: BASE_PATH,
         scope: BASE_PATH,
         display: 'standalone',
-        // Sourced from Story 1.2's `--surface` design token (light value).
+        // Sourced from Story 1.2's `--background` design token (light value,
+        // the page canvas color) -- the splash/install screen should match
+        // the actual rendered page, not the card/tab-bar `--surface` color.
         // The Web App Manifest spec has no dark-mode variant for these
         // fields, so the light-mode hex is the correct single value here;
         // the live browser-chrome color still responds to OS scheme changes
-        // via index.html's media-scoped `theme-color` meta tags.
-        background_color: '#ffffff',
-        theme_color: '#ffffff',
+        // via index.html's media-scoped `theme-color` meta tags (which use
+        // `--surface`, the color of the chrome-adjacent tab bar).
+        background_color: '#f3f5f6',
+        theme_color: '#f3f5f6',
         icons: [
           {
             src: 'pwa-192x192.png',

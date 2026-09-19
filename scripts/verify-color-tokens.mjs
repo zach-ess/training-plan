@@ -1,14 +1,34 @@
 #!/usr/bin/env node
 // Story 1.2 -- Design Token System
 //
-// Asserts that src/app.css's tokens (colors, typography, radii, spacing)
-// match spec-1-2-design-token-system.md's frozen tables exactly, and that
-// the `--surface` hex duplicated into index.html's `theme-color` meta tags
-// and vite.config.ts's manifest colors stay in sync with app.css's current
-// `--surface` values. No test runner (vitest/jest) is installed in this
-// project yet, so this is a plain Node script run via `npm run test:tokens`
-// -- it exits non-zero (and prints errors) on any mismatch, catching
-// transcription typos or a token edit that forgets to update a duplicate.
+// This script embeds its own hardcoded transcription of
+// spec-1-2-design-token-system.md's frozen token tables (EXPECTED_COLORS /
+// EXPECTED_TYPOGRAPHY / EXPECTED_RADII / EXPECTED_SPACING below) and asserts
+// that src/app.css's live values match that transcription. That means it
+// only catches the two hardcoded copies (this script's constants and
+// app.css) drifting apart from each other -- not either one silently
+// drifting from the spec document itself, which still needs a human diff
+// against the spec on any future edit.
+//
+// Separately, it guards two files that duplicate a live-parsed app.css
+// value rather than re-declaring their own: index.html's `theme-color` meta
+// tags (checked against app.css's actual, currently-in-force `--surface`
+// light/dark values) and vite.config.ts's manifest `background_color`/
+// `theme_color` (checked against app.css's actual `--background` light
+// value -- the manifest's splash/install-screen color should match the
+// rendered page canvas, not the card/tab-bar surface color). Both are
+// compared to what app.css *currently* resolves to, not to this script's
+// EXPECTED_COLORS constant, so they stay correct even if EXPECTED_COLORS
+// itself were ever out of date.
+//
+// It also asserts that src/App.svelte's `<style>` block routes every
+// declaration through a `var(--...)` token reference rather than a literal
+// value, so reverting e.g. `color: var(--text-primary)` to a hardcoded hex
+// fails here even though it would pass `svelte-check` silently.
+//
+// No test runner (vitest/jest) is installed in this project yet, so this is
+// a plain Node script run via `npm run test:tokens` -- it exits non-zero
+// (and prints errors) on any mismatch.
 
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -18,6 +38,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const cssPath = path.join(__dirname, '..', 'src', 'app.css');
 const indexHtmlPath = path.join(__dirname, '..', 'index.html');
 const viteConfigPath = path.join(__dirname, '..', 'vite.config.ts');
+const appSveltePath = path.join(__dirname, '..', 'src', 'App.svelte');
 
 const SANS = "system-ui, -apple-system, 'Segoe UI', sans-serif";
 const MONO = "ui-monospace, 'SF Mono', 'Roboto Mono', Menlo, Consolas, monospace";
@@ -72,58 +93,90 @@ const EXPECTED_SPACING = {
   '--row-padding': '0.625rem',
 };
 
-/** Replace `/* ... *\/` comments with equal-length whitespace so brace
+/** Replace `/* ... *\/` comments with equal-length whitespace so brace/quote
  * indices in the masked string still line up with the original text, and a
- * brace inside a comment can never desync the depth count. */
+ * brace or quote inside a comment can never desync later scanning. */
 function maskComments(source) {
-  return source.replace(/\/\*[\s\S]*?\*\//g, (comment) =>
-    comment.replace(/[^\n]/g, ' '),
+  return source.replace(/\/\*[\s\S]*?\*\//g, (comment) => comment.replace(/[^\n]/g, ' '));
+}
+
+/** Replace the *contents* of single- or double-quoted strings (keeping the
+ * quote characters and overall length) with whitespace, so a literal brace
+ * inside a string value can't desync brace-depth counting either. Call
+ * after `maskComments` so a quote character inside a comment was already
+ * blanked and can't be mistaken for the start of a string. */
+function maskStrings(source) {
+  return source.replace(
+    /'[^'\\]*(?:\\.[^'\\]*)*'|"[^"\\]*(?:\\.[^"\\]*)*"/g,
+    (str) => str[0] + str.slice(1, -1).replace(/[^\n]/g, ' ') + str[str.length - 1],
   );
 }
 
 /** Extract the contents of the first `{ ... }` block whose opening matches
- * `startPattern`, scanning `source` (which must already have comments
- * masked out so a `{`/`}` inside a comment can't be counted). */
-function extractBlock(source, startPattern) {
-  const startMatch = source.match(startPattern);
+ * `startPattern`. Brace positions are found by scanning `braceMaskSource`
+ * (comments AND quoted-string contents already blanked, so a stray `{`/`}`
+ * inside either can't desync the depth count), but the returned content --
+ * and a same-range slice of the brace mask, for further nested extraction
+ * -- are taken from `contentSource`, which only has comments blanked so
+ * real string values (e.g. quoted font-family names) survive intact. */
+function extractBlock(contentSource, braceMaskSource, startPattern) {
+  const startMatch = braceMaskSource.match(startPattern);
   if (!startMatch) {
     throw new Error(`could not find a block matching ${startPattern}`);
   }
-  const braceStart = source.indexOf('{', startMatch.index);
+  const braceStart = braceMaskSource.indexOf('{', startMatch.index);
   let depth = 0;
-  for (let i = braceStart; i < source.length; i++) {
-    if (source[i] === '{') depth++;
-    if (source[i] === '}') {
+  for (let i = braceStart; i < braceMaskSource.length; i++) {
+    if (braceMaskSource[i] === '{') depth++;
+    if (braceMaskSource[i] === '}') {
       depth--;
       if (depth === 0) {
-        return source.slice(braceStart + 1, i);
+        return {
+          content: contentSource.slice(braceStart + 1, i),
+          braceMask: braceMaskSource.slice(braceStart + 1, i),
+        };
       }
     }
   }
   throw new Error(`unterminated block for ${startPattern}`);
 }
 
+/** CSS allows the same property to be declared more than once in a block;
+ * per the cascade the browser uses the *last* one. Match globally and take
+ * the last occurrence so this verifier checks the same value a browser
+ * would. */
 function findValue(block, property) {
-  const re = new RegExp(`(?<![\\w-])${property}\\s*:\\s*([^;]+);`);
-  const match = block.match(re);
+  const re = new RegExp(`(?<![\\w-])${property}\\s*:\\s*([^;]+);`, 'g');
+  let lastMatch = null;
+  let match;
+  while ((match = re.exec(block)) !== null) {
+    lastMatch = match;
+  }
   // Collapse whitespace (declarations may wrap across lines, e.g. a long
   // font-family list) before comparing.
-  return match ? match[1].replace(/\s+/g, ' ').trim().toLowerCase() : null;
+  return lastMatch ? lastMatch[1].replace(/\s+/g, ' ').trim().toLowerCase() : null;
 }
 
 function loadCssBlocks() {
   const raw = readFileSync(cssPath, 'utf8');
-  const masked = maskComments(raw);
+  const commentMasked = maskComments(raw);
+  const braceMask = maskStrings(commentMasked);
 
   // Scope the light-block search to the substring before the first
   // `@media`, so a future reordering of the file can't make it silently
   // match a block inside the dark-mode media query instead.
-  const mediaIndex = masked.search(/@media\s*\(prefers-color-scheme:\s*dark\)/);
-  const lightSection = mediaIndex === -1 ? masked : masked.slice(0, mediaIndex);
+  const mediaIndex = braceMask.search(/@media\s*\(prefers-color-scheme:\s*dark\)/);
+  const lightContent = mediaIndex === -1 ? commentMasked : commentMasked.slice(0, mediaIndex);
+  const lightBraceMask = mediaIndex === -1 ? braceMask : braceMask.slice(0, mediaIndex);
 
-  const rootBlock = extractBlock(lightSection, /:root\s*\{/);
-  const darkMediaBlock = extractBlock(masked, /@media\s*\(prefers-color-scheme:\s*dark\)\s*\{/);
-  const darkRootBlock = extractBlock(darkMediaBlock, /:root\s*\{/);
+  const { content: rootBlock } = extractBlock(lightContent, lightBraceMask, /:root\s*\{/);
+
+  const darkMedia = extractBlock(
+    commentMasked,
+    braceMask,
+    /@media\s*\(prefers-color-scheme:\s*dark\)\s*\{/,
+  );
+  const { content: darkRootBlock } = extractBlock(darkMedia.content, darkMedia.braceMask, /:root\s*\{/);
 
   return { rootBlock, darkRootBlock };
 }
@@ -193,27 +246,35 @@ function extractMetaThemeColors(html) {
   return result;
 }
 
-function checkIndexHtmlSurface(surfaceLight, surfaceDark, failures) {
+/** Checked against app.css's actual, live-parsed `--surface` values (passed
+ * in), not against the EXPECTED_COLORS constant -- this only asserts that
+ * index.html stays in sync with whatever app.css currently says. */
+function checkIndexHtmlSurface(actualSurfaceLight, actualSurfaceDark, failures) {
   const html = readFileSync(indexHtmlPath, 'utf8');
   const themeColors = extractMetaThemeColors(html);
 
-  if (themeColors.light !== surfaceLight) {
+  if (themeColors.light !== actualSurfaceLight) {
     failures.push(
-      `index.html theme-color (light): expected ${surfaceLight} (app.css --surface light), got ${
+      `index.html theme-color (light): expected ${actualSurfaceLight} (app.css --surface light), got ${
         themeColors.light ?? '<missing>'
       }`,
     );
   }
-  if (themeColors.dark !== surfaceDark) {
+  if (themeColors.dark !== actualSurfaceDark) {
     failures.push(
-      `index.html theme-color (dark): expected ${surfaceDark} (app.css --surface dark), got ${
+      `index.html theme-color (dark): expected ${actualSurfaceDark} (app.css --surface dark), got ${
         themeColors.dark ?? '<missing>'
       }`,
     );
   }
 }
 
-function checkViteConfigSurface(surfaceLight, failures) {
+/** Checked against app.css's actual, live-parsed `--background` light value
+ * (passed in), not against the EXPECTED_COLORS constant. The manifest's
+ * `background_color`/`theme_color` (splash/install-screen colors) should
+ * match the rendered page canvas (`--background`), not the card/tab-bar
+ * `--surface` color. */
+function checkViteConfigBackground(actualBackgroundLight, failures) {
   const config = readFileSync(viteConfigPath, 'utf8');
 
   const bgMatch = config.match(/background_color:\s*['"]([^'"]+)['"]/);
@@ -221,19 +282,77 @@ function checkViteConfigSurface(surfaceLight, failures) {
   const actualBg = bgMatch ? bgMatch[1].trim().toLowerCase() : null;
   const actualTheme = themeMatch ? themeMatch[1].trim().toLowerCase() : null;
 
-  if (actualBg !== surfaceLight) {
+  if (actualBg !== actualBackgroundLight) {
     failures.push(
-      `vite.config.ts manifest background_color: expected ${surfaceLight} (app.css --surface light), got ${
+      `vite.config.ts manifest background_color: expected ${actualBackgroundLight} (app.css --background light), got ${
         actualBg ?? '<missing>'
       }`,
     );
   }
-  if (actualTheme !== surfaceLight) {
+  if (actualTheme !== actualBackgroundLight) {
     failures.push(
-      `vite.config.ts manifest theme_color: expected ${surfaceLight} (app.css --surface light), got ${
+      `vite.config.ts manifest theme_color: expected ${actualBackgroundLight} (app.css --background light), got ${
         actualTheme ?? '<missing>'
       }`,
     );
+  }
+}
+
+const VAR_ONLY_VALUE_RE = /^var\(--[a-zA-Z0-9-]+(?:\s*,\s*[^()]+)?\)$/;
+
+function getDeclarations(block) {
+  return block
+    .split(';')
+    .map((decl) => decl.trim())
+    .filter(Boolean)
+    .map((decl) => {
+      const idx = decl.indexOf(':');
+      if (idx === -1) return null;
+      return { property: decl.slice(0, idx).trim(), value: decl.slice(idx + 1).trim() };
+    })
+    .filter((decl) => decl !== null);
+}
+
+/** src/App.svelte is this story's smoke test that tokens actually apply --
+ * assert every declaration on `main`, `h1`, and `p` is a `var(--...)`
+ * reference, not a literal, so reverting one to a hardcoded value (which
+ * `svelte-check` and the rest of this script wouldn't notice) fails here. */
+function checkAppSvelteTokenWiring(failures) {
+  const source = readFileSync(appSveltePath, 'utf8');
+  const styleMatch = source.match(/<style[^>]*>([\s\S]*?)<\/style>/);
+  if (!styleMatch) {
+    failures.push('src/App.svelte: no <style> block found');
+    return;
+  }
+
+  const commentMasked = maskComments(styleMatch[1]);
+  const braceMask = maskStrings(commentMasked);
+
+  for (const selector of ['main', 'h1', 'p']) {
+    let block;
+    try {
+      ({ content: block } = extractBlock(
+        commentMasked,
+        braceMask,
+        new RegExp(`(?<![\\w.#-])${selector}\\s*\\{`),
+      ));
+    } catch {
+      failures.push(`src/App.svelte <style>: no "${selector} { ... }" rule found`);
+      continue;
+    }
+
+    const declarations = getDeclarations(block);
+    if (declarations.length === 0) {
+      failures.push(`src/App.svelte <style> "${selector}" rule: no declarations found`);
+      continue;
+    }
+    for (const { property, value } of declarations) {
+      if (!VAR_ONLY_VALUE_RE.test(value)) {
+        failures.push(
+          `src/App.svelte <style> "${selector} { ${property}: ${value}; }": expected a var(--...) token reference, found a literal value`,
+        );
+      }
+    }
   }
 }
 
@@ -248,8 +367,14 @@ function main() {
   checkFlatTokens(rootBlock, EXPECTED_RADII, failures);
   checkFlatTokens(rootBlock, EXPECTED_SPACING, failures);
 
-  checkIndexHtmlSurface(EXPECTED_COLORS['--surface'].light, EXPECTED_COLORS['--surface'].dark, failures);
-  checkViteConfigSurface(EXPECTED_COLORS['--surface'].light, failures);
+  const actualSurfaceLight = findValue(rootBlock, '--surface');
+  const actualSurfaceDark = findValue(darkRootBlock, '--surface');
+  const actualBackgroundLight = findValue(rootBlock, '--background');
+
+  checkIndexHtmlSurface(actualSurfaceLight, actualSurfaceDark, failures);
+  checkViteConfigBackground(actualBackgroundLight, failures);
+
+  checkAppSvelteTokenWiring(failures);
 
   if (failures.length > 0) {
     console.error(`Design token verification FAILED (${failures.length} mismatch(es)):`);
@@ -265,8 +390,9 @@ function main() {
   const spacingCount = Object.keys(EXPECTED_SPACING).length;
   console.log(
     `Design token verification passed: ${colorCount} color hex values, ${typeCount} typography roles, ` +
-      `${radiusCount} radii, ${spacingCount} spacing values match src/app.css, and the --surface hex ` +
-      `duplicated into index.html and vite.config.ts stays in sync.`,
+      `${radiusCount} radii, and ${spacingCount} spacing values in src/app.css match this script's ` +
+      `transcription of the spec; index.html and vite.config.ts stay in sync with app.css's live ` +
+      `--surface/--background values; and src/App.svelte's <style> block routes only through var(--...) tokens.`,
   );
 }
 

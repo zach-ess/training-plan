@@ -92,6 +92,14 @@
   --row-padding: 0.625rem;
 }
 
+/* Set on html/body (not just <main>) so the browser's generic default
+   canvas can't flash briefly before Svelte mounts and applies its own
+   token-based background. */
+html,
+body {
+  background: var(--background);
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #151c21;
