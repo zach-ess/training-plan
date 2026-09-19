@@ -23,29 +23,6 @@
     activeTab = tab;
   }
 
-  // Guards the Retry button against rapid repeat taps. Deliberately a
-  // separate flag from `planStore.status` rather than checking
-  // `planStore.status === 'loading'` directly: the Retry button only ever
-  // renders while `status === 'error'`, so TypeScript correctly narrows
-  // `status` to the literal `'error'` inside that branch and flags a
-  // `status === 'loading'` comparison there as always-false (and in
-  // practice the branch swaps away to the skeleton the moment `loadPlan`
-  // flips status to `'loading'` anyway, before this flag would even
-  // matter for anything but the brief window prior to that reactive
-  // update). This is a nicety, not a correctness fix -- planStore's own
-  // `status === 'loading'` guard already prevents a slow concurrent retry
-  // from clobbering a faster one's success.
-  let retrying = $state(false);
-
-  async function handleRetry() {
-    retrying = true;
-    try {
-      await loadPlan();
-    } finally {
-      retrying = false;
-    }
-  }
-
   // Fired once on mount. Reads a cache hit for an instant paint (if one
   // exists), then always runs a background network refetch -- see
   // planStore.svelte.ts for the full cache-read/cache-busted-refetch flow.
@@ -101,17 +78,16 @@
            `role="alert"` gives this an implicit assertive live region so a
            screen-reader user is told about the failure as soon as it
            replaces the skeleton, without needing to already be focused
-           inside this panel. `disabled` while a retry is already in flight
-           is a trivial guard against redundant concurrent fetches from
-           rapid repeat taps -- the existing `status === 'loading'` check in
-           planStore already prevents a slow concurrent call from clobbering
-           a faster one's success, so this is a nicety, not a correctness
-           fix. -->
+           inside this panel. No local in-flight guard is needed on this
+           button itself -- rapid repeat taps are guarded inside
+           `loadPlan()` (planStore.svelte.ts) rather than here, since a
+           button-local flag can't actually protect anything: the moment
+           `loadPlan()` flips `status` away from `'error'`, this whole
+           branch unmounts (including the button), before any second click
+           could land on it anyway. -->
       <div class="plan-error" role="alert">
         <p>Couldn't load your plan — check your connection and try again</p>
-        <button type="button" class="retry-button" onclick={handleRetry} disabled={retrying}>
-          Retry
-        </button>
+        <button type="button" class="retry-button" onclick={loadPlan}>Retry</button>
       </div>
     {:else}
       <p>Home placeholder -- Day-List rendering arrives in Story 1.5.</p>

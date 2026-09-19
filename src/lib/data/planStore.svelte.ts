@@ -40,6 +40,16 @@ export const planStore: PlanStoreState = $state({
   plan: null,
 });
 
+// True while a `loadPlan()` call is already in progress. This is the actual
+// reentrancy guard for this module (a fresh-session review found that no
+// such guard previously existed here at all, despite comments elsewhere
+// claiming one did) -- it prevents two overlapping calls (e.g. the mount
+// effect and a Retry tap landing close together, or two Retry taps) from
+// racing to write `planStore.plan`/`status` independently, where whichever
+// happened to resolve last would silently win regardless of which one
+// actually started (or fetched fresher data) first.
+let fetchInFlight = false;
+
 /**
  * Reads any existing cached Plan for an instant paint, then always issues a
  * genuine network fetch against a cache-busted URL so the service worker's
@@ -49,9 +59,23 @@ export const planStore: PlanStoreState = $state({
  * Safe to call again (e.g. from the failure state's Retry button) -- a call
  * while not already `'loaded'` resumes the `'loading'` (skeleton) state and
  * re-runs this same flow, so Retry's outcome is handled identically to the
- * original attempt.
+ * original attempt. A call that arrives while another is still in flight is
+ * a silent no-op (see `fetchInFlight` above) rather than a second concurrent
+ * attempt.
  */
 export async function loadPlan(): Promise<void> {
+  if (fetchInFlight) {
+    return;
+  }
+  fetchInFlight = true;
+  try {
+    await loadPlanUnguarded();
+  } finally {
+    fetchInFlight = false;
+  }
+}
+
+async function loadPlanUnguarded(): Promise<void> {
   // A retry after a cold-start failure needs the skeleton back; a call while
   // already `'loaded'` (the background refetch on every open) must not flash
   // it away and back per AD-5's "no visible interruption".
@@ -84,7 +108,19 @@ export async function loadPlan(): Promise<void> {
     // this story's Never section) -- a same-session freshness check needs a
     // genuine network round-trip, not a precache hit.
     const bustedUrl = `${PLAN_URL}?_=${Date.now()}`;
-    const response = await fetch(bustedUrl, { signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) });
+    // Feature-detected rather than called unconditionally: on a browser
+    // without `AbortSignal.timeout` (an older engine an installed PWA could
+    // still be running on years into this app's life), calling it throws
+    // synchronously inside this same try -- and since that throw would
+    // recur on every future call too, it would permanently pin `status` to
+    // `'error'` with no way for even a Retry tap to ever succeed again. A
+    // browser new enough to install this PWA is expected to have it, so
+    // this is a defensive fallback, not the common case.
+    const fetchOptions: RequestInit =
+      typeof AbortSignal !== 'undefined' && 'timeout' in AbortSignal
+        ? { signal: AbortSignal.timeout(FETCH_TIMEOUT_MS) }
+        : {};
+    const response = await fetch(bustedUrl, fetchOptions);
     if (!response.ok) {
       throw new Error(`plan.json fetch failed with status ${response.status}`);
     }

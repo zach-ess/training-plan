@@ -327,6 +327,45 @@ function checkViteConfigBackground(actualBackgroundLight, failures) {
   }
 }
 
+/** Story 1.4's entire freshness guarantee for `plan.json` depends on it
+ * being absent from Workbox's `generateSW` precache manifest -- a fresh
+ * review found nothing anywhere asserted that, so a future reintroduction
+ * of `json` into `globPatterns` (e.g. a careless merge, or a later story
+ * copying the old array literal) would silently resurrect the exact
+ * stale-precache bug `planStore.svelte.ts`'s cache-busted fetch exists to
+ * avoid, with `npm run check` staying green throughout. This only checks
+ * the glob list's own source text for the literal extension, the same
+ * shallow-but-effective style as this file's other vite.config.ts checks --
+ * it can't see the actual built precache manifest, but a `json` extension
+ * in this array is the only way `plan.json` could end up in it. */
+function checkViteConfigExcludesPlanJsonFromPrecache(failures) {
+  const config = readFileSync(viteConfigPath, 'utf8');
+
+  const globPatternsMatch = config.match(/globPatterns:\s*\[([^\]]*)\]/);
+  if (!globPatternsMatch) {
+    failures.push('vite.config.ts: no workbox.globPatterns array found');
+    return;
+  }
+
+  const globPatternsSource = globPatternsMatch[1];
+  // The extension list lives inside a single brace-expansion string, e.g.
+  // '**/*.{js,css,html,ico,png,svg,webmanifest}' -- pull out its
+  // comma-separated contents and check for a bare "json" entry, rather than
+  // just searching the whole array text for the substring "json" (which
+  // would also, harmlessly but confusingly, match inside an unrelated
+  // future pattern like "*.json5" or a path containing "json").
+  const braceMatch = globPatternsSource.match(/\{([^}]*)\}/);
+  const extensions = braceMatch ? braceMatch[1].split(',').map((ext) => ext.trim()) : [];
+
+  if (extensions.includes('json')) {
+    failures.push(
+      'vite.config.ts workbox.globPatterns: includes "json" -- this precaches plan.json, ' +
+        'silently defeating planStore.svelte.ts\'s cache-busted background-refetch guarantee ' +
+        '(see this story\'s Never section and the comment above globPatterns)',
+    );
+  }
+}
+
 const VAR_ONLY_VALUE_RE = /^var\(--[a-zA-Z0-9-]+(?:\s*,\s*[^()]+)?\)$/;
 
 // Story 1.3's `main` rule adds the Android gesture-nav safe-area inset to
@@ -413,12 +452,18 @@ const SAFE_NON_TOKEN_VALUES = new Set([
   'transparent',
   'initial',
   'unset',
-  // `border: 0;` is the standard shorthand for "no border" (equivalent to
-  // `none`, not an actual color value) -- used by App.svelte's pre-existing
-  // `.visually-hidden` utility class, which this story's new whole-block
-  // color scan (checkAppSvelteColorWiring) now also reaches.
-  '0',
 ]);
+
+// `border: 0;` is the standard shorthand for "no border" (equivalent to
+// `none`, not an actual color value) -- used by App.svelte's pre-existing
+// `.visually-hidden` utility class, which this story's new whole-block color
+// scan (checkAppSvelteColorWiring, below) reaches for the first time. Kept
+// separate from the shared `SAFE_NON_TOKEN_VALUES` above (rather than added
+// to it) so this exception applies only to that one scan -- a fresh review
+// found that adding it to the shared set would also loosen
+// `checkTabBarWiring`/`checkSkeletonDayRowWiring`, which have no
+// `.visually-hidden`-style rule of their own to justify it.
+const APP_SVELTE_SAFE_NON_TOKEN_VALUES = new Set([...SAFE_NON_TOKEN_VALUES, '0']);
 
 /** TabBar.svelte (Story 1.3) is new nav chrome with no prior automated
  * check -- both previous review passes flagged that gap. Asserts its
@@ -556,7 +601,7 @@ function checkAppSvelteColorWiring(failures) {
 
     const value = match[2].replace(/\s+/g, ' ').trim().toLowerCase();
     if (value.includes('var(--')) continue;
-    if (SAFE_NON_TOKEN_VALUES.has(value)) continue;
+    if (APP_SVELTE_SAFE_NON_TOKEN_VALUES.has(value)) continue;
 
     failures.push(
       `src/App.svelte <style> "${property}: ${match[2].trim()};": expected a var(--...) token reference (or none/inherit/transparent), found a literal value`,
@@ -581,6 +626,7 @@ function main() {
 
   checkIndexHtmlSurface(actualSurfaceLight, actualSurfaceDark, failures);
   checkViteConfigBackground(actualBackgroundLight, failures);
+  checkViteConfigExcludesPlanJsonFromPrecache(failures);
 
   checkAppSvelteTokenWiring(failures);
   checkAppSvelteColorWiring(failures);
@@ -603,7 +649,8 @@ function main() {
     `Design token verification passed: ${colorCount} color hex values, ${typeCount} typography roles, ` +
       `${radiusCount} radii, and ${spacingCount} spacing values in src/app.css match this script's ` +
       `transcription of the spec; index.html and vite.config.ts stay in sync with app.css's live ` +
-      `--surface/--background values; src/App.svelte's <style> block routes only through var(--...) tokens ` +
+      `--surface/--background values; vite.config.ts's workbox.globPatterns excludes "json" (plan.json stays ` +
+      `out of the service-worker precache); src/App.svelte's <style> block routes only through var(--...) tokens ` +
       `(main/p) and every color-ish declaration in the whole block (including .skeleton-list/.plan-error/` +
       `.retry-button); TabBar.svelte routes its color declarations through tokens and carries the required ` +
       `tab ARIA markup; and SkeletonDayRow.svelte routes its color declarations through tokens.`,
