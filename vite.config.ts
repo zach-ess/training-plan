@@ -20,10 +20,13 @@ export default defineConfig({
         start_url: BASE_PATH,
         scope: BASE_PATH,
         display: 'standalone',
-        // Placeholder colors only -- real light/dark design tokens land in
-        // Story 1.2. Do not treat these as deliberate final styling.
-        background_color: '#ffffff',
-        theme_color: '#ffffff',
+        // Sourced from Story 1.2's `--surface` design token (light value).
+        // The Web App Manifest spec has no dark-mode variant for these
+        // fields, so the light-mode hex is the correct single value here;
+        // the live browser-chrome color still responds to OS scheme changes
+        // via index.html's media-scoped `theme-color` meta tags.
+        background_color: '#FFFFFF',
+        theme_color: '#FFFFFF',
         icons: [
           {
             src: 'pwa-192x192.png',
