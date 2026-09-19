@@ -23,19 +23,24 @@
        design token -- the visually-hidden technique intentionally uses
        literal 1px offsets, not app.css's rem-based tokens. -->
   <h1 class="visually-hidden">Training Journal</h1>
-  {#if activeTab === 'home'}
-    <!-- `<div>`, not `<section>`: `<section>`'s implicit landmark role
-         conflicts with the explicit `role="tabpanel"` (Svelte a11y lint
-         flags "non-interactive element to interactive role"); the panel's
-         accessible name comes from `aria-labelledby` pointing at its tab. -->
-    <div id="panel-home" role="tabpanel" aria-labelledby="tab-home">
-      <p>Home placeholder -- Day-List rendering arrives in Story 1.5.</p>
-    </div>
-  {:else}
-    <div id="panel-history" role="tabpanel" aria-labelledby="tab-history">
-      <p>History &amp; Trends placeholder -- content arrives in Epic 3.</p>
-    </div>
-  {/if}
+  <!-- `<div>`, not `<section>`: `<section>`'s implicit landmark role
+       conflicts with the explicit `role="tabpanel"` (Svelte a11y lint flags
+       "non-interactive element to interactive role"); each panel's
+       accessible name comes from `aria-labelledby` pointing at its tab.
+
+       Both panels stay mounted and are toggled via `hidden` rather than a
+       `{#if}/{:else}` that removes the inactive one from the DOM -- a
+       review found that conditionally unmounting a panel makes its tab's
+       `aria-controls` reference a nonexistent id whenever that tab isn't
+       active, which is invalid per the WAI-ARIA Tabs pattern. `tabindex="0"`
+       lets keyboard users move focus directly into a panel after selecting
+       its tab, per the same authoring practice. -->
+  <div id="panel-home" role="tabpanel" aria-labelledby="tab-home" tabindex="0" hidden={activeTab !== 'home'}>
+    <p>Home placeholder -- Day-List rendering arrives in Story 1.5.</p>
+  </div>
+  <div id="panel-history" role="tabpanel" aria-labelledby="tab-history" tabindex="0" hidden={activeTab !== 'history'}>
+    <p>History &amp; Trends placeholder -- content arrives in Epic 3.</p>
+  </div>
 </main>
 
 <TabBar {activeTab} onSelect={handleSelect} />

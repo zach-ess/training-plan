@@ -62,8 +62,13 @@
     border-top: 1px solid var(--border);
     /* Standalone-installed Android PWAs can have a system gesture-nav bar
        overlapping the bottom of the viewport. This keeps the visible bar
-       height constant (--tab-bar-height) and only grows the padding. */
+       height constant (--tab-bar-height) and only grows the padding.
+       Left/right insets are included too, for landscape orientation on
+       notched/rounded-corner devices where a side cutout could otherwise
+       overlap the outermost tab. */
     padding-bottom: env(safe-area-inset-bottom, 0px);
+    padding-left: env(safe-area-inset-left, 0px);
+    padding-right: env(safe-area-inset-right, 0px);
   }
 
   .tab {

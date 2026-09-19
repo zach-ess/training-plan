@@ -382,7 +382,7 @@ function checkAppSvelteTokenWiring(failures) {
 // since they carry no color of their own -- they just defer to whatever
 // color is already in force.
 const COLOR_PROPERTY_RE =
-  /^(color|background|background-color|border|border-top|border-right|border-bottom|border-left|border-color|border-top-color|border-right-color|border-bottom-color|border-left-color|outline|outline-color|fill|stroke|box-shadow)$/;
+  /^(color|background|background-color|border|border-top|border-right|border-bottom|border-left|border-color|border-top-color|border-right-color|border-bottom-color|border-left-color|outline|outline-color|fill|stroke|box-shadow|text-shadow|caret-color|accent-color|-webkit-tap-highlight-color)$/;
 const SAFE_NON_TOKEN_VALUES = new Set([
   'none',
   'inherit',
@@ -406,24 +406,38 @@ function checkTabBarWiring(failures) {
     failures.push('src/lib/components/TabBar.svelte: no role="tablist" found');
   }
 
-  const tabCount = (source.match(/role="tab"/g) || []).length;
-  if (tabCount < 2) {
-    failures.push(
-      `src/lib/components/TabBar.svelte: expected at least 2 role="tab" elements, found ${tabCount}`,
-    );
-  }
+  // Beyond just counting `role="tab"`/`aria-selected` occurrences anywhere
+  // in the file: scope each check to its own button's markup slice (found
+  // by its `id="tab-<tab>"`), so a within-file swap between the two
+  // buttons -- e.g. Home's `onclick`/`aria-selected`/`aria-controls` ending
+  // up on History's button -- is caught. A review found the previous
+  // whole-file `source.includes()` checks couldn't distinguish that from a
+  // correct file, since the same expected substrings are still present
+  // somewhere, just attached to the wrong button.
+  for (const tab of ['home', 'history']) {
+    const buttonMatch = source.match(new RegExp(`<button[^>]*id="tab-${tab}"[\\s\\S]*?</button>`));
+    if (!buttonMatch) {
+      failures.push(`src/lib/components/TabBar.svelte: no <button id="tab-${tab}"> found`);
+      continue;
+    }
+    const block = buttonMatch[0];
 
-  // Beyond just counting `aria-selected` occurrences: verify each button's
-  // aria-selected is actually bound to *that* button's own tab value, not
-  // just present somewhere in the file -- a review found that a swapped or
-  // hardcoded binding (e.g. both buttons keyed to 'home') would otherwise
-  // pass this check while shipping a real assistive-tech regression.
-  const hasHomeBinding = source.includes("aria-selected={activeTab === 'home'}");
-  const hasHistoryBinding = source.includes("aria-selected={activeTab === 'history'}");
-  if (!hasHomeBinding || !hasHistoryBinding) {
-    failures.push(
-      "src/lib/components/TabBar.svelte: expected aria-selected={activeTab === 'home'} on the Home button and aria-selected={activeTab === 'history'} on the History button, found a missing or mismatched binding",
-    );
+    if (!block.includes('role="tab"')) {
+      failures.push(`src/lib/components/TabBar.svelte: button#tab-${tab} is missing role="tab"`);
+    }
+
+    const expectedBindings = {
+      onclick: `onclick={() => onSelect('${tab}')}`,
+      'aria-selected': `aria-selected={activeTab === '${tab}'}`,
+      'aria-controls': `aria-controls="panel-${tab}"`,
+    };
+    for (const [name, expected] of Object.entries(expectedBindings)) {
+      if (!block.includes(expected)) {
+        failures.push(
+          `src/lib/components/TabBar.svelte: button#tab-${tab} is missing or has a mismatched ${name} (expected ${expected})`,
+        );
+      }
+    }
   }
 
   const styleMatch = source.match(/<style[^>]*>([\s\S]*?)<\/style>/);
