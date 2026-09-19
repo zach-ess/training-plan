@@ -1,27 +1,41 @@
 <script lang="ts">
-  // Placeholder shell for Story 1.1 (scaffold + installability only), now
-  // wired to Story 1.2's design tokens as a smoke test. Two-tab navigation
-  // (Story 1.3), Day-List rendering (1.5), and the top-level error boundary
-  // (1.6) are out of this story's scope and land in later stories.
-  const appName = 'Training Journal';
+  // Story 1.3 -- two-tab navigation shell. Day-List rendering (1.5) and
+  // History & Trends content (Epic 3) are out of this story's scope --
+  // each tab's content area is an empty/placeholder panel only.
+  import TabBar from './lib/components/TabBar.svelte';
+
+  type Tab = 'home' | 'history';
+
+  let activeTab = $state<Tab>('home');
+
+  function handleSelect(tab: Tab) {
+    // Re-tap-to-reset (EXPERIENCE.md) is intentionally not implemented here
+    // -- there is no real Home/History content yet for "reset" to act on.
+    // A later story can add that behavior on top of this handler.
+    activeTab = tab;
+  }
 </script>
 
 <main>
-  <h1>{appName}</h1>
-  <p>Scaffold placeholder -- Home/Day-List arrives in Story 1.5.</p>
+  {#if activeTab === 'home'}
+    <section aria-label="Home">
+      <p>Home placeholder -- Day-List rendering arrives in Story 1.5.</p>
+    </section>
+  {:else}
+    <section aria-label="History &amp; Trends">
+      <p>History &amp; Trends placeholder -- content arrives in Epic 3.</p>
+    </section>
+  {/if}
 </main>
+
+<TabBar {activeTab} onSelect={handleSelect} />
 
 <style>
   main {
     background: var(--background);
     color: var(--text-primary);
     padding: var(--space-7);
-  }
-
-  h1 {
-    font-family: var(--type-title-font-family);
-    font-size: var(--type-title-size);
-    font-weight: var(--type-title-weight);
+    padding-bottom: var(--tab-bar-height);
   }
 
   p {

@@ -26,6 +26,11 @@
 // value, so reverting e.g. `color: var(--text-primary)` to a hardcoded hex
 // fails here even though it would pass `svelte-check` silently.
 //
+// Story 1.3 -- Two-Tab Navigation Shell -- adds `checkTabBarWiring`, the
+// same style of check for the new `TabBar.svelte`: its color-ish
+// declarations must route through `var(--...)` tokens, and its markup must
+// carry `role="tablist"`, two `role="tab"`, and `aria-selected`.
+//
 // No test runner (vitest/jest) is installed in this project yet, so this is
 // a plain Node script run via `npm run test:tokens` -- it exits non-zero
 // (and prints errors) on any mismatch.
@@ -39,6 +44,7 @@ const cssPath = path.join(__dirname, '..', 'src', 'app.css');
 const indexHtmlPath = path.join(__dirname, '..', 'index.html');
 const viteConfigPath = path.join(__dirname, '..', 'vite.config.ts');
 const appSveltePath = path.join(__dirname, '..', 'src', 'App.svelte');
+const tabBarSveltePath = path.join(__dirname, '..', 'src', 'lib', 'components', 'TabBar.svelte');
 
 const SANS = "system-ui, -apple-system, 'Segoe UI', sans-serif";
 const MONO = "ui-monospace, 'SF Mono', 'Roboto Mono', Menlo, Consolas, monospace";
@@ -314,9 +320,13 @@ function getDeclarations(block) {
 }
 
 /** src/App.svelte is this story's smoke test that tokens actually apply --
- * assert every declaration on `main`, `h1`, and `p` is a `var(--...)`
- * reference, not a literal, so reverting one to a hardcoded value (which
- * `svelte-check` and the rest of this script wouldn't notice) fails here. */
+ * assert every declaration on `main` and `p` is a `var(--...)` reference,
+ * not a literal, so reverting one to a hardcoded value (which
+ * `svelte-check` and the rest of this script wouldn't notice) fails here.
+ *
+ * Story 1.3 replaced App.svelte's static `<h1>` placeholder with the
+ * switchable tab-bar shell (see checkTabBarWiring below for TabBar.svelte's
+ * own equivalent check), so `h1` is no longer part of this list. */
 function checkAppSvelteTokenWiring(failures) {
   const source = readFileSync(appSveltePath, 'utf8');
   const styleMatch = source.match(/<style[^>]*>([\s\S]*?)<\/style>/);
@@ -328,7 +338,7 @@ function checkAppSvelteTokenWiring(failures) {
   const commentMasked = maskComments(styleMatch[1]);
   const braceMask = maskStrings(commentMasked);
 
-  for (const selector of ['main', 'h1', 'p']) {
+  for (const selector of ['main', 'p']) {
     let block;
     try {
       ({ content: block } = extractBlock(
@@ -356,6 +366,78 @@ function checkAppSvelteTokenWiring(failures) {
   }
 }
 
+// Color-ish CSS properties that must route through a `var(--...)` token
+// reference rather than a literal value. A handful of non-token keywords
+// (none/inherit/currentcolor/transparent/initial/unset) are allowed through
+// since they carry no color of their own -- they just defer to whatever
+// color is already in force.
+const COLOR_PROPERTY_RE =
+  /^(color|background|background-color|border|border-top|border-right|border-bottom|border-left|border-color|border-top-color|border-right-color|border-bottom-color|border-left-color|outline|outline-color|fill|stroke|box-shadow)$/;
+const SAFE_NON_TOKEN_VALUES = new Set([
+  'none',
+  'inherit',
+  'currentcolor',
+  'transparent',
+  'initial',
+  'unset',
+]);
+
+/** TabBar.svelte (Story 1.3) is new nav chrome with no prior automated
+ * check -- both previous review passes flagged that gap. Asserts its
+ * `<style>` block routes every color-ish declaration through `var(--...)`
+ * (or one of the safe non-token keywords above), and that its markup has
+ * the required ARIA wiring: `role="tablist"`, two `role="tab"`, and
+ * `aria-selected`. */
+function checkTabBarWiring(failures) {
+  const source = readFileSync(tabBarSveltePath, 'utf8');
+
+  const tablistCount = (source.match(/role="tablist"/g) || []).length;
+  if (tablistCount < 1) {
+    failures.push('src/lib/components/TabBar.svelte: no role="tablist" found');
+  }
+
+  const tabCount = (source.match(/role="tab"/g) || []).length;
+  if (tabCount < 2) {
+    failures.push(
+      `src/lib/components/TabBar.svelte: expected at least 2 role="tab" elements, found ${tabCount}`,
+    );
+  }
+
+  const ariaSelectedCount = (source.match(/aria-selected/g) || []).length;
+  if (ariaSelectedCount < 2) {
+    failures.push(
+      `src/lib/components/TabBar.svelte: expected aria-selected on both tab buttons, found ${ariaSelectedCount} occurrence(s)`,
+    );
+  }
+
+  const styleMatch = source.match(/<style[^>]*>([\s\S]*?)<\/style>/);
+  if (!styleMatch) {
+    failures.push('src/lib/components/TabBar.svelte: no <style> block found');
+    return;
+  }
+
+  const commentMasked = maskComments(styleMatch[1]);
+
+  // Declarations across the whole style block, regardless of which
+  // selector's rule they sit in -- selectors here never contain a `;`, so a
+  // global "property: value;" scan can't cross a rule boundary and mistake
+  // part of a selector for a declaration.
+  const declRe = /([a-zA-Z-]+)\s*:\s*([^;{}]+);/g;
+  let match;
+  while ((match = declRe.exec(commentMasked)) !== null) {
+    const property = match[1].trim().toLowerCase();
+    if (!COLOR_PROPERTY_RE.test(property)) continue;
+
+    const value = match[2].replace(/\s+/g, ' ').trim().toLowerCase();
+    if (value.includes('var(--')) continue;
+    if (SAFE_NON_TOKEN_VALUES.has(value)) continue;
+
+    failures.push(
+      `src/lib/components/TabBar.svelte <style> "${property}: ${match[2].trim()};": expected a var(--...) token reference (or none/inherit/transparent), found a literal value`,
+    );
+  }
+}
+
 function main() {
   /** @type {string[]} */
   const failures = [];
@@ -375,6 +457,7 @@ function main() {
   checkViteConfigBackground(actualBackgroundLight, failures);
 
   checkAppSvelteTokenWiring(failures);
+  checkTabBarWiring(failures);
 
   if (failures.length > 0) {
     console.error(`Design token verification FAILED (${failures.length} mismatch(es)):`);
@@ -392,7 +475,8 @@ function main() {
     `Design token verification passed: ${colorCount} color hex values, ${typeCount} typography roles, ` +
       `${radiusCount} radii, and ${spacingCount} spacing values in src/app.css match this script's ` +
       `transcription of the spec; index.html and vite.config.ts stay in sync with app.css's live ` +
-      `--surface/--background values; and src/App.svelte's <style> block routes only through var(--...) tokens.`,
+      `--surface/--background values; src/App.svelte's <style> block routes only through var(--...) tokens; ` +
+      `and TabBar.svelte routes its color declarations through tokens and carries the required tab ARIA markup.`,
   );
 }
 
