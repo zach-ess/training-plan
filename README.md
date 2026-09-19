@@ -56,8 +56,19 @@ Deploy replaces that repo's tracked contents with the freshly built `dist/` outp
 in place (it does not stand up a new repo or a new Pages site):
 
 ```bash
+set -euo pipefail
+
 # 1. Build
 npm run build
+
+# Guard: fail loudly rather than proceed with a deploy if dist/ is missing
+# or empty (e.g. the build step above failed silently). Checked immediately
+# after the build, before the target clone is touched at all -- so a bad
+# build never risks the destructive steps below.
+if [ -z "$(ls -A /path/to/training-plan-app/dist 2>/dev/null)" ]; then
+  echo "ERROR: dist/ is missing or empty -- aborting deploy" >&2
+  exit 1
+fi
 
 # 2. Clone the existing target repo (or, if you already have it checked out
 #    elsewhere, cd into it and skip this step)
@@ -75,23 +86,22 @@ cd /tmp/training-plan-deploy
 #    or delete it from your shell history afterward (e.g. `history -d`).
 #    Treat the PAT as burned either way: revoke/rotate it immediately after
 #    this push, even if history is cleared.
+#    The trap below guarantees the remote gets reset back to the plain HTTPS
+#    URL no matter how the script exits from here on -- a successful push, a
+#    failed push, or any other error -- so the PAT never lingers in
+#    .git/config even on a failure path.
+trap 'git remote set-url origin https://github.com/zach-ess/training-plan.git' EXIT
 git remote set-url origin "https://<PAT>@github.com/zach-ess/training-plan.git"
 
-# 4. Replace all tracked files with the new build output
+# 4. Replace all tracked files with the new build output and push
 git rm -rf --ignore-unmatch .
 cp -r /path/to/training-plan-app/dist/. .
-# Guard: fail loudly rather than commit/push an emptied or broken site if
-# dist/ is missing or empty (e.g. the build step above failed silently).
-if [ -z "$(ls -A /path/to/training-plan-app/dist 2>/dev/null)" ]; then
-  echo "ERROR: dist/ is missing or empty -- aborting deploy" >&2
-  exit 1
-fi
 git add -A
 git commit -m "Deploy: rebuild from training-plan-app"
 git push origin main
 
-# 5. Reset the remote immediately -- do this every time, even if the push failed
-git remote set-url origin https://github.com/zach-ess/training-plan.git
+# 5. Nothing to do here -- the trap set in step 3 already reset the remote
+#    as this script exits, whether or not the push succeeded.
 ```
 
 After pushing, verify on an Android phone in Chrome at
@@ -119,6 +129,7 @@ public/
   pwa-192x192.png  # PWA manifest icon
   pwa-512x512.png  # PWA manifest icon (also used as the maskable icon)
 tsconfig.json
+svelte.config.js   # preprocessing config (editor tooling + svelte-check)
 .gitignore
 vite.config.ts     # vite-plugin-pwa (manifest + service worker) configuration
 ```
