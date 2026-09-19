@@ -31,6 +31,21 @@
 // declarations must route through `var(--...)` tokens, and its markup must
 // carry `role="tablist"`, two `role="tab"`, and `aria-selected`.
 //
+// Story 1.4 -- Plan Fetch, Cache & Loading States -- adds
+// `checkSkeletonDayRowWiring`, the same color-token-wiring half of that
+// check (no ARIA markup requirements apply to this presentational-only
+// component) for the new `SkeletonDayRow.svelte`. It also adds
+// `checkAppSvelteColorWiring`, a whole-style-block color-property scan (the
+// same pattern as checkTabBarWiring/checkSkeletonDayRowWiring) over
+// App.svelte -- this story added new selectors (`.skeleton-list`,
+// `.plan-error`, `.retry-button`) that the older `checkAppSvelteTokenWiring`
+// function doesn't cover (that check is scoped to only `main`/`p` and
+// requires *every* declaration, not just color ones, to be a bare
+// var(--...) reference, which would misfire on these new rules' non-color
+// declarations like `display: flex`). The new scan only flags literal
+// values on color-ish properties, so it composes safely with any selector
+// this file has or gains later without needing its own selector allowlist.
+//
 // No test runner (vitest/jest) is installed in this project yet, so this is
 // a plain Node script run via `npm run test:tokens` -- it exits non-zero
 // (and prints errors) on any mismatch.
@@ -45,6 +60,14 @@ const indexHtmlPath = path.join(__dirname, '..', 'index.html');
 const viteConfigPath = path.join(__dirname, '..', 'vite.config.ts');
 const appSveltePath = path.join(__dirname, '..', 'src', 'App.svelte');
 const tabBarSveltePath = path.join(__dirname, '..', 'src', 'lib', 'components', 'TabBar.svelte');
+const skeletonDayRowSveltePath = path.join(
+  __dirname,
+  '..',
+  'src',
+  'lib',
+  'components',
+  'SkeletonDayRow.svelte',
+);
 
 const SANS = "system-ui, -apple-system, 'Segoe UI', sans-serif";
 const MONO = "ui-monospace, 'SF Mono', 'Roboto Mono', Menlo, Consolas, monospace";
@@ -390,6 +413,11 @@ const SAFE_NON_TOKEN_VALUES = new Set([
   'transparent',
   'initial',
   'unset',
+  // `border: 0;` is the standard shorthand for "no border" (equivalent to
+  // `none`, not an actual color value) -- used by App.svelte's pre-existing
+  // `.visually-hidden` utility class, which this story's new whole-block
+  // color scan (checkAppSvelteColorWiring) now also reaches.
+  '0',
 ]);
 
 /** TabBar.svelte (Story 1.3) is new nav chrome with no prior automated
@@ -468,6 +496,74 @@ function checkTabBarWiring(failures) {
   }
 }
 
+/** Story 1.4's SkeletonDayRow.svelte is a new presentational component with
+ * no prior automated check. Same color-token-wiring scan as
+ * checkTabBarWiring above (every color-ish declaration in its `<style>`
+ * block must route through `var(--...)` or a safe non-token keyword) --
+ * this component has no interactive/ARIA markup requirements, so that half
+ * of checkTabBarWiring doesn't apply here. */
+function checkSkeletonDayRowWiring(failures) {
+  const source = readFileSync(skeletonDayRowSveltePath, 'utf8');
+
+  const styleMatch = source.match(/<style[^>]*>([\s\S]*?)<\/style>/);
+  if (!styleMatch) {
+    failures.push('src/lib/components/SkeletonDayRow.svelte: no <style> block found');
+    return;
+  }
+
+  const commentMasked = maskComments(styleMatch[1]);
+
+  const declRe = /([a-zA-Z-]+)\s*:\s*([^;{}]+);/g;
+  let match;
+  while ((match = declRe.exec(commentMasked)) !== null) {
+    const property = match[1].trim().toLowerCase();
+    if (!COLOR_PROPERTY_RE.test(property)) continue;
+
+    const value = match[2].replace(/\s+/g, ' ').trim().toLowerCase();
+    if (value.includes('var(--')) continue;
+    if (SAFE_NON_TOKEN_VALUES.has(value)) continue;
+
+    failures.push(
+      `src/lib/components/SkeletonDayRow.svelte <style> "${property}: ${match[2].trim()};": expected a var(--...) token reference (or none/inherit/transparent), found a literal value`,
+    );
+  }
+}
+
+/** Whole-style-block color-property scan over App.svelte, same pattern as
+ * checkTabBarWiring/checkSkeletonDayRowWiring above. Story 1.4 added
+ * `.skeleton-list`, `.plan-error`, and `.retry-button` rules to App.svelte's
+ * `<style>` block; `checkAppSvelteTokenWiring` above only ever scoped its
+ * strict var-only check to the `main`/`p` selectors, so those new rules'
+ * color-ish declarations (e.g. `.retry-button`'s `background`/`color`) had
+ * no automated coverage at all. This scan checks every color-ish property
+ * in the whole block regardless of which selector it's under, so it
+ * automatically covers these and any future selector too. */
+function checkAppSvelteColorWiring(failures) {
+  const source = readFileSync(appSveltePath, 'utf8');
+  const styleMatch = source.match(/<style[^>]*>([\s\S]*?)<\/style>/);
+  if (!styleMatch) {
+    failures.push('src/App.svelte: no <style> block found');
+    return;
+  }
+
+  const commentMasked = maskComments(styleMatch[1]);
+
+  const declRe = /([a-zA-Z-]+)\s*:\s*([^;{}]+);/g;
+  let match;
+  while ((match = declRe.exec(commentMasked)) !== null) {
+    const property = match[1].trim().toLowerCase();
+    if (!COLOR_PROPERTY_RE.test(property)) continue;
+
+    const value = match[2].replace(/\s+/g, ' ').trim().toLowerCase();
+    if (value.includes('var(--')) continue;
+    if (SAFE_NON_TOKEN_VALUES.has(value)) continue;
+
+    failures.push(
+      `src/App.svelte <style> "${property}: ${match[2].trim()};": expected a var(--...) token reference (or none/inherit/transparent), found a literal value`,
+    );
+  }
+}
+
 function main() {
   /** @type {string[]} */
   const failures = [];
@@ -487,7 +583,9 @@ function main() {
   checkViteConfigBackground(actualBackgroundLight, failures);
 
   checkAppSvelteTokenWiring(failures);
+  checkAppSvelteColorWiring(failures);
   checkTabBarWiring(failures);
+  checkSkeletonDayRowWiring(failures);
 
   if (failures.length > 0) {
     console.error(`Design token verification FAILED (${failures.length} mismatch(es)):`);
@@ -505,8 +603,10 @@ function main() {
     `Design token verification passed: ${colorCount} color hex values, ${typeCount} typography roles, ` +
       `${radiusCount} radii, and ${spacingCount} spacing values in src/app.css match this script's ` +
       `transcription of the spec; index.html and vite.config.ts stay in sync with app.css's live ` +
-      `--surface/--background values; src/App.svelte's <style> block routes only through var(--...) tokens; ` +
-      `and TabBar.svelte routes its color declarations through tokens and carries the required tab ARIA markup.`,
+      `--surface/--background values; src/App.svelte's <style> block routes only through var(--...) tokens ` +
+      `(main/p) and every color-ish declaration in the whole block (including .skeleton-list/.plan-error/` +
+      `.retry-button); TabBar.svelte routes its color declarations through tokens and carries the required ` +
+      `tab ARIA markup; and SkeletonDayRow.svelte routes its color declarations through tokens.`,
   );
 }
 

@@ -50,11 +50,21 @@ export default defineConfig({
         ],
       },
       workbox: {
-        // AD-5's cache-first app shell must also cover the runtime-fetched Plan data.
-        // `public/plan.json` does land in the built `dist/` directory alongside the
-        // JS/CSS/HTML -- Workbox's *default* glob extension list just doesn't include
-        // `.json`, so it's added explicitly here to precache plan.json too.
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,webmanifest,json}'],
+        // Story 1.1 precached plan.json here (via `json` in this glob list) as
+        // part of the cache-first app shell. Story 1.4 supersedes that: it adds
+        // its own Cache Storage layer (`planStore.svelte.ts`, cache name
+        // `plan-cache-v1`) that reads a cached Plan for an instant paint and
+        // then always issues a cache-busted network fetch for a silent
+        // background refetch on every open. Workbox's `generateSW` precache
+        // serving is `CacheFirst` per *exact* URL and only rotates to a new
+        // response when a new deploy installs a new service-worker revision --
+        // it doesn't revalidate per page-load, and while precached under its
+        // exact URL, any request to that same URL (cache-busted query string or
+        // not) is served from the precache regardless of fetch options, which
+        // would silently defeat this story's freshness check. So `json` is
+        // deliberately left out of this glob list -- plan.json is no longer
+        // precached by the service worker at all.
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,webmanifest}'],
       },
     }),
   ],
