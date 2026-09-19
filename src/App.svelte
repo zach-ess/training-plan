@@ -1,20 +1,54 @@
 <script lang="ts">
-  // Story 1.3 -- two-tab navigation shell. Day-List rendering (1.5) and
-  // History & Trends content (Epic 3) are out of this story's scope --
-  // each tab's content area is an empty/placeholder panel only.
+  // Story 1.3 -- two-tab navigation shell. History & Trends content (Epic 3)
+  // is out of this story's scope -- that tab's content area is still an
+  // empty/placeholder panel only.
   //
-  // Story 1.4 -- Home's placeholder panel is now gated on the Plan Data
-  // Store's status (skeleton / loaded / error) rather than always shown.
-  // Actual day-by-day rendering is still Story 1.5's job -- the 'loaded'
-  // branch below keeps today's existing placeholder paragraph.
+  // Story 1.4 -- Home's placeholder panel is gated on the Plan Data Store's
+  // status (skeleton / loaded / error) rather than always shown.
+  //
+  // Story 1.5 -- the 'loaded' branch now renders a real day list (one
+  // `DayRowCard` per date across the Plan's span, always including today)
+  // instead of the placeholder paragraph the previous two stories left
+  // there.
   import { untrack } from 'svelte';
   import TabBar from './lib/components/TabBar.svelte';
   import SkeletonDayRow from './lib/components/SkeletonDayRow.svelte';
+  import DayRowCard from './lib/components/DayRowCard.svelte';
   import { planStore, loadPlan } from './lib/data/planStore.svelte';
+  import { parsePlan } from './lib/domain/parsePlan';
+  import { getPlanDayRange } from './lib/domain/getPlanDayRange';
+  import { getTodayIso } from './lib/domain/date';
 
   type Tab = 'home' | 'history';
 
   let activeTab = $state<Tab>('home');
+
+  // Computed once, not re-derived reactively -- the Never section is
+  // explicit that "today" never live-recomputes while the app stays open
+  // across a midnight rollover, and this value has no reactive dependencies
+  // of its own to ever trigger a re-run anyway.
+  const todayIso = getTodayIso();
+
+  // Story 1.5 -- turns Story 1.4's opaque `planStore.plan` into the ordered
+  // list of dates Home renders, plus a same-date Workout lookup for each.
+  // Both are `$derived` so a background refetch that silently updates
+  // `planStore.plan` (I/O matrix: "Background refetch updates Plan while
+  // already 'loaded'") re-renders these rows in place with no re-mount.
+  const plan = $derived(parsePlan(planStore.plan));
+  const dayRange = $derived(getPlanDayRange(plan.workouts, todayIso));
+  // Built from `plan.workouts` in array order so a later duplicate entry for
+  // the same date overwrites an earlier one in the map -- "the later array
+  // entry wins for that date" (I/O matrix).
+  const workoutsByDate = $derived(new Map(plan.workouts.map((workout) => [workout.date, workout])));
+
+  // Scrolls today's row into view once, right after the 'loaded' panel's day
+  // list first mounts -- never re-fired by a later reactive update within
+  // the same mount (e.g. a background refetch), since a Svelte action's
+  // function body only runs on mount/unmount, not on every dependency
+  // change the way `$effect` would.
+  function scrollToToday(node: HTMLElement) {
+    node.querySelector('[data-today="true"]')?.scrollIntoView({ block: 'center' });
+  }
 
   function handleSelect(tab: Tab) {
     // Re-tap-to-reset (EXPERIENCE.md) is intentionally not implemented here
@@ -90,7 +124,11 @@
         <button type="button" class="retry-button" onclick={loadPlan}>Retry</button>
       </div>
     {:else}
-      <p>Home placeholder -- Day-List rendering arrives in Story 1.5.</p>
+      <div class="day-list" use:scrollToToday>
+        {#each dayRange as date (date)}
+          <DayRowCard {date} workout={workoutsByDate.get(date)} isToday={date === todayIso} />
+        {/each}
+      </div>
     {/if}
   </div>
   <div id="panel-history" role="tabpanel" aria-labelledby="tab-history" tabindex="0" hidden={activeTab !== 'history'}>
@@ -124,6 +162,12 @@
     display: flex;
     flex-direction: column;
     gap: var(--space-4);
+  }
+
+  .day-list {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid var(--border);
   }
 
   .plan-error {

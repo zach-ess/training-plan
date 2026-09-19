@@ -46,6 +46,12 @@
 // values on color-ish properties, so it composes safely with any selector
 // this file has or gains later without needing its own selector allowlist.
 //
+// Story 1.5 -- Day-List Home View -- adds `checkDayRowCardWiring`, the same
+// color-token-wiring scan for the new `DayRowCard.svelte`, plus its two
+// build-time semantic requirements (EXPERIENCE.md Accessibility Floor /
+// Consistency Conventions): a real `<button type="button">` root and an
+// `aria-hidden="true"` status chip.
+//
 // No test runner (vitest/jest) is installed in this project yet, so this is
 // a plain Node script run via `npm run test:tokens` -- it exits non-zero
 // (and prints errors) on any mismatch.
@@ -67,6 +73,14 @@ const skeletonDayRowSveltePath = path.join(
   'lib',
   'components',
   'SkeletonDayRow.svelte',
+);
+const dayRowCardSveltePath = path.join(
+  __dirname,
+  '..',
+  'src',
+  'lib',
+  'components',
+  'DayRowCard.svelte',
 );
 
 const SANS = "system-ui, -apple-system, 'Segoe UI', sans-serif";
@@ -574,6 +588,54 @@ function checkSkeletonDayRowWiring(failures) {
   }
 }
 
+/** Story 1.5's DayRowCard.svelte is the new per-day row component. Same
+ * color-token-wiring scan as checkTabBarWiring/checkSkeletonDayRowWiring
+ * above, plus the two build-time semantic requirements EXPERIENCE.md names
+ * for this component specifically (Accessibility Floor / Consistency
+ * Conventions): a real `<button type="button">` root (never a bare
+ * clickable `<div>`) and a status chip carrying `aria-hidden="true"` (the
+ * adjacent text label, not the chip, carries the accessible name). */
+function checkDayRowCardWiring(failures) {
+  const source = readFileSync(dayRowCardSveltePath, 'utf8');
+
+  if (!/<button[^>]*type="button"[^>]*>/.test(source)) {
+    failures.push(
+      'src/lib/components/DayRowCard.svelte: no <button type="button"> root found -- ' +
+        "EXPERIENCE.md requires real focusable button semantics, not a bare clickable <div>",
+    );
+  }
+
+  if (!source.includes('aria-hidden="true"')) {
+    failures.push(
+      'src/lib/components/DayRowCard.svelte: no aria-hidden="true" found -- the status chip ' +
+        'must be decorative, with the adjacent text label carrying the accessible name',
+    );
+  }
+
+  const styleMatch = source.match(/<style[^>]*>([\s\S]*?)<\/style>/);
+  if (!styleMatch) {
+    failures.push('src/lib/components/DayRowCard.svelte: no <style> block found');
+    return;
+  }
+
+  const commentMasked = maskComments(styleMatch[1]);
+
+  const declRe = /([a-zA-Z-]+)\s*:\s*([^;{}]+);/g;
+  let match;
+  while ((match = declRe.exec(commentMasked)) !== null) {
+    const property = match[1].trim().toLowerCase();
+    if (!COLOR_PROPERTY_RE.test(property)) continue;
+
+    const value = match[2].replace(/\s+/g, ' ').trim().toLowerCase();
+    if (value.includes('var(--')) continue;
+    if (SAFE_NON_TOKEN_VALUES.has(value)) continue;
+
+    failures.push(
+      `src/lib/components/DayRowCard.svelte <style> "${property}: ${match[2].trim()};": expected a var(--...) token reference (or none/inherit/transparent), found a literal value`,
+    );
+  }
+}
+
 /** Whole-style-block color-property scan over App.svelte, same pattern as
  * checkTabBarWiring/checkSkeletonDayRowWiring above. Story 1.4 added
  * `.skeleton-list`, `.plan-error`, and `.retry-button` rules to App.svelte's
@@ -632,6 +694,7 @@ function main() {
   checkAppSvelteColorWiring(failures);
   checkTabBarWiring(failures);
   checkSkeletonDayRowWiring(failures);
+  checkDayRowCardWiring(failures);
 
   if (failures.length > 0) {
     console.error(`Design token verification FAILED (${failures.length} mismatch(es)):`);
@@ -652,8 +715,10 @@ function main() {
       `--surface/--background values; vite.config.ts's workbox.globPatterns excludes "json" (plan.json stays ` +
       `out of the service-worker precache); src/App.svelte's <style> block routes only through var(--...) tokens ` +
       `(main/p) and every color-ish declaration in the whole block (including .skeleton-list/.plan-error/` +
-      `.retry-button); TabBar.svelte routes its color declarations through tokens and carries the required ` +
-      `tab ARIA markup; and SkeletonDayRow.svelte routes its color declarations through tokens.`,
+      `.retry-button/.day-list); TabBar.svelte routes its color declarations through tokens and carries the ` +
+      `required tab ARIA markup; SkeletonDayRow.svelte routes its color declarations through tokens; and ` +
+      `DayRowCard.svelte routes its color declarations through tokens and carries a real <button type="button"> ` +
+      `root plus an aria-hidden status chip.`,
   );
 }
 
