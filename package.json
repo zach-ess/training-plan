@@ -10,7 +10,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "check": "svelte-check --tsconfig ./tsconfig.json && npm run test:tokens",
     "test:tokens": "node scripts/verify-color-tokens.mjs"
   },
   "devDependencies": {

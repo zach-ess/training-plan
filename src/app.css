@@ -12,6 +12,10 @@
  */
 
 :root {
+  /* Native form controls/scrollbars follow the scheme too (the index.html
+     meta tag alone only covers document-level chrome). */
+  color-scheme: light dark;
+
   /* Colors -- light (default) */
   --background: #f3f5f6;
   --surface: #ffffff;

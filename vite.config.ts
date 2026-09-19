@@ -25,8 +25,8 @@ export default defineConfig({
         // fields, so the light-mode hex is the correct single value here;
         // the live browser-chrome color still responds to OS scheme changes
         // via index.html's media-scoped `theme-color` meta tags.
-        background_color: '#FFFFFF',
-        theme_color: '#FFFFFF',
+        background_color: '#ffffff',
+        theme_color: '#ffffff',
         icons: [
           {
             src: 'pwa-192x192.png',

@@ -1,8 +1,8 @@
 # Training Journal
 
-Installable, offline-capable PWA shell for Zach's training plan viewer. This is the
-Story 1.1 scaffold only -- no Day-List rendering, design tokens, or navigation yet
-(those land in Stories 1.2-1.6).
+Installable, offline-capable PWA shell for Zach's training plan viewer. Stories 1.1
+(scaffold) and 1.2 (design tokens) are done -- no Day-List rendering or navigation
+yet (those land in Stories 1.3-1.6).
 
 ## Stack
 
@@ -41,7 +41,26 @@ npm run check
 ```
 
 Runs `svelte-check`, which type-checks `.ts` files *and* the script/template bindings
-inside `.svelte` files (a bare `tsc --noEmit` only covers the former).
+inside `.svelte` files (a bare `tsc --noEmit` only covers the former), then runs
+`test:tokens` (see below) so both checks are covered by one command.
+
+## Design tokens
+
+`src/app.css` is the single source of truth for color, typography, radius, and
+spacing -- every token is a CSS custom property on `:root`. Dark mode is
+`prefers-color-scheme`-only (no manual toggle, no `data-theme`/class-based
+switching, no JS-driven theme logic); the 11 color tokens are overridden for dark
+in one `@media (prefers-color-scheme: dark)` block.
+
+```bash
+npm run test:tokens
+```
+
+Asserts that `src/app.css`'s token values, and the `--surface` hex duplicated into
+`index.html`'s `theme-color` meta tags and `vite.config.ts`'s manifest colors, match
+`spec-1-2-design-token-system.md`'s frozen tables exactly -- catching a token edit
+that forgets to update one of those duplicates. It also runs as part of `npm run
+check`.
 
 ## Deploy (manual -- no CI/CD, by design)
 
