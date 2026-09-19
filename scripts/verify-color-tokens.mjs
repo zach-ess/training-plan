@@ -306,6 +306,16 @@ function checkViteConfigBackground(actualBackgroundLight, failures) {
 
 const VAR_ONLY_VALUE_RE = /^var\(--[a-zA-Z0-9-]+(?:\s*,\s*[^()]+)?\)$/;
 
+// Story 1.3's `main` rule adds the Android gesture-nav safe-area inset to
+// the tab-bar-height token so content never sits under a bar that grew
+// taller than --tab-bar-height (see App.svelte). This is still fully
+// dynamic (no hardcoded literal being reintroduced) -- both operands are a
+// design token and a UA-supplied environment value -- so it's allowed
+// alongside a bare var(--...) reference, not treated as the literal value
+// this check exists to catch.
+const CALC_VAR_ENV_RE =
+  /^calc\(\s*var\(--[a-zA-Z0-9-]+\)\s*\+\s*env\([a-zA-Z-]+(?:\s*,\s*[^()]+)?\)\s*\)$/;
+
 function getDeclarations(block) {
   return block
     .split(';')
@@ -357,9 +367,9 @@ function checkAppSvelteTokenWiring(failures) {
       continue;
     }
     for (const { property, value } of declarations) {
-      if (!VAR_ONLY_VALUE_RE.test(value)) {
+      if (!VAR_ONLY_VALUE_RE.test(value) && !CALC_VAR_ENV_RE.test(value)) {
         failures.push(
-          `src/App.svelte <style> "${selector} { ${property}: ${value}; }": expected a var(--...) token reference, found a literal value`,
+          `src/App.svelte <style> "${selector} { ${property}: ${value}; }": expected a var(--...) token reference (or a calc() combining one with env(), e.g. main's safe-area padding), found a literal value`,
         );
       }
     }
@@ -403,10 +413,16 @@ function checkTabBarWiring(failures) {
     );
   }
 
-  const ariaSelectedCount = (source.match(/aria-selected/g) || []).length;
-  if (ariaSelectedCount < 2) {
+  // Beyond just counting `aria-selected` occurrences: verify each button's
+  // aria-selected is actually bound to *that* button's own tab value, not
+  // just present somewhere in the file -- a review found that a swapped or
+  // hardcoded binding (e.g. both buttons keyed to 'home') would otherwise
+  // pass this check while shipping a real assistive-tech regression.
+  const hasHomeBinding = source.includes("aria-selected={activeTab === 'home'}");
+  const hasHistoryBinding = source.includes("aria-selected={activeTab === 'history'}");
+  if (!hasHomeBinding || !hasHistoryBinding) {
     failures.push(
-      `src/lib/components/TabBar.svelte: expected aria-selected on both tab buttons, found ${ariaSelectedCount} occurrence(s)`,
+      "src/lib/components/TabBar.svelte: expected aria-selected={activeTab === 'home'} on the Home button and aria-selected={activeTab === 'history'} on the History button, found a missing or mismatched binding",
     );
   }
 

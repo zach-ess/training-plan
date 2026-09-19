@@ -15,13 +15,15 @@
   let { activeTab, onSelect }: { activeTab: Tab; onSelect: (tab: Tab) => void } = $props();
 </script>
 
-<div class="tab-bar" role="tablist">
+<div class="tab-bar" role="tablist" aria-label="Main navigation">
   <button
     type="button"
+    id="tab-home"
     role="tab"
     class="tab"
     class:active={activeTab === 'home'}
     aria-selected={activeTab === 'home'}
+    aria-controls="panel-home"
     onclick={() => onSelect('home')}
   >
     <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -32,10 +34,12 @@
   </button>
   <button
     type="button"
+    id="tab-history"
     role="tab"
     class="tab"
     class:active={activeTab === 'history'}
     aria-selected={activeTab === 'history'}
+    aria-controls="panel-history"
     onclick={() => onSelect('history')}
   >
     <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">

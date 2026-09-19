@@ -17,14 +17,24 @@
 </script>
 
 <main>
+  <!-- Screen-reader-only heading: the app has no other page-level heading
+       now that the tab shell replaced the old static <h1>, and installed
+       standalone PWAs show no browser chrome/title to compensate. Not a
+       design token -- the visually-hidden technique intentionally uses
+       literal 1px offsets, not app.css's rem-based tokens. -->
+  <h1 class="visually-hidden">Training Journal</h1>
   {#if activeTab === 'home'}
-    <section aria-label="Home">
+    <!-- `<div>`, not `<section>`: `<section>`'s implicit landmark role
+         conflicts with the explicit `role="tabpanel"` (Svelte a11y lint
+         flags "non-interactive element to interactive role"); the panel's
+         accessible name comes from `aria-labelledby` pointing at its tab. -->
+    <div id="panel-home" role="tabpanel" aria-labelledby="tab-home">
       <p>Home placeholder -- Day-List rendering arrives in Story 1.5.</p>
-    </section>
+    </div>
   {:else}
-    <section aria-label="History &amp; Trends">
+    <div id="panel-history" role="tabpanel" aria-labelledby="tab-history">
       <p>History &amp; Trends placeholder -- content arrives in Epic 3.</p>
-    </section>
+    </div>
   {/if}
 </main>
 
@@ -35,7 +45,12 @@
     background: var(--background);
     color: var(--text-primary);
     padding: var(--space-7);
-    padding-bottom: var(--tab-bar-height);
+    /* Adds the Android gesture-nav safe-area inset (0 unless index.html's
+       viewport-fit=cover is honored) on top of the tab bar's own height, so
+       content never renders under a bar that has grown taller than
+       --tab-bar-height to accommodate that inset -- see TabBar.svelte's
+       matching padding-bottom. */
+    padding-bottom: calc(var(--tab-bar-height) + env(safe-area-inset-bottom, 0px));
   }
 
   p {
@@ -43,5 +58,17 @@
     font-size: var(--type-body-size);
     font-weight: var(--type-body-weight);
     line-height: var(--type-body-line-height);
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
   }
 </style>
