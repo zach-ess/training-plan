@@ -67,6 +67,13 @@ function toWorkout(raw: unknown): Workout | null {
     !ISO_DATE_RE.test(raw.date) ||
     !isRealCalendarDate(raw.date)
   ) {
+    // Diagnostic only -- this is a hand-authored, single-user plan.json, so
+    // a dropped entry (a typo'd date, most likely) is otherwise silent and
+    // hard to notice: the workout just never appears, with no error and no
+    // visible sign of why. This never throws and never blocks rendering
+    // (the "always degrades, never crashes" guarantee is unchanged) -- it
+    // only makes a dropped entry visible to whoever opens devtools.
+    console.warn('parsePlan: dropping workout entry with invalid or missing date', raw);
     return null;
   }
 

@@ -41,7 +41,13 @@
   // section: a date with no matching Workout always shows "Rest Day", never
   // blank).
   const isRestDay = $derived(dayView.kind === 'empty');
-  const title = $derived(isRestDay ? 'Rest Day' : (dayView.type ?? 'Workout'));
+  // `||`, not `??` -- a Workout whose `type` is present but an empty string
+  // (a plausible hand-edit artifact, e.g. a script that defaults an unset
+  // field to `""` rather than omitting it) must still fall back to
+  // "Workout" per the I/O matrix's "never blank" guarantee for this field;
+  // `??` only catches `null`/`undefined`; and lets a genuinely empty string
+  // straight through.
+  const title = $derived(isRestDay ? 'Rest Day' : dayView.type || 'Workout');
   const meta = $derived(
     isRestDay
       ? undefined
@@ -80,7 +86,16 @@
     class:chip-upcoming={!isToday && !isRestDay}
     aria-hidden="true"
   ></span>
-  <span class="day-main">
+  <!-- `aria-hidden`: the button's own `aria-label` above is meant to be the
+       only channel through which this row's weekday/date/status info
+       reaches a screen reader (see that derivation's comment) -- but an
+       `aria-label` replaces the button's announced *name*, it does not
+       remove its visible children from the accessibility tree. Without
+       this, a screen reader's browse-mode virtual cursor can still land on
+       and read "TUE"/"Today"/the title/the meta line as separate content,
+       redundant with (and inconsistently worded against) the aria-label
+       already announced on the button itself. -->
+  <span class="day-main" aria-hidden="true">
     <span class="day-heading">
       <span class="weekday">{weekdayShort}</span>
       {#if isToday}
