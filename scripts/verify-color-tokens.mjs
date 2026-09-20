@@ -52,6 +52,11 @@
 // Consistency Conventions): a real `<button type="button">` root and an
 // `aria-hidden="true"` status chip.
 //
+// Story 1.6 -- Top-Level Error Boundary -- adds `checkCrashFallbackWiring`,
+// the same color-token-wiring scan (no additional ARIA/semantic
+// requirements beyond that, mirroring `checkSkeletonDayRowWiring`) for the
+// new `CrashFallback.svelte`.
+//
 // No test runner (vitest/jest) is installed in this project yet, so this is
 // a plain Node script run via `npm run test:tokens` -- it exits non-zero
 // (and prints errors) on any mismatch.
@@ -81,6 +86,14 @@ const dayRowCardSveltePath = path.join(
   'lib',
   'components',
   'DayRowCard.svelte',
+);
+const crashFallbackSveltePath = path.join(
+  __dirname,
+  '..',
+  'src',
+  'lib',
+  'components',
+  'CrashFallback.svelte',
 );
 
 const SANS = "system-ui, -apple-system, 'Segoe UI', sans-serif";
@@ -636,6 +649,58 @@ function checkDayRowCardWiring(failures) {
   }
 }
 
+/** Story 1.6's CrashFallback.svelte is the new top-level error-boundary
+ * fallback component. Same color-token-wiring scan as
+ * checkSkeletonDayRowWiring/checkDayRowCardWiring above -- every color-ish
+ * declaration in its `<style>` block must route through `var(--...)` or a
+ * safe non-token keyword, plus the two build-time semantic requirements the
+ * component's own header comment calls load-bearing: a `role="alert"` live
+ * region (so a screen-reader user is told about the crash immediately,
+ * without needing to already be focused here) and a real
+ * `<button type="button">` for Reload -- a fresh-review pass on Story 1.6
+ * found neither was asserted here even though the sibling
+ * checkDayRowCardWiring already asserts the equivalent for DayRowCard. */
+function checkCrashFallbackWiring(failures) {
+  const source = readFileSync(crashFallbackSveltePath, 'utf8');
+
+  if (!source.includes('role="alert"')) {
+    failures.push(
+      'src/lib/components/CrashFallback.svelte: no role="alert" found -- the fallback must be an ' +
+        'assertive live region so a screen reader announces it without requiring focus',
+    );
+  }
+
+  if (!/<button[^>]*type="button"[^>]*>/.test(source)) {
+    failures.push(
+      'src/lib/components/CrashFallback.svelte: no <button type="button"> found -- the Reload ' +
+        'control must be a real, focusable button',
+    );
+  }
+
+  const styleMatch = source.match(/<style[^>]*>([\s\S]*?)<\/style>/);
+  if (!styleMatch) {
+    failures.push('src/lib/components/CrashFallback.svelte: no <style> block found');
+    return;
+  }
+
+  const commentMasked = maskComments(styleMatch[1]);
+
+  const declRe = /([a-zA-Z-]+)\s*:\s*([^;{}]+);/g;
+  let match;
+  while ((match = declRe.exec(commentMasked)) !== null) {
+    const property = match[1].trim().toLowerCase();
+    if (!COLOR_PROPERTY_RE.test(property)) continue;
+
+    const value = match[2].replace(/\s+/g, ' ').trim().toLowerCase();
+    if (value.includes('var(--')) continue;
+    if (SAFE_NON_TOKEN_VALUES.has(value)) continue;
+
+    failures.push(
+      `src/lib/components/CrashFallback.svelte <style> "${property}: ${match[2].trim()};": expected a var(--...) token reference (or none/inherit/transparent), found a literal value`,
+    );
+  }
+}
+
 /** Whole-style-block color-property scan over App.svelte, same pattern as
  * checkTabBarWiring/checkSkeletonDayRowWiring above. Story 1.4 added
  * `.skeleton-list`, `.plan-error`, and `.retry-button` rules to App.svelte's
@@ -695,6 +760,7 @@ function main() {
   checkTabBarWiring(failures);
   checkSkeletonDayRowWiring(failures);
   checkDayRowCardWiring(failures);
+  checkCrashFallbackWiring(failures);
 
   if (failures.length > 0) {
     console.error(`Design token verification FAILED (${failures.length} mismatch(es)):`);
@@ -718,7 +784,8 @@ function main() {
       `.retry-button/.day-list); TabBar.svelte routes its color declarations through tokens and carries the ` +
       `required tab ARIA markup; SkeletonDayRow.svelte routes its color declarations through tokens; and ` +
       `DayRowCard.svelte routes its color declarations through tokens and carries a real <button type="button"> ` +
-      `root plus an aria-hidden status chip.`,
+      `root plus an aria-hidden status chip; and CrashFallback.svelte routes its color declarations through ` +
+      `tokens and carries role="alert" plus a real <button type="button"> Reload control.`,
   );
 }
 

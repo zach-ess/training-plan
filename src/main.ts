@@ -1,6 +1,6 @@
 import './app.css';
 import { mount } from 'svelte';
-import App from './App.svelte';
+import Root from './Root.svelte';
 
 // Story 1.4, AD-6 -- best-effort, one-time request for persistent storage so
 // the Plan cache (Cache Storage API, planStore.svelte.ts) and future
@@ -23,6 +23,6 @@ if (!target) {
   throw new Error('Root mount element "#app" not found in index.html');
 }
 
-const app = mount(App, { target });
+const app = mount(Root, { target });
 
 export default app;
