@@ -95,6 +95,8 @@ const crashFallbackSveltePath = path.join(
   'components',
   'CrashFallback.svelte',
 );
+const rootSveltePath = path.join(__dirname, '..', 'src', 'Root.svelte');
+const mainTsPath = path.join(__dirname, '..', 'src', 'main.ts');
 
 const SANS = "system-ui, -apple-system, 'Segoe UI', sans-serif";
 const MONO = "ui-monospace, 'SF Mono', 'Roboto Mono', Menlo, Consolas, monospace";
@@ -663,14 +665,25 @@ function checkDayRowCardWiring(failures) {
 function checkCrashFallbackWiring(failures) {
   const source = readFileSync(crashFallbackSveltePath, 'utf8');
 
-  if (!source.includes('role="alert"')) {
+  // A fresh-review pass on Story 1.6 found that checking `source` directly
+  // for `role="alert"` is satisfied by this very file's own header comment
+  // (which quotes `role="alert"` in prose) even if the real attribute were
+  // ever removed from the live markup below -- the same masking problem
+  // `maskComments` already solves for `/* ... */` CSS comments, but for
+  // `<!-- ... -->` HTML comments instead. Both semantic-markup checks below
+  // scan this comment-stripped copy, not `source`, for exactly that reason.
+  const markupOnly = source.replace(/<!--[\s\S]*?-->/g, (comment) =>
+    comment.replace(/[^\n]/g, ' '),
+  );
+
+  if (!markupOnly.includes('role="alert"')) {
     failures.push(
       'src/lib/components/CrashFallback.svelte: no role="alert" found -- the fallback must be an ' +
         'assertive live region so a screen reader announces it without requiring focus',
     );
   }
 
-  if (!/<button[^>]*type="button"[^>]*>/.test(source)) {
+  if (!/<button[^>]*type="button"[^>]*>/.test(markupOnly)) {
     failures.push(
       'src/lib/components/CrashFallback.svelte: no <button type="button"> found -- the Reload ' +
         'control must be a real, focusable button',
@@ -698,6 +711,41 @@ function checkCrashFallbackWiring(failures) {
     failures.push(
       `src/lib/components/CrashFallback.svelte <style> "${property}: ${match[2].trim()};": expected a var(--...) token reference (or none/inherit/transparent), found a literal value`,
     );
+  }
+}
+
+/** A fresh-review pass on Story 1.6 found that nothing in this file's other
+ * checks (or `svelte-check`) would notice if the actual error-boundary
+ * wiring regressed -- e.g. `main.ts` reverting to `mount(App, ...)`, or
+ * `Root.svelte` losing its `<svelte:boundary>`/`failed` snippet or either
+ * `window` listener -- since `checkCrashFallbackWiring` only ever looks at
+ * `CrashFallback.svelte` itself, not at what actually renders it. This is a
+ * source-text presence scan, the same convention every other check in this
+ * file already uses (no test runner exists in this project), just aimed at
+ * the wiring instead of the component. */
+function checkRootWiring(failures) {
+  const mainSource = readFileSync(mainTsPath, 'utf8');
+  if (!mainSource.includes('mount(Root')) {
+    failures.push(
+      'src/main.ts: no mount(Root, ...) call found -- the app must mount Root.svelte (the error ' +
+        'boundary), not App.svelte directly',
+    );
+  }
+
+  const rootSource = readFileSync(rootSveltePath, 'utf8');
+  const requiredSnippets = [
+    ['<svelte:boundary', 'a <svelte:boundary> wrapping App'],
+    ['{#snippet failed', 'a failed snippet rendering the fallback on a render/effect exception'],
+    ["addEventListener('error'", "a window 'error' listener for exceptions the boundary can't see"],
+    [
+      "addEventListener('unhandledrejection'",
+      "a window 'unhandledrejection' listener for unhandled promise rejections",
+    ],
+  ];
+  for (const [needle, description] of requiredSnippets) {
+    if (!rootSource.includes(needle)) {
+      failures.push(`src/Root.svelte: missing ${description} (expected to find "${needle}")`);
+    }
   }
 }
 
@@ -761,6 +809,7 @@ function main() {
   checkSkeletonDayRowWiring(failures);
   checkDayRowCardWiring(failures);
   checkCrashFallbackWiring(failures);
+  checkRootWiring(failures);
 
   if (failures.length > 0) {
     console.error(`Design token verification FAILED (${failures.length} mismatch(es)):`);
@@ -785,7 +834,9 @@ function main() {
       `required tab ARIA markup; SkeletonDayRow.svelte routes its color declarations through tokens; and ` +
       `DayRowCard.svelte routes its color declarations through tokens and carries a real <button type="button"> ` +
       `root plus an aria-hidden status chip; and CrashFallback.svelte routes its color declarations through ` +
-      `tokens and carries role="alert" plus a real <button type="button"> Reload control.`,
+      `tokens and carries role="alert" plus a real <button type="button"> Reload control; and ` +
+      `main.ts/Root.svelte still wire the error boundary itself (mount(Root, ...), ` +
+      `<svelte:boundary>, the failed snippet, and both window listeners).`,
   );
 }
 
