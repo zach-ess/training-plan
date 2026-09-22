@@ -22,3 +22,17 @@ export function toLocalIsoDate(d: Date): string {
 export function getTodayIso(): string {
   return toLocalIsoDate(new Date());
 }
+
+/** Parses an already-validated `YYYY-MM-DD` string into a local-midnight
+ * `Date` -- never `new Date(iso)`, which parses a date-only ISO string as
+ * UTC midnight and would shift the calendar date in any timezone west of
+ * UTC once read back with local getters (AD-2).
+ *
+ * Story 2.1 -- the one canonical local-date parser, consolidated from what
+ * was previously duplicated as `parseLocalIsoDate` in `getPlanDayRange.ts`
+ * and `parseLocalDate` in `DayRowCard.svelte` (Epic 1 retro action item
+ * B2). */
+export function parseLocalDate(iso: string): Date {
+  const [year, month, day] = iso.split('-').map(Number);
+  return new Date(year, month - 1, day);
+}

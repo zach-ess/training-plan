@@ -1,16 +1,7 @@
 // Story 1.5 -- decides which ISO dates Home renders a row for.
 
-import { toLocalIsoDate } from './date';
+import { parseLocalDate, toLocalIsoDate } from './date';
 import type { Workout } from './parsePlan';
-
-/** Parses an already-validated `YYYY-MM-DD` string into a local-midnight
- * `Date` -- never `new Date(iso)`, which parses a date-only ISO string as
- * UTC midnight and would shift the calendar date in any timezone west of
- * UTC once read back with local getters (AD-2). */
-function parseLocalIsoDate(iso: string): Date {
-  const [year, month, day] = iso.split('-').map(Number);
-  return new Date(year, month - 1, day);
-}
 
 /**
  * Returns every ISO date, in order, from
@@ -37,8 +28,8 @@ export function getPlanDayRange(workouts: Workout[], todayIso: string): string[]
     }
   }
 
-  const end = parseLocalIsoDate(maxIso);
-  const cursor = parseLocalIsoDate(minIso);
+  const end = parseLocalDate(maxIso);
+  const cursor = parseLocalDate(minIso);
   const dates: string[] = [];
   while (cursor.getTime() <= end.getTime()) {
     dates.push(toLocalIsoDate(cursor));

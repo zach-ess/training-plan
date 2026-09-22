@@ -14,6 +14,7 @@
   import TabBar from './lib/components/TabBar.svelte';
   import SkeletonDayRow from './lib/components/SkeletonDayRow.svelte';
   import DayRowCard from './lib/components/DayRowCard.svelte';
+  import WorkoutDetail from './lib/components/WorkoutDetail.svelte';
   import { planStore, loadPlan } from './lib/data/planStore.svelte';
   import { parsePlan } from './lib/domain/parsePlan';
   import { getPlanDayRange } from './lib/domain/getPlanDayRange';
@@ -22,6 +23,36 @@
   type Tab = 'home' | 'history';
 
   let activeTab = $state<Tab>('home');
+
+  // Story 2.1 -- which date's Workout Detail is open, if any. An overlay
+  // flag, not a route: opening/closing it never touches `activeTab`,
+  // `dayRange`, or scroll position (this story's Boundaries).
+  let selectedDate = $state<string | null>(null);
+
+  function handleOpenDetail(date: string) {
+    selectedDate = date;
+  }
+
+  function handleCloseDetail() {
+    // Read before clearing -- the row to refocus is the one that was open.
+    const closedDate = selectedDate;
+    selectedDate = null;
+    // Mirrors `scrollToToday`'s existing query-selector convention. The day
+    // list stays mounted the whole time this dialog is open (Boundaries), so
+    // the row is normally still there to refocus -- but if a background
+    // refetch or a `dayRange` window rollover removed/hid that date's row
+    // while the dialog was open, fall back to the Home panel's own
+    // container (already a real focus target via its `tabindex="0"`) rather
+    // than silently dropping focus to `<body>`.
+    if (closedDate) {
+      const row = document.querySelector<HTMLElement>(`[data-date="${closedDate}"]`);
+      if (row) {
+        row.focus();
+      } else {
+        document.getElementById('panel-home')?.focus();
+      }
+    }
+  }
 
   // Computed once, not re-derived reactively -- the Never section is
   // explicit that "today" never live-recomputes while the app stays open
@@ -55,6 +86,12 @@
     // -- there is no real Home/History content yet for "reset" to act on.
     // A later story can add that behavior on top of this handler.
     activeTab = tab;
+    // The WorkoutDetail scrim deliberately stops short of covering the tab
+    // bar (EXPERIENCE.md: it "persists across both tabs; never hidden or
+    // covered by a modal"), so without this a tab switch would leave the
+    // dialog open on top of whichever tab is now active. Closing it here
+    // keeps it from ever persisting across a tab change.
+    selectedDate = null;
   }
 
   // Fired once on mount. Reads a cache hit for an instant paint (if one
@@ -126,7 +163,12 @@
     {:else}
       <div class="day-list" use:scrollToToday>
         {#each dayRange as date (date)}
-          <DayRowCard {date} workout={workoutsByDate.get(date)} isToday={date === todayIso} />
+          <DayRowCard
+            {date}
+            workout={workoutsByDate.get(date)}
+            isToday={date === todayIso}
+            onOpen={handleOpenDetail}
+          />
         {/each}
       </div>
     {/if}
@@ -134,6 +176,15 @@
   <div id="panel-history" role="tabpanel" aria-labelledby="tab-history" tabindex="0" hidden={activeTab !== 'history'}>
     <p>History &amp; Trends placeholder -- content arrives in Epic 3.</p>
   </div>
+  {#key selectedDate}
+    {#if selectedDate}
+      <WorkoutDetail
+        date={selectedDate}
+        workout={workoutsByDate.get(selectedDate)}
+        onClose={handleCloseDetail}
+      />
+    {/if}
+  {/key}
 </main>
 
 <TabBar {activeTab} onSelect={handleSelect} />

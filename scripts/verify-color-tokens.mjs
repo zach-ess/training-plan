@@ -57,6 +57,18 @@
 // requirements beyond that, mirroring `checkSkeletonDayRowWiring`) for the
 // new `CrashFallback.svelte`.
 //
+// Story 2.1 -- Workout Detail View (read-only) -- adds
+// `checkWorkoutDetailWiring`, the same color-token-wiring scan for the two
+// new components `WorkoutDetail.svelte`/`WorkoutDetailStat.svelte`, plus
+// this story's own real-dialog-semantics requirement (Boundaries):
+// `role="dialog"`, `aria-modal="true"`, and an `aria-labelledby` naming the
+// title. This story also extracts `scanColorWiring`, a shared helper for
+// the identical color-scan loop that had been duplicated across
+// `checkTabBarWiring`, `checkSkeletonDayRowWiring`, `checkDayRowCardWiring`,
+// `checkCrashFallbackWiring`, and `checkAppSvelteColorWiring` -- all five
+// (and the new WorkoutDetail check) now call this one function instead of
+// each re-implementing the same scan (Epic 1 retro action item B1).
+//
 // No test runner (vitest/jest) is installed in this project yet, so this is
 // a plain Node script run via `npm run test:tokens` -- it exits non-zero
 // (and prints errors) on any mismatch.
@@ -94,6 +106,22 @@ const crashFallbackSveltePath = path.join(
   'lib',
   'components',
   'CrashFallback.svelte',
+);
+const workoutDetailSveltePath = path.join(
+  __dirname,
+  '..',
+  'src',
+  'lib',
+  'components',
+  'WorkoutDetail.svelte',
+);
+const workoutDetailStatSveltePath = path.join(
+  __dirname,
+  '..',
+  'src',
+  'lib',
+  'components',
+  'WorkoutDetailStat.svelte',
 );
 const rootSveltePath = path.join(__dirname, '..', 'src', 'Root.svelte');
 const mainTsPath = path.join(__dirname, '..', 'src', 'main.ts');
@@ -494,6 +522,44 @@ const SAFE_NON_TOKEN_VALUES = new Set([
 // `.visually-hidden`-style rule of their own to justify it.
 const APP_SVELTE_SAFE_NON_TOKEN_VALUES = new Set([...SAFE_NON_TOKEN_VALUES, '0']);
 
+/** Shared color-token-wiring scan (Story 2.1, Epic 1 retro action item B1):
+ * extracted from the identical loop that had been duplicated across
+ * `checkTabBarWiring`, `checkSkeletonDayRowWiring`, `checkDayRowCardWiring`,
+ * `checkCrashFallbackWiring`, and `checkAppSvelteColorWiring` below -- each
+ * of those now calls this instead of re-implementing the same scan.
+ *
+ * Reads `source`'s whole `<style>` block (regardless of which selector's
+ * rule a declaration sits in -- selectors here never contain a `;`, so a
+ * global "property: value;" scan can't cross a rule boundary and mistake
+ * part of a selector for a declaration) and flags every color-ish
+ * declaration whose value isn't a `var(--...)` token reference or one of
+ * `safeSet`'s allowed non-token keywords, pushing one failure (prefixed with
+ * `label`) per offender into `failures`. */
+function scanColorWiring(source, label, safeSet, failures) {
+  const styleMatch = source.match(/<style[^>]*>([\s\S]*?)<\/style>/);
+  if (!styleMatch) {
+    failures.push(`${label}: no <style> block found`);
+    return;
+  }
+
+  const commentMasked = maskComments(styleMatch[1]);
+
+  const declRe = /([a-zA-Z-]+)\s*:\s*([^;{}]+);/g;
+  let match;
+  while ((match = declRe.exec(commentMasked)) !== null) {
+    const property = match[1].trim().toLowerCase();
+    if (!COLOR_PROPERTY_RE.test(property)) continue;
+
+    const value = match[2].replace(/\s+/g, ' ').trim().toLowerCase();
+    if (value.includes('var(--')) continue;
+    if (safeSet.has(value)) continue;
+
+    failures.push(
+      `${label} <style> "${property}: ${match[2].trim()};": expected a var(--...) token reference (or none/inherit/transparent), found a literal value`,
+    );
+  }
+}
+
 /** TabBar.svelte (Story 1.3) is new nav chrome with no prior automated
  * check -- both previous review passes flagged that gap. Asserts its
  * `<style>` block routes every color-ish declaration through `var(--...)`
@@ -542,32 +608,7 @@ function checkTabBarWiring(failures) {
     }
   }
 
-  const styleMatch = source.match(/<style[^>]*>([\s\S]*?)<\/style>/);
-  if (!styleMatch) {
-    failures.push('src/lib/components/TabBar.svelte: no <style> block found');
-    return;
-  }
-
-  const commentMasked = maskComments(styleMatch[1]);
-
-  // Declarations across the whole style block, regardless of which
-  // selector's rule they sit in -- selectors here never contain a `;`, so a
-  // global "property: value;" scan can't cross a rule boundary and mistake
-  // part of a selector for a declaration.
-  const declRe = /([a-zA-Z-]+)\s*:\s*([^;{}]+);/g;
-  let match;
-  while ((match = declRe.exec(commentMasked)) !== null) {
-    const property = match[1].trim().toLowerCase();
-    if (!COLOR_PROPERTY_RE.test(property)) continue;
-
-    const value = match[2].replace(/\s+/g, ' ').trim().toLowerCase();
-    if (value.includes('var(--')) continue;
-    if (SAFE_NON_TOKEN_VALUES.has(value)) continue;
-
-    failures.push(
-      `src/lib/components/TabBar.svelte <style> "${property}: ${match[2].trim()};": expected a var(--...) token reference (or none/inherit/transparent), found a literal value`,
-    );
-  }
+  scanColorWiring(source, 'src/lib/components/TabBar.svelte', SAFE_NON_TOKEN_VALUES, failures);
 }
 
 /** Story 1.4's SkeletonDayRow.svelte is a new presentational component with
@@ -579,28 +620,12 @@ function checkTabBarWiring(failures) {
 function checkSkeletonDayRowWiring(failures) {
   const source = readFileSync(skeletonDayRowSveltePath, 'utf8');
 
-  const styleMatch = source.match(/<style[^>]*>([\s\S]*?)<\/style>/);
-  if (!styleMatch) {
-    failures.push('src/lib/components/SkeletonDayRow.svelte: no <style> block found');
-    return;
-  }
-
-  const commentMasked = maskComments(styleMatch[1]);
-
-  const declRe = /([a-zA-Z-]+)\s*:\s*([^;{}]+);/g;
-  let match;
-  while ((match = declRe.exec(commentMasked)) !== null) {
-    const property = match[1].trim().toLowerCase();
-    if (!COLOR_PROPERTY_RE.test(property)) continue;
-
-    const value = match[2].replace(/\s+/g, ' ').trim().toLowerCase();
-    if (value.includes('var(--')) continue;
-    if (SAFE_NON_TOKEN_VALUES.has(value)) continue;
-
-    failures.push(
-      `src/lib/components/SkeletonDayRow.svelte <style> "${property}: ${match[2].trim()};": expected a var(--...) token reference (or none/inherit/transparent), found a literal value`,
-    );
-  }
+  scanColorWiring(
+    source,
+    'src/lib/components/SkeletonDayRow.svelte',
+    SAFE_NON_TOKEN_VALUES,
+    failures,
+  );
 }
 
 /** Story 1.5's DayRowCard.svelte is the new per-day row component. Same
@@ -627,28 +652,7 @@ function checkDayRowCardWiring(failures) {
     );
   }
 
-  const styleMatch = source.match(/<style[^>]*>([\s\S]*?)<\/style>/);
-  if (!styleMatch) {
-    failures.push('src/lib/components/DayRowCard.svelte: no <style> block found');
-    return;
-  }
-
-  const commentMasked = maskComments(styleMatch[1]);
-
-  const declRe = /([a-zA-Z-]+)\s*:\s*([^;{}]+);/g;
-  let match;
-  while ((match = declRe.exec(commentMasked)) !== null) {
-    const property = match[1].trim().toLowerCase();
-    if (!COLOR_PROPERTY_RE.test(property)) continue;
-
-    const value = match[2].replace(/\s+/g, ' ').trim().toLowerCase();
-    if (value.includes('var(--')) continue;
-    if (SAFE_NON_TOKEN_VALUES.has(value)) continue;
-
-    failures.push(
-      `src/lib/components/DayRowCard.svelte <style> "${property}: ${match[2].trim()};": expected a var(--...) token reference (or none/inherit/transparent), found a literal value`,
-    );
-  }
+  scanColorWiring(source, 'src/lib/components/DayRowCard.svelte', SAFE_NON_TOKEN_VALUES, failures);
 }
 
 /** Story 1.6's CrashFallback.svelte is the new top-level error-boundary
@@ -690,26 +694,98 @@ function checkCrashFallbackWiring(failures) {
     );
   }
 
-  const styleMatch = source.match(/<style[^>]*>([\s\S]*?)<\/style>/);
-  if (!styleMatch) {
-    failures.push('src/lib/components/CrashFallback.svelte: no <style> block found');
-    return;
+  scanColorWiring(source, 'src/lib/components/CrashFallback.svelte', SAFE_NON_TOKEN_VALUES, failures);
+}
+
+/** Story 2.1's WorkoutDetail.svelte (the new drill-down dialog) and its
+ * presentational child WorkoutDetailStat.svelte -- same color-token-wiring
+ * scan as every other component check above, via the shared
+ * `scanColorWiring` helper, plus WorkoutDetail's own real-dialog-semantics
+ * requirement from this story's Boundaries: `role="dialog"`,
+ * `aria-modal="true"`, and an `aria-labelledby` naming the title. Both
+ * semantic checks scan a comment-stripped copy, same reasoning as
+ * `checkCrashFallbackWiring` above (defensive against any future comment
+ * that happens to mention these attribute names, the way
+ * `CrashFallback.svelte`'s own header comment genuinely does today). */
+function checkWorkoutDetailWiring(failures) {
+  const detailSource = readFileSync(workoutDetailSveltePath, 'utf8');
+  const statSource = readFileSync(workoutDetailStatSveltePath, 'utf8');
+
+  const markupOnly = detailSource.replace(/<!--[\s\S]*?-->/g, (comment) =>
+    comment.replace(/[^\n]/g, ' '),
+  );
+
+  if (!markupOnly.includes('role="dialog"')) {
+    failures.push(
+      'src/lib/components/WorkoutDetail.svelte: no role="dialog" found -- this story\'s Boundaries ' +
+        'require real dialog semantics',
+    );
   }
 
-  const commentMasked = maskComments(styleMatch[1]);
-
-  const declRe = /([a-zA-Z-]+)\s*:\s*([^;{}]+);/g;
-  let match;
-  while ((match = declRe.exec(commentMasked)) !== null) {
-    const property = match[1].trim().toLowerCase();
-    if (!COLOR_PROPERTY_RE.test(property)) continue;
-
-    const value = match[2].replace(/\s+/g, ' ').trim().toLowerCase();
-    if (value.includes('var(--')) continue;
-    if (SAFE_NON_TOKEN_VALUES.has(value)) continue;
-
+  if (!markupOnly.includes('aria-modal="true"')) {
     failures.push(
-      `src/lib/components/CrashFallback.svelte <style> "${property}: ${match[2].trim()};": expected a var(--...) token reference (or none/inherit/transparent), found a literal value`,
+      'src/lib/components/WorkoutDetail.svelte: no aria-modal="true" found -- this story\'s ' +
+        'Boundaries require real dialog semantics',
+    );
+  }
+
+  const labelledbyMatch = markupOnly.match(/aria-labelledby="([^"]+)"/);
+  if (!labelledbyMatch) {
+    failures.push(
+      'src/lib/components/WorkoutDetail.svelte: no aria-labelledby found -- the dialog must name ' +
+        "its title (this story's Boundaries)",
+    );
+  } else if (!markupOnly.includes(`id="${labelledbyMatch[1]}"`)) {
+    failures.push(
+      `src/lib/components/WorkoutDetail.svelte: aria-labelledby="${labelledbyMatch[1]}" has no ` +
+        `matching id="${labelledbyMatch[1]}" in the file -- the dialog's accessible name would be ` +
+        'broken for assistive technology',
+    );
+  }
+
+  scanColorWiring(
+    detailSource,
+    'src/lib/components/WorkoutDetail.svelte',
+    SAFE_NON_TOKEN_VALUES,
+    failures,
+  );
+  scanColorWiring(
+    statSource,
+    'src/lib/components/WorkoutDetailStat.svelte',
+    SAFE_NON_TOKEN_VALUES,
+    failures,
+  );
+}
+
+/** A fresh-review pass on Story 2.1 found that `checkWorkoutDetailWiring`
+ * above only ever scans `WorkoutDetail.svelte`/`WorkoutDetailStat.svelte`'s
+ * own markup -- nothing checks that `App.svelte` actually wires
+ * `DayRowCard`'s `onOpen` through to mounting `WorkoutDetail`, the same class
+ * of gap `checkRootWiring` below was added to close for Story 1.6's
+ * error-boundary wiring. Asserts `src/App.svelte` contains the `selectedDate`
+ * state, an `onOpen=` prop pass, and the conditional `WorkoutDetail` mount --
+ * a source-text presence scan, same convention as every other check here. */
+function checkWorkoutDetailAppWiring(failures) {
+  const source = readFileSync(appSveltePath, 'utf8');
+
+  if (!source.includes('selectedDate')) {
+    failures.push(
+      'src/App.svelte: no selectedDate found -- WorkoutDetail must be driven by a selectedDate ' +
+        "state (this story's Code Map)",
+    );
+  }
+
+  if (!source.includes('onOpen=')) {
+    failures.push(
+      'src/App.svelte: no onOpen= found -- DayRowCard must be wired with an onOpen prop that opens ' +
+        'WorkoutDetail',
+    );
+  }
+
+  if (!source.includes('<WorkoutDetail')) {
+    failures.push(
+      'src/App.svelte: no <WorkoutDetail mount found -- selectedDate must conditionally mount the ' +
+        'WorkoutDetail dialog',
     );
   }
 }
@@ -760,28 +836,7 @@ function checkRootWiring(failures) {
  * automatically covers these and any future selector too. */
 function checkAppSvelteColorWiring(failures) {
   const source = readFileSync(appSveltePath, 'utf8');
-  const styleMatch = source.match(/<style[^>]*>([\s\S]*?)<\/style>/);
-  if (!styleMatch) {
-    failures.push('src/App.svelte: no <style> block found');
-    return;
-  }
-
-  const commentMasked = maskComments(styleMatch[1]);
-
-  const declRe = /([a-zA-Z-]+)\s*:\s*([^;{}]+);/g;
-  let match;
-  while ((match = declRe.exec(commentMasked)) !== null) {
-    const property = match[1].trim().toLowerCase();
-    if (!COLOR_PROPERTY_RE.test(property)) continue;
-
-    const value = match[2].replace(/\s+/g, ' ').trim().toLowerCase();
-    if (value.includes('var(--')) continue;
-    if (APP_SVELTE_SAFE_NON_TOKEN_VALUES.has(value)) continue;
-
-    failures.push(
-      `src/App.svelte <style> "${property}: ${match[2].trim()};": expected a var(--...) token reference (or none/inherit/transparent), found a literal value`,
-    );
-  }
+  scanColorWiring(source, 'src/App.svelte', APP_SVELTE_SAFE_NON_TOKEN_VALUES, failures);
 }
 
 function main() {
@@ -809,6 +864,8 @@ function main() {
   checkSkeletonDayRowWiring(failures);
   checkDayRowCardWiring(failures);
   checkCrashFallbackWiring(failures);
+  checkWorkoutDetailWiring(failures);
+  checkWorkoutDetailAppWiring(failures);
   checkRootWiring(failures);
 
   if (failures.length > 0) {
@@ -835,6 +892,8 @@ function main() {
       `DayRowCard.svelte routes its color declarations through tokens and carries a real <button type="button"> ` +
       `root plus an aria-hidden status chip; and CrashFallback.svelte routes its color declarations through ` +
       `tokens and carries role="alert" plus a real <button type="button"> Reload control; and ` +
+      `WorkoutDetail.svelte/WorkoutDetailStat.svelte route their color declarations through tokens and ` +
+      `WorkoutDetail carries role="dialog", aria-modal="true", and aria-labelledby; and ` +
       `main.ts/Root.svelte still wire the error boundary itself (mount(Root, ...), ` +
       `<svelte:boundary>, the failed snippet, and both window listeners).`,
   );

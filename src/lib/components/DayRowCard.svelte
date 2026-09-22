@@ -9,26 +9,22 @@
   // until Epic 2) -- getDayView's `'logged'`/`'orphaned-log'` branches are
   // never reached here, only exercised for AD-8's contract completeness.
   //
-  // Built as a real `<button type="button">` now, with a deliberate no-op
-  // `onclick`, per EXPERIENCE.md's build-time semantic requirement -- Story
-  // 2.1 wires Workout Detail drill-down on top of this same element rather
-  // than restructuring non-interactive markup later (Design Notes).
+  // Built as a real `<button type="button">` now. Story 2.1 wires Workout
+  // Detail drill-down onto this same element via the required `onOpen` prop,
+  // rather than restructuring non-interactive markup later (Design Notes).
   import { getDayView } from '../domain/getDayView';
+  import { parseLocalDate } from '../domain/date';
   import type { Workout } from '../domain/parsePlan';
 
-  let { date, workout, isToday }: { date: string; workout: Workout | undefined; isToday: boolean } =
+  let {
+    date,
+    workout,
+    isToday,
+    onOpen,
+  }: { date: string; workout: Workout | undefined; isToday: boolean; onOpen: (date: string) => void } =
     $props();
 
   const dayView = $derived(getDayView(workout, undefined));
-
-  // Local-time parse of an already-validated `YYYY-MM-DD` string -- never
-  // `new Date(date)`, which parses a date-only ISO string as UTC midnight
-  // and can render the wrong weekday once read back with local getters
-  // (AD-2's "local time, never UTC" rule, shared with domain/date.ts).
-  function parseLocalDate(iso: string): Date {
-    const [year, month, day] = iso.split('-').map(Number);
-    return new Date(year, month - 1, day);
-  }
 
   const dateObj = $derived(parseLocalDate(date));
   const weekdayShort = $derived(
@@ -73,11 +69,9 @@
   class="day-row"
   class:today={isToday}
   data-today={isToday ? 'true' : undefined}
+  data-date={date}
   aria-label={ariaLabel}
-  onclick={() => {
-    // Deliberate no-op -- Workout Detail drill-down arrives in Story 2.1
-    // (see Design Notes / this story's Never section).
-  }}
+  onclick={() => onOpen(date)}
 >
   <span
     class="chip"
