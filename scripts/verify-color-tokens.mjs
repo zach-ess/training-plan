@@ -702,11 +702,14 @@ function checkCrashFallbackWiring(failures) {
  * scan as every other component check above, via the shared
  * `scanColorWiring` helper, plus WorkoutDetail's own real-dialog-semantics
  * requirement from this story's Boundaries: `role="dialog"`,
- * `aria-modal="true"`, and an `aria-labelledby` naming the title. Both
- * semantic checks scan a comment-stripped copy, same reasoning as
- * `checkCrashFallbackWiring` above (defensive against any future comment
- * that happens to mention these attribute names, the way
- * `CrashFallback.svelte`'s own header comment genuinely does today). */
+ * `aria-modal="true"`, and an `aria-labelledby` naming the title, plus a
+ * real, focusable `<button type="button" class="back-button">` for Back --
+ * the same convention `checkDayRowCardWiring`/`checkCrashFallbackWiring`
+ * already apply to their own interactive control. All semantic checks scan
+ * a comment-stripped copy, same reasoning as `checkCrashFallbackWiring`
+ * above (defensive against any future comment that happens to mention these
+ * attribute names, the way `CrashFallback.svelte`'s own header comment
+ * genuinely does today). */
 function checkWorkoutDetailWiring(failures) {
   const detailSource = readFileSync(workoutDetailSveltePath, 'utf8');
   const statSource = readFileSync(workoutDetailStatSveltePath, 'utf8');
@@ -743,6 +746,14 @@ function checkWorkoutDetailWiring(failures) {
     );
   }
 
+  if (!/<button[^>]*type="button"[^>]*class="back-button"[^>]*>/.test(markupOnly)) {
+    failures.push(
+      'src/lib/components/WorkoutDetail.svelte: no <button type="button" class="back-button"> found -- ' +
+        'the Back control must be a real, focusable button (same convention as ' +
+        'checkDayRowCardWiring/checkCrashFallbackWiring)',
+    );
+  }
+
   scanColorWiring(
     detailSource,
     'src/lib/components/WorkoutDetail.svelte',
@@ -757,36 +768,125 @@ function checkWorkoutDetailWiring(failures) {
   );
 }
 
+/** Blanks `<!-- -->`, `/* *\/`, and `//` line comments out of a JS/Svelte
+ * source, keeping everything else (including quoted-string contents and any
+ * markup text) at its original offsets -- the same "check a comment-stripped
+ * copy" convention `checkCrashFallbackWiring`/`checkWorkoutDetailWiring`
+ * already use for HTML comments, extended to also cover the `//`/`/* *\/`
+ * script comments a `<script>` block can contain, which those two never
+ * needed to mask.
+ *
+ * Deliberately does *not* also run `maskStrings`: that helper's quote-pairing
+ * assumes CSS-only content (the only thing it's ever been applied to
+ * elsewhere in this file) and misfires on this component's plain markup
+ * text, which routinely contains unpaired apostrophes (e.g. "Couldn't load
+ * your plan") that aren't string delimiters at all -- pairing one of those
+ * with an unrelated later quote would blank large, unrelated stretches of
+ * real code. Comment-stripping alone is what this check actually needs. */
+function maskAllComments(source) {
+  const htmlMasked = source.replace(/<!--[\s\S]*?-->/g, (comment) =>
+    comment.replace(/[^\n]/g, ' '),
+  );
+  const blockMasked = maskComments(htmlMasked);
+  return blockMasked.replace(/\/\/[^\n]*/g, (comment) => ' '.repeat(comment.length));
+}
+
+/** Extracts the source text of the named function's own body (the text
+ * between its outermost `{`/`}`, braces excluded) via brace-depth counting --
+ * the same general technique `extractBlock` above already uses for CSS
+ * blocks. Depth is counted over `maskAllComments(source)` so a brace inside a
+ * comment can't desync it, mirroring `extractBlock`'s braceMaskSource/
+ * contentSource split; the returned slice comes from the real `source`, not
+ * the masked copy, so the caller sees the function's actual code. (No
+ * `maskStrings` pass here either, for the same reason -- and `handleSelect`
+ * has no string literals containing a brace to guard against anyway.)
+ * Returns `null` if no `function <name>(...) {` is found or the brace never
+ * closes. */
+function extractFunctionBody(source, functionName) {
+  const masked = maskAllComments(source);
+  const startMatch = masked.match(new RegExp(`function\\s+${functionName}\\s*\\([^)]*\\)[^{]*\\{`));
+  if (!startMatch) return null;
+
+  const braceStart = masked.indexOf('{', startMatch.index);
+  let depth = 0;
+  for (let i = braceStart; i < masked.length; i++) {
+    if (masked[i] === '{') depth++;
+    if (masked[i] === '}') {
+      depth--;
+      if (depth === 0) {
+        return source.slice(braceStart + 1, i);
+      }
+    }
+  }
+  return null;
+}
+
 /** A fresh-review pass on Story 2.1 found that `checkWorkoutDetailWiring`
  * above only ever scans `WorkoutDetail.svelte`/`WorkoutDetailStat.svelte`'s
  * own markup -- nothing checks that `App.svelte` actually wires
  * `DayRowCard`'s `onOpen` through to mounting `WorkoutDetail`, the same class
  * of gap `checkRootWiring` below was added to close for Story 1.6's
  * error-boundary wiring. Asserts `src/App.svelte` contains the `selectedDate`
- * state, an `onOpen=` prop pass, and the conditional `WorkoutDetail` mount --
- * a source-text presence scan, same convention as every other check here. */
+ * state, an `onOpen=` prop pass, and the conditional `WorkoutDetail` mount.
+ *
+ * A second, fresh-session review pass (2026-09-22) found the three checks
+ * below too weak on their own: they're whole-file `source.includes(...)`
+ * scans, so (a) a comment merely mentioning these substrings satisfies them
+ * with no real wiring present, and (b) they can't tell *which* code path a
+ * substring sits in -- concretely, that review demonstrated that deleting
+ * the tab-switch-close fix's `handleCloseDetail()` call from `handleSelect`
+ * (this story's Spec Change Log, 2026-09-22) still left this whole function
+ * green, since `selectedDate`/`onOpen=`/`<WorkoutDetail` are all still
+ * present elsewhere in the file. The three checks are now run against
+ * `maskAllComments(source)` instead of raw `source` (closing gap (a)), and a
+ * fourth, scoped check is added on top -- mirroring `checkTabBarWiring`'s
+ * own "extract the specific function/element's own source slice, then check
+ * properties within that slice" technique -- that extracts `handleSelect`'s
+ * own body via `extractFunctionBody` and asserts it actually calls
+ * `handleCloseDetail()`, so that specific regression (and any future one
+ * that guts `handleSelect`'s close-and-restore-focus behavior) is caught
+ * directly instead of relying on unrelated code elsewhere in the file to
+ * keep the whole-file checks green. */
 function checkWorkoutDetailAppWiring(failures) {
   const source = readFileSync(appSveltePath, 'utf8');
+  const masked = maskAllComments(source);
 
-  if (!source.includes('selectedDate')) {
+  if (!masked.includes('selectedDate')) {
     failures.push(
       'src/App.svelte: no selectedDate found -- WorkoutDetail must be driven by a selectedDate ' +
         "state (this story's Code Map)",
     );
   }
 
-  if (!source.includes('onOpen=')) {
+  if (!masked.includes('onOpen=')) {
     failures.push(
       'src/App.svelte: no onOpen= found -- DayRowCard must be wired with an onOpen prop that opens ' +
         'WorkoutDetail',
     );
   }
 
-  if (!source.includes('<WorkoutDetail')) {
+  if (!masked.includes('<WorkoutDetail')) {
     failures.push(
       'src/App.svelte: no <WorkoutDetail mount found -- selectedDate must conditionally mount the ' +
         'WorkoutDetail dialog',
     );
+  }
+
+  const handleSelectBody = extractFunctionBody(source, 'handleSelect');
+  if (handleSelectBody === null) {
+    failures.push(
+      'src/App.svelte: no function handleSelect(...) { ... } found -- expected the tab-switch ' +
+        'handler wired to TabBar\'s onSelect',
+    );
+  } else {
+    const handleSelectMasked = maskAllComments(handleSelectBody);
+    if (!handleSelectMasked.includes('handleCloseDetail()')) {
+      failures.push(
+        'src/App.svelte: handleSelect(...) never calls handleCloseDetail() -- a tab switch must ' +
+          'close any open WorkoutDetail through the same focus-restoration logic as Back/scrim/Escape ' +
+          '(Spec Change Log, 2026-09-22), not a bare `selectedDate = null` that silently drops focus',
+      );
+    }
   }
 }
 
@@ -893,8 +993,10 @@ function main() {
       `root plus an aria-hidden status chip; and CrashFallback.svelte routes its color declarations through ` +
       `tokens and carries role="alert" plus a real <button type="button"> Reload control; and ` +
       `WorkoutDetail.svelte/WorkoutDetailStat.svelte route their color declarations through tokens and ` +
-      `WorkoutDetail carries role="dialog", aria-modal="true", and aria-labelledby; and ` +
-      `main.ts/Root.svelte still wire the error boundary itself (mount(Root, ...), ` +
+      `WorkoutDetail carries role="dialog", aria-modal="true", aria-labelledby, and a real ` +
+      `<button type="button" class="back-button">; and src/App.svelte wires WorkoutDetail to the day list ` +
+      `(selectedDate, onOpen=, <WorkoutDetail mount) and handleSelect closes it via handleCloseDetail() on a ` +
+      `tab switch; and main.ts/Root.svelte still wire the error boundary itself (mount(Root, ...), ` +
       `<svelte:boundary>, the failed snippet, and both window listeners).`,
   );
 }

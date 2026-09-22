@@ -23,11 +23,19 @@
   let { date, workout, onClose }: { date: string; workout: Workout | undefined; onClose: () => void } =
     $props();
   // `date` is part of this component's frozen prop contract (Code Map) but
-  // isn't read in the component body -- the removed `data-workout-detail-date`
-  // attribute was its only prior use, and nothing reads it. Kept as a prop
-  // (App.svelte still passes it) without reintroducing that dead markup; this
-  // single reference exists only to satisfy noUnusedLocals, not to read it
-  // reactively, hence the ignore below.
+  // isn't read reactively in the component body -- the removed
+  // `data-workout-detail-date` attribute was its only prior use, and
+  // nothing reads it now. Kept as a prop (App.svelte still passes it)
+  // without reintroducing that dead markup. The `svelte-ignore` below is
+  // load-bearing, not decorative: a fresh-session review incorrectly
+  // assumed it suppressed nothing, but `void date;` at this top-level
+  // script scope genuinely triggers Svelte's `state_referenced_locally`
+  // warning (reactive `$props()` values, like `$state`, only capture their
+  // initial value when referenced outside a closure/reactive context) --
+  // confirmed by removing this line and observing `svelte-check` report
+  // exactly that warning at this location. This one-time initial-value read
+  // is intentional (the prop is never meant to be read reactively here), so
+  // the ignore is the correct call, not a workaround for the wrong rule.
   // svelte-ignore state_referenced_locally
   void date;
 
@@ -133,6 +141,9 @@
        bottom-padding calc so the two stay in sync with the same tab-bar
        height and gesture-nav inset. */
     bottom: calc(var(--tab-bar-height) + env(safe-area-inset-bottom, 0px));
+    /* This codebase's first z-index usage. A later overlay (e.g. an Edit
+       form, or a toast/celebration overlay) should coordinate its own
+       z-index against this value rather than picking an arbitrary one. */
     z-index: 20;
     display: flex;
     align-items: flex-end;

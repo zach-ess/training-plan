@@ -91,7 +91,16 @@
     // covered by a modal"), so without this a tab switch would leave the
     // dialog open on top of whichever tab is now active. Closing it here
     // keeps it from ever persisting across a tab change.
-    selectedDate = null;
+    //
+    // Routed through `handleCloseDetail()` (Spec Change Log, 2026-09-22),
+    // not a bare `selectedDate = null`, so this 4th close trigger runs the
+    // same focus-restoration logic as Back/scrim/Escape instead of silently
+    // dropping focus. The `if` guard just skips pointless work when no
+    // dialog is open -- `handleCloseDetail` is otherwise safe to call
+    // unconditionally.
+    if (selectedDate) {
+      handleCloseDetail();
+    }
   }
 
   // Fired once on mount. Reads a cache hit for an instant paint (if one
