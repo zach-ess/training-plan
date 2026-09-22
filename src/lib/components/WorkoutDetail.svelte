@@ -1,52 +1,86 @@
 <script lang="ts">
-  // Story 2.1 -- WorkoutDetail: the read-only drill-down opened by tapping a
-  // day row (Home's tap-to-drill-down primitive, "the single UX pattern
-  // [Zach] most wants preserved" -- EXPERIENCE.md). Built as an overlay, not
-  // a route/view swap, so App.svelte's day list stays mounted underneath and
+  // Story 2.1 -- WorkoutDetail: the drill-down opened by tapping a day row
+  // (Home's tap-to-drill-down primitive, "the single UX pattern [Zach] most
+  // wants preserved" -- EXPERIENCE.md). Built as an overlay, not a
+  // route/view swap, so App.svelte's day list stays mounted underneath and
   // `dayRange`/`activeTab`/scroll position are never touched by opening or
   // closing this component (this story's Boundaries).
   //
-  // Read-only per this story's scope: no Mark Complete/Edit UI anywhere
-  // here, and `getDayView` is always called with `logEntry: undefined` --
-  // the same convention `DayRowCard` already uses, since no Data Store
-  // LogEntry read exists until later Epic 2 stories (AD-8).
+  // Story 2.2 -- no longer read-only: reads the real LogEntry for `date` off
+  // the new Data Store, renders the `ButtonPrimary` Mark Complete/Incomplete
+  // toggle (AD-9's `setCompleted`), and mounts `CompletionCelebration`
+  // momentarily after a successful Mark Complete write (never on Mark
+  // Incomplete, never on a failed write).
   //
   // `workout` is a reactive prop (App.svelte derives it from
   // `workoutsByDate.get(selectedDate)`), so a background Plan refetch that
   // changes or removes this date's Workout while the dialog is open updates
   // `dayView` in place via `$derived` -- the same reactive pattern Home's own
-  // day list already relies on (I/O matrix).
+  // day list already relies on (I/O matrix). `logEntry` is likewise
+  // `$derived` off the Data Store, so a successful `setCompleted` write
+  // (which reassigns `logStore.entries`) re-renders `dayView`/`ButtonPrimary`
+  // in place too.
   import { getDayView } from '../domain/getDayView';
   import type { Workout } from '../domain/parsePlan';
+  import { getLogEntry, setCompleted } from '../data/logStore.svelte';
   import WorkoutDetailStat from './WorkoutDetailStat.svelte';
+  import ButtonPrimary from './ButtonPrimary.svelte';
+  import CompletionCelebration from './CompletionCelebration.svelte';
 
   let { date, workout, onClose }: { date: string; workout: Workout | undefined; onClose: () => void } =
     $props();
-  // `date` is part of this component's frozen prop contract (Code Map) but
-  // isn't read reactively in the component body -- the removed
-  // `data-workout-detail-date` attribute was its only prior use, and
-  // nothing reads it now. Kept as a prop (App.svelte still passes it)
-  // without reintroducing that dead markup. The `svelte-ignore` below is
-  // load-bearing, not decorative: a fresh-session review incorrectly
-  // assumed it suppressed nothing, but `void date;` at this top-level
-  // script scope genuinely triggers Svelte's `state_referenced_locally`
-  // warning (reactive `$props()` values, like `$state`, only capture their
-  // initial value when referenced outside a closure/reactive context) --
-  // confirmed by removing this line and observing `svelte-check` report
-  // exactly that warning at this location. This one-time initial-value read
-  // is intentional (the prop is never meant to be read reactively here), so
-  // the ignore is the correct call, not a workaround for the wrong rule.
-  // svelte-ignore state_referenced_locally
-  void date;
 
-  const dayView = $derived(getDayView(workout, undefined));
+  const logEntry = $derived(getLogEntry(date));
+  const dayView = $derived(getDayView(workout, logEntry));
   const isRestDay = $derived(dayView.kind === 'empty');
   // `||`, not `??` -- mirrors DayRowCard's own "never blank" rule: a Workout
   // whose `type` is present but an empty string must still fall back to
   // "Workout" rather than rendering blank.
   const title = $derived(isRestDay ? 'Rest Day' : dayView.type || 'Workout');
+  const isCompleted = $derived(dayView.completed === true);
+
+  // Story 2.2 -- Mark Complete/Incomplete write state. `writeErrorReason` is
+  // `undefined` whenever the last write attempt (or no attempt yet) didn't
+  // fail; a truthy value shows the plain-voice retry error and, per this
+  // story's Boundaries, leaves `logStore`'s (and so `dayView`'s) in-memory
+  // state exactly as it was -- there is nothing to roll back here.
+  let writeErrorReason = $state<'quota-exceeded' | 'write-error' | undefined>(undefined);
+  // Whether `CompletionCelebration` is currently mounted. Only ever set
+  // `true` right after a *successful* write that flips completion on (never
+  // on Mark Incomplete, never on a failed write) -- `CompletionCelebration`
+  // itself flips this back via `onSettled` once its single-shot playback
+  // finishes, unmounting it.
+  let celebrating = $state(false);
+
+  function handleToggleComplete() {
+    writeErrorReason = undefined;
+    const wasCompleted = isCompleted;
+    // Mirrors epics.md's own call shapes exactly: Mark Complete passes the
+    // current Workout (AD-1's value-freeze, consulted only on first
+    // creation); Mark Incomplete never does, since `setCompleted` never
+    // touches `duration`/`distance`/`type`/`notes` on an existing entry
+    // regardless (AD-9) -- omitting it here just matches the spec's own
+    // stated call, rather than relying on that internal no-op.
+    const result = wasCompleted ? setCompleted(date, false) : setCompleted(date, true, workout);
+    if (!result.ok) {
+      writeErrorReason = result.reason;
+      return;
+    }
+    // Completion Feedback fires only on a successful write that actually
+    // turns completion *on* -- never on Mark Incomplete (this story's
+    // Boundaries/UX-DR7).
+    if (!wasCompleted) {
+      celebrating = true;
+    }
+  }
+
+  function handleCelebrationSettled() {
+    celebrating = false;
+  }
 
   let backButtonEl = $state<HTMLButtonElement | undefined>();
+  let markButtonEl = $state<HTMLButtonElement | undefined>();
+  let retryButtonEl = $state<HTMLButtonElement | undefined>();
 
   // Mirrors Root.svelte's `$effect` + `addEventListener` + cleanup pattern
   // (this app's only prior example of an imperative mount/cleanup effect):
@@ -65,17 +99,36 @@
         onClose();
         return;
       }
-      // Minimal focus trap: the day list underneath stays mounted and
-      // visible (Boundaries), not `inert`, so without this a Tab/Shift+Tab
-      // from the Back button would leak focus onto a day row dimmed behind
-      // the scrim -- not "the dialog's contents," which is what a keyboard
-      // user tabbing through an open dialog should stay inside. The Back
-      // button is this dialog's only focusable control (read-only, no Mark
-      // Complete/Edit UI), so keeping focus pinned there for every Tab press
-      // is a complete trap, not a partial one that only handles some cases.
+      // Focus trap: the day list underneath stays mounted and visible
+      // (Boundaries), not `inert`, so without this a Tab/Shift+Tab from this
+      // dialog's controls would leak focus onto a day row dimmed behind the
+      // scrim -- not "the dialog's contents," which is what a keyboard user
+      // tabbing through an open dialog should stay inside.
+      //
+      // Story 2.2 -- this dialog can now have up to three focusable controls
+      // (`ButtonPrimary` whenever `dayView.kind !== 'empty'`, plus a Retry
+      // button whenever the last write failed), so this cycles Tab/Shift+Tab
+      // between whichever controls actually exist right now (each one is
+      // `undefined` when not rendered -- a rest day has only Back, same as
+      // Story 2.1) rather than pinning to one fixed element or hardcoding a
+      // fixed-length list that could leave the Retry button Tab-unreachable.
       if (event.key === 'Tab') {
         event.preventDefault();
-        backButtonEl?.focus();
+        const focusables = [backButtonEl, markButtonEl, retryButtonEl].filter(
+          (el): el is HTMLButtonElement => el !== undefined,
+        );
+        if (focusables.length === 0) {
+          return;
+        }
+        const activeIndex = focusables.indexOf(document.activeElement as HTMLButtonElement);
+        const step = event.shiftKey ? -1 : 1;
+        const nextIndex =
+          activeIndex === -1
+            ? event.shiftKey
+              ? focusables.length - 1
+              : 0
+            : (activeIndex + step + focusables.length) % focusables.length;
+        focusables[nextIndex]?.focus();
       }
     }
 
@@ -124,9 +177,38 @@
       {:else}
         <p class="empty-copy">No stats logged for this workout</p>
       {/if}
+      <!-- Story 2.2 -- renders for `'planned'`/`'logged'`/`'orphaned-log'`
+           kinds (never `'empty'`, since this whole branch is already gated
+           on `!isRestDay`), per this story's Boundaries. -->
+      <div class="actions">
+        <ButtonPrimary
+          completed={isCompleted}
+          disabled={celebrating}
+          onclick={handleToggleComplete}
+          bind:buttonEl={markButtonEl}
+        />
+        {#if writeErrorReason}
+          <p class="write-error" role="alert">
+            {writeErrorReason === 'quota-exceeded'
+              ? "Couldn't save — your device storage is full. Free up space and try again."
+              : "Couldn't save — something went wrong. Try again."}
+            <button
+              type="button"
+              class="retry-button"
+              bind:this={retryButtonEl}
+              onclick={handleToggleComplete}
+            >
+              Retry
+            </button>
+          </p>
+        {/if}
+      </div>
     {/if}
   </div>
 </div>
+{#if celebrating}
+  <CompletionCelebration onSettled={handleCelebrationSettled} />
+{/if}
 
 <style>
   .scrim {
@@ -201,5 +283,45 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr));
     gap: var(--space-4);
+  }
+
+  .actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
+    margin-top: var(--space-7);
+  }
+
+  .write-error {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-4);
+    font-family: var(--type-body-font-family);
+    font-size: var(--type-body-size);
+    font-weight: var(--type-body-weight);
+    line-height: var(--type-body-line-height);
+    color: var(--accent-caution);
+  }
+
+  .retry-button {
+    all: unset;
+    box-sizing: border-box;
+    min-height: 3rem; /* 48dp-equivalent minimum tap target */
+    padding: var(--space-4) var(--space-6);
+    border: 1px solid var(--accent-caution);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    background: transparent;
+    color: var(--accent-caution);
+    font-family: var(--type-body-font-family);
+    font-size: var(--type-body-size);
+    font-weight: var(--type-body-weight);
+  }
+
+  .retry-button:focus-visible {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: 2px;
   }
 </style>

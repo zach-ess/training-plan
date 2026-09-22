@@ -2,17 +2,21 @@
 // LogEntry for rendering. `DayRowCard`, `WorkoutDetail`/`WorkoutDetailStat`,
 // and History's day-by-day rendering are all meant to call this one
 // function rather than each writing their own merge logic (AD-8's stated
-// purpose), even though this story's only call site (`DayRowCard`) always
-// passes `logEntry: undefined` -- no Data Store LogEntry read exists until
-// Epic 2. The `'logged'`/`'orphaned-log'` branches below exist for AD-8's
-// fixed 4-quadrant contract and for Epic 2 to build on, not exercised by
-// any call site this story adds.
+// purpose). Story 1.5's own call site (`DayRowCard`) still always passes
+// `logEntry: undefined` (Home's day list is untouched by Story 2.2, per this
+// story's Design Notes); Story 2.2 adds `WorkoutDetail` as the first real
+// caller of the `'logged'`/`'orphaned-log'` branches, reading an actual
+// LogEntry from the new Data Store (`data/logStore.svelte.ts`).
 //
-// `logEntry` is deliberately untyped (`unknown`) rather than a `LogEntry`
-// interface -- that type doesn't exist yet (Epic 2's Data Store). When it's
-// present, its `type`/`duration`/`distance` are read the same defensively
-// tolerant way `parsePlan` reads a raw Workout, rather than assuming its
-// shape.
+// `logEntry` stays deliberately untyped (`unknown`) rather than the
+// `LogEntry` interface Story 2.2's Data Store (`data/logStore.svelte.ts`)
+// introduced -- this function is called from both `DayRowCard` (which still
+// always passes `logEntry: undefined`, per this story's Design Notes) and
+// `WorkoutDetail` (which now passes a real `LogEntry`), and reading it the
+// same defensively tolerant way `parsePlan` reads a raw Workout keeps this
+// one function correct for either caller without importing the Data Store's
+// type into the Derived Domain layer. `readLoggedFields` below is the single
+// place that knows LogEntry's field names.
 
 import type { Workout } from './parsePlan';
 
@@ -23,20 +27,28 @@ export interface DayView {
   type?: string;
   duration?: string;
   distance?: string;
+  // Story 2.2 -- only ever set for `'logged'`/`'orphaned-log'` kinds (read
+  // off the LogEntry); left `undefined` for `'planned'`/`'empty'`, where
+  // there is no LogEntry to read a completion state from at all.
+  completed?: boolean;
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
-/** Reads whichever of `type`/`duration`/`distance` are present as strings
+/** Reads whichever of `type`/`duration`/`distance`/`completed` are present
  * off an opaque LogEntry-shaped value -- mirrors parsePlan's tolerant
- * reading of a raw Workout, since neither shape is formally locked yet. */
-function readLoggedFields(logEntry: unknown): Pick<DayView, 'type' | 'duration' | 'distance'> {
+ * reading of a raw Workout, since this function still treats `logEntry` as
+ * unknown rather than importing the Data Store's `LogEntry` type (see the
+ * header comment above). */
+function readLoggedFields(
+  logEntry: unknown,
+): Pick<DayView, 'type' | 'duration' | 'distance' | 'completed'> {
   if (!isRecord(logEntry)) {
     return {};
   }
-  const fields: Pick<DayView, 'type' | 'duration' | 'distance'> = {};
+  const fields: Pick<DayView, 'type' | 'duration' | 'distance' | 'completed'> = {};
   if (typeof logEntry.type === 'string') {
     fields.type = logEntry.type;
   }
@@ -45,6 +57,9 @@ function readLoggedFields(logEntry: unknown): Pick<DayView, 'type' | 'duration' 
   }
   if (typeof logEntry.distance === 'string') {
     fields.distance = logEntry.distance;
+  }
+  if (typeof logEntry.completed === 'boolean') {
+    fields.completed = logEntry.completed;
   }
   return fields;
 }

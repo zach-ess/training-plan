@@ -69,6 +69,19 @@
 // (and the new WorkoutDetail check) now call this one function instead of
 // each re-implementing the same scan (Epic 1 retro action item B1).
 //
+// Story 2.2 -- Mark Complete & Completion Feedback -- adds
+// `checkButtonPrimaryWiring`/`checkCompletionCelebrationWiring`, the same
+// color-token-wiring scan for the two new components `ButtonPrimary.svelte`
+// (the Mark Complete/Incomplete toggle) and `CompletionCelebration.svelte`
+// (the bundled Completion Feedback moment), plus each one's own semantic
+// requirement: `aria-pressed` on ButtonPrimary's `<button>`, and
+// `aria-live="polite"` on CompletionCelebration's announcement. It also
+// extends `checkWorkoutDetailWiring` to assert `WorkoutDetail.svelte` itself
+// wires the new LogEntry Data Store and components in (`getLogEntry(`/
+// `setCompleted(` calls, `<ButtonPrimary`/`<CompletionCelebration` mounts) --
+// the same "check the wiring, not just the component" gap
+// `checkWorkoutDetailAppWiring` closes for `App.svelte`.
+//
 // No test runner (vitest/jest) is installed in this project yet, so this is
 // a plain Node script run via `npm run test:tokens` -- it exits non-zero
 // (and prints errors) on any mismatch.
@@ -122,6 +135,22 @@ const workoutDetailStatSveltePath = path.join(
   'lib',
   'components',
   'WorkoutDetailStat.svelte',
+);
+const buttonPrimarySveltePath = path.join(
+  __dirname,
+  '..',
+  'src',
+  'lib',
+  'components',
+  'ButtonPrimary.svelte',
+);
+const completionCelebrationSveltePath = path.join(
+  __dirname,
+  '..',
+  'src',
+  'lib',
+  'components',
+  'CompletionCelebration.svelte',
 );
 const rootSveltePath = path.join(__dirname, '..', 'src', 'Root.svelte');
 const mainTsPath = path.join(__dirname, '..', 'src', 'main.ts');
@@ -754,6 +783,57 @@ function checkWorkoutDetailWiring(failures) {
     );
   }
 
+  // Story 2.2 -- WorkoutDetail is no longer read-only: it must read the
+  // real LogEntry (`getLogEntry`), write through `setCompleted`, and mount
+  // the new `ButtonPrimary`/`CompletionCelebration` components. Scanned
+  // against `markupOnly` for `<ButtonPrimary`/`<CompletionCelebration` (a
+  // tag mention, not markup a comment could satisfy) and against the raw
+  // source for the two Data Store calls, since those live in the `<script>`
+  // block a `<!-- -->` HTML-comment strip doesn't touch anyway.
+  if (!detailSource.includes('getLogEntry(')) {
+    failures.push(
+      'src/lib/components/WorkoutDetail.svelte: no getLogEntry( call found -- this story requires ' +
+        "reading the real LogEntry from the Data Store instead of Story 2.1's hardcoded undefined",
+    );
+  }
+  if (!detailSource.includes('setCompleted(')) {
+    failures.push(
+      'src/lib/components/WorkoutDetail.svelte: no setCompleted( call found -- Mark Complete/Incomplete ' +
+        'must write through the Data Store (AD-9)',
+    );
+  }
+  if (!markupOnly.includes('<ButtonPrimary')) {
+    failures.push(
+      'src/lib/components/WorkoutDetail.svelte: no <ButtonPrimary mount found -- the Mark ' +
+        'Complete/Incomplete toggle must be rendered (this story\'s Boundaries)',
+    );
+  }
+  if (!markupOnly.includes('<CompletionCelebration')) {
+    failures.push(
+      'src/lib/components/WorkoutDetail.svelte: no <CompletionCelebration mount found -- Completion ' +
+        'Feedback must fire on a successful Mark Complete write (FR7)',
+    );
+  }
+
+  // A fresh-review pass on Story 2.2 found that this check was extended for
+  // ButtonPrimary/CompletionCelebration presence but never for the new
+  // write-error/Retry UI -- nothing here asserted a role="alert" write-error
+  // block or .retry-button markup existed at all, so a regression removing
+  // that UI would go undetected.
+  if (!markupOnly.includes('role="alert"')) {
+    failures.push(
+      'src/lib/components/WorkoutDetail.svelte: no role="alert" found -- the write-error/Retry UI ' +
+        'must be an assertive live region so a screen reader announces a failed write without ' +
+        'requiring focus',
+    );
+  }
+  if (!markupOnly.includes('class="retry-button"')) {
+    failures.push(
+      'src/lib/components/WorkoutDetail.svelte: no class="retry-button" found -- a failed write must ' +
+        'render a Retry control',
+    );
+  }
+
   scanColorWiring(
     detailSource,
     'src/lib/components/WorkoutDetail.svelte',
@@ -763,6 +843,68 @@ function checkWorkoutDetailWiring(failures) {
   scanColorWiring(
     statSource,
     'src/lib/components/WorkoutDetailStat.svelte',
+    SAFE_NON_TOKEN_VALUES,
+    failures,
+  );
+}
+
+/** Story 2.2's ButtonPrimary.svelte -- the new Mark Complete/Mark Incomplete
+ * toggle. Same color-token-wiring scan as every other component check above,
+ * plus two semantic requirements this function actually verifies: a real
+ * `<button type="button">` root, and an `aria-pressed={completed}` binding
+ * (UX-DR10's toggle-state exposure) -- not merely the attribute's name
+ * present somewhere, which a hardcoded `aria-pressed="false"` would also
+ * satisfy. This function does *not* verify the 48dp minimum tap-target size
+ * or that `onclick` is forwarded to the underlying button; those remain
+ * unchecked here (a fresh-review pass on Story 2.2 found an earlier version
+ * of this comment claimed both). Scanned against a comment-stripped copy,
+ * same convention as `checkCrashFallbackWiring`/`checkWorkoutDetailWiring`
+ * above. */
+function checkButtonPrimaryWiring(failures) {
+  const source = readFileSync(buttonPrimarySveltePath, 'utf8');
+  const markupOnly = source.replace(/<!--[\s\S]*?-->/g, (comment) =>
+    comment.replace(/[^\n]/g, ' '),
+  );
+
+  if (!/<button[^>]*type="button"[^>]*>/.test(markupOnly)) {
+    failures.push(
+      'src/lib/components/ButtonPrimary.svelte: no <button type="button"> found -- the toggle must ' +
+        'be a real, focusable button',
+    );
+  }
+
+  if (!/aria-pressed=\{\s*completed\s*\}/.test(markupOnly)) {
+    failures.push(
+      'src/lib/components/ButtonPrimary.svelte: no aria-pressed={completed} binding found -- the ' +
+        'toggle state must be bound to the completed prop, not merely present as a hardcoded ' +
+        "attribute (UX-DR10, this story's Boundaries)",
+    );
+  }
+
+  scanColorWiring(source, 'src/lib/components/ButtonPrimary.svelte', SAFE_NON_TOKEN_VALUES, failures);
+}
+
+/** Story 2.2's CompletionCelebration.svelte -- the bundled Completion
+ * Feedback moment. Same color-token-wiring scan as every other component
+ * check above, plus its own semantic requirement (Code Map / UX-DR7): an
+ * `aria-live="polite"` announcement. Scanned against a comment-stripped
+ * copy, same convention as the checks above. */
+function checkCompletionCelebrationWiring(failures) {
+  const source = readFileSync(completionCelebrationSveltePath, 'utf8');
+  const markupOnly = source.replace(/<!--[\s\S]*?-->/g, (comment) =>
+    comment.replace(/[^\n]/g, ' '),
+  );
+
+  if (!markupOnly.includes('aria-live="polite"')) {
+    failures.push(
+      'src/lib/components/CompletionCelebration.svelte: no aria-live="polite" found -- Completion ' +
+        'Feedback must announce itself to a screen reader (UX-DR7)',
+    );
+  }
+
+  scanColorWiring(
+    source,
+    'src/lib/components/CompletionCelebration.svelte',
     SAFE_NON_TOKEN_VALUES,
     failures,
   );
@@ -966,6 +1108,8 @@ function main() {
   checkCrashFallbackWiring(failures);
   checkWorkoutDetailWiring(failures);
   checkWorkoutDetailAppWiring(failures);
+  checkButtonPrimaryWiring(failures);
+  checkCompletionCelebrationWiring(failures);
   checkRootWiring(failures);
 
   if (failures.length > 0) {
@@ -996,8 +1140,12 @@ function main() {
       `WorkoutDetail carries role="dialog", aria-modal="true", aria-labelledby, and a real ` +
       `<button type="button" class="back-button">; and src/App.svelte wires WorkoutDetail to the day list ` +
       `(selectedDate, onOpen=, <WorkoutDetail mount) and handleSelect closes it via handleCloseDetail() on a ` +
-      `tab switch; and main.ts/Root.svelte still wire the error boundary itself (mount(Root, ...), ` +
-      `<svelte:boundary>, the failed snippet, and both window listeners).`,
+      `tab switch; and WorkoutDetail.svelte wires the Story 2.2 LogEntry Data Store (getLogEntry(/` +
+      `setCompleted() calls) and mounts <ButtonPrimary/<CompletionCelebration; and ButtonPrimary.svelte routes ` +
+      `its color declarations through tokens and carries a real <button type="button"> plus aria-pressed; and ` +
+      `CompletionCelebration.svelte routes its color declarations through tokens and carries an ` +
+      `aria-live="polite" announcement; and main.ts/Root.svelte still wire the error boundary itself ` +
+      `(mount(Root, ...), <svelte:boundary>, the failed snippet, and both window listeners).`,
   );
 }
 
