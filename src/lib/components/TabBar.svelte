@@ -15,6 +15,16 @@
   let { activeTab, onSelect }: { activeTab: Tab; onSelect: (tab: Tab) => void } = $props();
 </script>
 
+<!-- Deliberately never made `inert`/`aria-hidden` while WorkoutDetail's
+     dialog is open (Epic 2 retro finding F4, 2026-09-24 -- an earlier draft
+     of that fix did this and was caught live: it silently made the tab-
+     switch-closes-the-dialog interaction unreachable by click, breaking
+     EXPERIENCE.md's explicit requirement that the tab bar "persists across
+     both tabs; never hidden or covered by a modal" and the Story 2.1 fix
+     that routes a tab switch through the same close-and-focus logic as
+     Back/scrim/Escape. This bar is a deliberate exception to F4, not an
+     oversight -- the day-list panels behind the scrim are the actual
+     background content F4 targets. -->
 <div class="tab-bar" role="tablist" aria-label="Main navigation">
   <button
     type="button"

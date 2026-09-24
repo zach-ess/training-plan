@@ -229,11 +229,19 @@
         {/if}
       </div>
     {/if}
+    <!-- Epic 2 retro finding F3 (2026-09-24): this used to be a sibling of
+         `.panel` (outside this `role="dialog" aria-modal="true"` element),
+         so its `aria-live="polite"` announcement lived outside the dialog's
+         own accessible-tree boundary -- inconsistent with the `role="alert"`
+         write-error block above, which has always been correctly nested
+         in here. Moved inside `.panel` so the completion announcement is
+         unambiguously part of the modal's own content for AT users with
+         focus trapped inside it. -->
+    {#if celebrating}
+      <CompletionCelebration onSettled={handleCelebrationSettled} />
+    {/if}
   </div>
 </div>
-{#if celebrating}
-  <CompletionCelebration onSettled={handleCelebrationSettled} />
-{/if}
 
 <style>
   .scrim {

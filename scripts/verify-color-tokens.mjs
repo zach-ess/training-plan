@@ -681,6 +681,20 @@ function checkDayRowCardWiring(failures) {
     );
   }
 
+  // Epic 2 retro finding F6 (2026-09-24): two independent bmad-review lenses
+  // each separately flagged that nothing here asserted this row's own
+  // `onclick={() => onOpen(date)}` exists -- a regression reverting it to a
+  // no-op would break "tap a day row to open Workout Detail" (this file's
+  // own header comment calls this "the single UX pattern [Zach] most wants
+  // preserved") with every check above still green, since none of them look
+  // at the click wiring itself.
+  if (!source.includes('onclick={() => onOpen(date)}')) {
+    failures.push(
+      'src/lib/components/DayRowCard.svelte: no onclick={() => onOpen(date)} found -- tapping a day ' +
+        'row must open Workout Detail',
+    );
+  }
+
   scanColorWiring(source, 'src/lib/components/DayRowCard.svelte', SAFE_NON_TOKEN_VALUES, failures);
 }
 
@@ -840,6 +854,33 @@ function checkWorkoutDetailWiring(failures) {
     );
   }
 
+  // Epic 2 retro finding F6 (2026-09-24): the fresh-review patch that added
+  // `disabled={celebrating}` to the <ButtonPrimary> mount (so a focus-trap
+  // regression that this app relies on can't disable the button mid-tap
+  // sequence) was never mirrored here -- nothing asserted the binding
+  // actually exists, unlike the sibling `completed={isCompleted}` check
+  // directly above it.
+  if (!/disabled=\{\s*celebrating\s*\}/.test(markupOnly)) {
+    failures.push(
+      'src/lib/components/WorkoutDetail.svelte: no disabled={celebrating} binding found on the ' +
+        '<ButtonPrimary mount -- the toggle must be disabled for the duration of the celebration, ' +
+        'not tap-able mid-playback (Epic 2 retro, finding F6)',
+    );
+  }
+
+  // Epic 2 retro finding F6 (2026-09-24): `<CompletionCelebration` presence
+  // (checked above) doesn't rule out it being mounted unconditionally --
+  // this asserts it's still specifically gated on `{#if celebrating}`, which
+  // is itself only ever set true on a successful write that newly turns
+  // completion on (this story's Boundaries/UX-DR7), not on every render.
+  if (!/\{#if\s+celebrating\s*\}\s*<CompletionCelebration/.test(markupOnly)) {
+    failures.push(
+      'src/lib/components/WorkoutDetail.svelte: <CompletionCelebration is not gated behind ' +
+        '{#if celebrating} -- Completion Feedback must fire only on a successful, newly-completing ' +
+        'write, never unconditionally (Epic 2 retro, finding F6)',
+    );
+  }
+
   // A fresh-review pass on Story 2.2 found that this check was extended for
   // ButtonPrimary/CompletionCelebration presence but never for the new
   // write-error/Retry UI -- nothing here asserted a role="alert" write-error
@@ -875,21 +916,27 @@ function checkWorkoutDetailWiring(failures) {
 
 /** Story 2.2's ButtonPrimary.svelte -- the new Mark Complete/Mark Incomplete
  * toggle. Same color-token-wiring scan as every other component check above,
- * plus two semantic requirements this function actually verifies: a real
- * `<button type="button">` root, and an `aria-pressed={completed}` binding
+ * plus semantic requirements this function verifies: a real
+ * `<button type="button">` root, an `aria-pressed={completed}` binding
  * (UX-DR10's toggle-state exposure) -- not merely the attribute's name
  * present somewhere, which a hardcoded `aria-pressed="false"` would also
- * satisfy. This function does *not* verify the 48dp minimum tap-target size
- * or that `onclick` is forwarded to the underlying button; those remain
- * unchecked here (a fresh-review pass on Story 2.2 found an earlier version
- * of this comment claimed both). Scanned against a comment-stripped copy,
- * same convention as `checkCrashFallbackWiring`/`checkWorkoutDetailWiring`
- * above. */
+ * satisfy -- and, since the Epic 2 retro (2026-09-24, finding F6), that
+ * `onclick` is actually forwarded to the underlying `<button>` via the
+ * `{onclick}` shorthand. This function does *not* verify the 48dp minimum
+ * tap-target size; that remains unchecked here. Scanned against a
+ * comment-stripped copy, same convention as
+ * `checkCrashFallbackWiring`/`checkWorkoutDetailWiring` above. */
 function checkButtonPrimaryWiring(failures) {
   const source = readFileSync(buttonPrimarySveltePath, 'utf8');
-  const markupOnly = source.replace(/<!--[\s\S]*?-->/g, (comment) =>
-    comment.replace(/[^\n]/g, ' '),
-  );
+  // `maskAllComments`, not just an HTML-comment strip: this file's own
+  // `<script>` block has a `//` line comment that literally reads
+  // `` `<button>` `` in prose (documenting `bind:this`'s behavior) -- an
+  // HTML-only strip leaves that comment intact, so the button-tag regexes
+  // below would match it instead of the real markup tag further down the
+  // file. Caught live while adding the {onclick}-forwarding check below:
+  // an HTML-only strip made that check report a false failure, matching
+  // against that comment's bare "<button>" instead of the real tag.
+  const markupOnly = maskAllComments(source);
 
   if (!/<button[^>]*type="button"[^>]*>/.test(markupOnly)) {
     failures.push(
@@ -903,6 +950,15 @@ function checkButtonPrimaryWiring(failures) {
       'src/lib/components/ButtonPrimary.svelte: no aria-pressed={completed} binding found -- the ' +
         'toggle state must be bound to the completed prop, not merely present as a hardcoded ' +
         "attribute (UX-DR10, this story's Boundaries)",
+    );
+  }
+
+  const buttonTagMatch = markupOnly.match(/<button[^>]*>/);
+  if (buttonTagMatch && !/\{\s*onclick\s*\}/.test(buttonTagMatch[0])) {
+    failures.push(
+      'src/lib/components/ButtonPrimary.svelte: the <button> never forwards {onclick} -- taps would ' +
+        "silently do nothing regardless of what the parent passes as this component's onclick prop " +
+        '(Epic 2 retro, finding F6)',
     );
   }
 

@@ -165,7 +165,23 @@
        active, which is invalid per the WAI-ARIA Tabs pattern. `tabindex="0"`
        lets keyboard users move focus directly into a panel after selecting
        its tab, per the same authoring practice. -->
-  <div id="panel-home" role="tabpanel" aria-labelledby="tab-home" tabindex="0" hidden={activeTab !== 'home'}>
+  <!-- `inert`/`aria-hidden` while WorkoutDetail's modal dialog is open
+       (Epic 2 retro finding F4, 2026-09-24): both panels stay mounted and
+       visible-or-hidden purely by tab selection (Boundaries), independent
+       of the dialog -- so without this, the currently-active panel remains
+       a reachable, focusable background control behind the dialog's scrim,
+       which `aria-modal="true"` alone doesn't reliably prevent in every
+       engine. `hidden` already covers the *inactive* panel; this covers
+       the *active* one too, for as long as the dialog is open. -->
+  <div
+    id="panel-home"
+    role="tabpanel"
+    aria-labelledby="tab-home"
+    tabindex="0"
+    hidden={activeTab !== 'home'}
+    inert={selectedDate !== null}
+    aria-hidden={selectedDate !== null}
+  >
     {#if planStore.status === 'loading'}
       <!-- Cold load, nothing cached yet: skeleton day-row placeholders,
            never a spinner (I/O matrix). SkeletonDayRow's own root is
@@ -209,7 +225,15 @@
       </div>
     {/if}
   </div>
-  <div id="panel-history" role="tabpanel" aria-labelledby="tab-history" tabindex="0" hidden={activeTab !== 'history'}>
+  <div
+    id="panel-history"
+    role="tabpanel"
+    aria-labelledby="tab-history"
+    tabindex="0"
+    hidden={activeTab !== 'history'}
+    inert={selectedDate !== null}
+    aria-hidden={selectedDate !== null}
+  >
     <p>History &amp; Trends placeholder -- content arrives in Epic 3.</p>
   </div>
   {#key selectedDate}
