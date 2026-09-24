@@ -1047,11 +1047,44 @@ function checkWorkoutDetailAppWiring(failures) {
     );
   } else {
     const handleSelectMasked = maskAllComments(handleSelectBody);
-    if (!handleSelectMasked.includes('handleCloseDetail()')) {
+    // Matches `handleCloseDetail(` rather than the exact no-arg
+    // `handleCloseDetail()` -- the Epic 2 retro's F1 fix (2026-09-24) added
+    // a `{ skipFocusRestore: true }` argument here (closing/focus-restore
+    // steps must not target the tab being switched *away* from), so an
+    // exact-arity match would itself have flagged that legitimate fix as a
+    // regression. The open paren alone is enough to catch the actual
+    // regression this check exists for: `handleSelect` not calling
+    // `handleCloseDetail` at all.
+    if (!handleSelectMasked.includes('handleCloseDetail(')) {
       failures.push(
-        'src/App.svelte: handleSelect(...) never calls handleCloseDetail() -- a tab switch must ' +
-          'close any open WorkoutDetail through the same focus-restoration logic as Back/scrim/Escape ' +
+        'src/App.svelte: handleSelect(...) never calls handleCloseDetail(...) -- a tab switch must ' +
+          'close any open WorkoutDetail through the same close-and-focus logic as Back/scrim/Escape ' +
           '(Spec Change Log, 2026-09-22), not a bare `selectedDate = null` that silently drops focus',
+      );
+    }
+
+    // Epic 2 retro finding F1 (2026-09-24): a tab switch closes
+    // WorkoutDetail via `handleCloseDetail({ skipFocusRestore: true })`
+    // because by the time that call runs, `activeTab` above has already
+    // flipped -- Home's row (what `handleCloseDetail` would otherwise
+    // refocus) is already `hidden`, so `.focus()` on it silently no-ops and
+    // its own `panel-home` fallback is never reached either, dropping focus
+    // to `<body>` with no error. `handleSelect` must restore focus into the
+    // panel actually being switched to instead. Scoped to `handleSelect`'s
+    // own body (not a whole-file scan) for the same "which code path" reason
+    // as the check above.
+    if (!handleSelectMasked.includes('skipFocusRestore')) {
+      failures.push(
+        'src/App.svelte: handleSelect(...) calls handleCloseDetail(...) without skipFocusRestore -- ' +
+          'a tab switch must not let handleCloseDetail try to refocus the Home row it is switching ' +
+          'away from (Epic 2 retro, finding F1)',
+      );
+    }
+    if (!handleSelectMasked.includes('panel-${tab}')) {
+      failures.push(
+        'src/App.svelte: handleSelect(...) never focuses panel-${tab} -- a tab switch that closes ' +
+          'WorkoutDetail must restore focus into the tab being switched to, or focus silently drops ' +
+          'to <body> (Epic 2 retro, finding F1)',
       );
     }
   }

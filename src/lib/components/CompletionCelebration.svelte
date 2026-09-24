@@ -59,9 +59,23 @@
   $effect(() => {
     // Haptic pulse -- feature-detected before use (this story's Boundaries):
     // most desktop browsers and iOS Safari have no Vibration API at all, and
-    // calling an absent `navigator.vibrate` would throw.
+    // calling an absent `navigator.vibrate` would throw. Also wrapped in its
+    // own try/catch (Epic 2 retro, finding F2): the `typeof` check only
+    // rules out an *absent* API -- it does nothing for an environment where
+    // `navigator.vibrate` exists as a real function but *throws when
+    // called* (e.g. blocked by a permissions policy). A retro found that an
+    // uncaught throw here propagates out of this mount effect entirely,
+    // which Svelte does not contain locally -- it trips the Story 1.6
+    // top-level error boundary and replaces the whole app with the crash
+    // screen over what should be a best-effort haptic. Caught here, before
+    // the settle timer below, so a blocked vibrate can never prevent
+    // `onSettled` from eventually firing.
     if (typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function') {
-      navigator.vibrate(40);
+      try {
+        navigator.vibrate(40);
+      } catch {
+        // Non-fatal: the visual celebration and tone stand on their own.
+      }
     }
 
     // Short synthesized tone (2 notes) via the Web Audio API -- no asset

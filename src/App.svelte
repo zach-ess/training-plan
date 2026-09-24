@@ -10,7 +10,7 @@
   // `DayRowCard` per date across the Plan's span, always including today)
   // instead of the placeholder paragraph the previous two stories left
   // there.
-  import { untrack } from 'svelte';
+  import { tick, untrack } from 'svelte';
   import TabBar from './lib/components/TabBar.svelte';
   import SkeletonDayRow from './lib/components/SkeletonDayRow.svelte';
   import DayRowCard from './lib/components/DayRowCard.svelte';
@@ -33,10 +33,20 @@
     selectedDate = date;
   }
 
-  function handleCloseDetail() {
+  // `skipFocusRestore` -- set by `handleSelect` below when it's closing the
+  // dialog as a *side effect* of switching tabs (Epic 2 retro finding F1):
+  // in that case the row this function would normally refocus is Home's,
+  // but Home is about to become the *inactive* tab, so refocusing it would
+  // either no-op against an already-hidden element or leave focus somewhere
+  // the user just navigated away from. `handleSelect` restores focus into
+  // the tab actually being switched to instead.
+  function handleCloseDetail(options?: { skipFocusRestore?: boolean }) {
     // Read before clearing -- the row to refocus is the one that was open.
     const closedDate = selectedDate;
     selectedDate = null;
+    if (options?.skipFocusRestore) {
+      return;
+    }
     // Mirrors `scrollToToday`'s existing query-selector convention. The day
     // list stays mounted the whole time this dialog is open (Boundaries), so
     // the row is normally still there to refocus -- but if a background
@@ -93,13 +103,30 @@
     // keeps it from ever persisting across a tab change.
     //
     // Routed through `handleCloseDetail()` (Spec Change Log, 2026-09-22),
-    // not a bare `selectedDate = null`, so this 4th close trigger runs the
-    // same focus-restoration logic as Back/scrim/Escape instead of silently
-    // dropping focus. The `if` guard just skips pointless work when no
-    // dialog is open -- `handleCloseDetail` is otherwise safe to call
-    // unconditionally.
+    // not a bare `selectedDate = null`, so this 4th close trigger runs
+    // consistent cleanup with Back/scrim/Escape. `skipFocusRestore: true`
+    // (Epic 2 retro, finding F1) because by this point `activeTab` above
+    // has already flipped, so Home's row -- the target `handleCloseDetail`
+    // would normally refocus -- is already `hidden`; `.focus()` on a hidden
+    // element silently no-ops per the HTML spec, and since the row element
+    // itself is still found (not null), `handleCloseDetail`'s own
+    // `panel-home` fallback is never reached either, so focus dropped to
+    // `<body>` with no console/page error to reveal it. Restoring focus
+    // into the tab the user is actually switching to, below, is also the
+    // more correct target regardless -- there is no reason to send focus
+    // back into a panel the user just navigated away from.
     if (selectedDate) {
-      handleCloseDetail();
+      handleCloseDetail({ skipFocusRestore: true });
+      // `tick()` first: `activeTab = tab` above hasn't flushed to the DOM
+      // yet at this point in the same synchronous handler, so `panel-${tab}`
+      // is still `hidden` here -- focusing it immediately would silently
+      // no-op exactly like the bug this fix addresses (verified live while
+      // building this fix). Deferring past the flush is what actually
+      // lands focus in the newly-visible panel instead of leaving it
+      // wherever the native click-to-focus behavior happened to put it.
+      tick().then(() => {
+        document.getElementById(`panel-${tab}`)?.focus();
+      });
     }
   }
 
