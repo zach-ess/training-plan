@@ -53,6 +53,12 @@
   let celebrating = $state(false);
 
   function handleToggleComplete() {
+    // Captured before anything else changes: whether this call originated
+    // from the Retry button (rather than the main ButtonPrimary toggle).
+    // `writeErrorReason` clearing below unmounts the `{#if writeErrorReason}`
+    // block containing the just-clicked, currently-focused `.retry-button`,
+    // which would otherwise silently drop focus to `document.body`.
+    const startedFromRetry = document.activeElement === retryButtonEl;
     writeErrorReason = undefined;
     const wasCompleted = isCompleted;
     // Mirrors epics.md's own call shapes exactly: Mark Complete passes the
@@ -66,10 +72,29 @@
       writeErrorReason = result.reason;
       return;
     }
+    // Retry-success path: move focus to something meaningful instead of
+    // letting it drop to `document.body` when the retry button's containing
+    // block unmounts above. Falls back to backButtonEl if markButtonEl isn't
+    // focusable right now (e.g. the completion branch below is about to
+    // disable it too).
+    if (startedFromRetry) {
+      if (markButtonEl && !markButtonEl.disabled) {
+        markButtonEl.focus();
+      } else {
+        backButtonEl?.focus();
+      }
+    }
     // Completion Feedback fires only on a successful write that actually
     // turns completion *on* -- never on Mark Incomplete (this story's
     // Boundaries/UX-DR7).
     if (!wasCompleted) {
+      // `celebrating = true` below disables markButtonEl via its
+      // `disabled={celebrating}` binding; a browser moves focus to
+      // `document.body` when the currently-focused element becomes disabled.
+      // Move focus to backButtonEl first so it never silently drops there.
+      if (document.activeElement === markButtonEl) {
+        backButtonEl?.focus();
+      }
       celebrating = true;
     }
   }
@@ -115,7 +140,7 @@
       if (event.key === 'Tab') {
         event.preventDefault();
         const focusables = [backButtonEl, markButtonEl, retryButtonEl].filter(
-          (el): el is HTMLButtonElement => el !== undefined,
+          (el): el is HTMLButtonElement => el !== undefined && !el.disabled,
         );
         if (focusables.length === 0) {
           return;

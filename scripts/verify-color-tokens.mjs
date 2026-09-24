@@ -787,16 +787,21 @@ function checkWorkoutDetailWiring(failures) {
   // real LogEntry (`getLogEntry`), write through `setCompleted`, and mount
   // the new `ButtonPrimary`/`CompletionCelebration` components. Scanned
   // against `markupOnly` for `<ButtonPrimary`/`<CompletionCelebration` (a
-  // tag mention, not markup a comment could satisfy) and against the raw
-  // source for the two Data Store calls, since those live in the `<script>`
-  // block a `<!-- -->` HTML-comment strip doesn't touch anyway.
-  if (!detailSource.includes('getLogEntry(')) {
+  // tag mention, not markup a comment could satisfy) and against
+  // `scriptMasked` -- comments stripped via `maskAllComments`, since these
+  // calls live in the `<script>` block where this file's own convention is
+  // `//` line comments, which a bare HTML-comment strip doesn't touch -- for
+  // the two Data Store calls, so a comment like `// getLogEntry(` can't
+  // falsely satisfy this check (a fresh-review pass found this scanned raw
+  // `detailSource` instead, unlike every sibling check in this function).
+  const scriptMasked = maskAllComments(detailSource);
+  if (!scriptMasked.includes('getLogEntry(')) {
     failures.push(
       'src/lib/components/WorkoutDetail.svelte: no getLogEntry( call found -- this story requires ' +
         "reading the real LogEntry from the Data Store instead of Story 2.1's hardcoded undefined",
     );
   }
-  if (!detailSource.includes('setCompleted(')) {
+  if (!scriptMasked.includes('setCompleted(')) {
     failures.push(
       'src/lib/components/WorkoutDetail.svelte: no setCompleted( call found -- Mark Complete/Incomplete ' +
         'must write through the Data Store (AD-9)',
@@ -812,6 +817,26 @@ function checkWorkoutDetailWiring(failures) {
     failures.push(
       'src/lib/components/WorkoutDetail.svelte: no <CompletionCelebration mount found -- Completion ' +
         'Feedback must fire on a successful Mark Complete write (FR7)',
+    );
+  }
+
+  // A fresh-review pass on Story 2.2 found nothing asserted that the
+  // ButtonPrimary mount's `completed` prop is a real binding to this file's
+  // own `isCompleted` -- a regression hardcoding `completed={false}` (or any
+  // other literal) would leave every check above still green. Mirrors this
+  // file's own established convention for this kind of check (see
+  // `checkButtonPrimaryWiring`'s `aria-pressed=\{\s*completed\s*\}` regex
+  // below): assert both the markup binding and the `$derived` it depends on.
+  if (!/completed=\{\s*isCompleted\s*\}/.test(markupOnly)) {
+    failures.push(
+      'src/lib/components/WorkoutDetail.svelte: no completed={isCompleted} binding found on the ' +
+        '<ButtonPrimary mount -- the toggle state must be bound to isCompleted, not a hardcoded value',
+    );
+  }
+  if (!/isCompleted\s*=\s*\$derived\(\s*dayView\.completed\s*===\s*true\s*\)/.test(scriptMasked)) {
+    failures.push(
+      'src/lib/components/WorkoutDetail.svelte: no isCompleted = $derived(dayView.completed === true) ' +
+        'found -- isCompleted must be derived from dayView.completed, not tracked as separate state',
     );
   }
 
@@ -1138,7 +1163,8 @@ function main() {
       `tokens and carries role="alert" plus a real <button type="button"> Reload control; and ` +
       `WorkoutDetail.svelte/WorkoutDetailStat.svelte route their color declarations through tokens and ` +
       `WorkoutDetail carries role="dialog", aria-modal="true", aria-labelledby, and a real ` +
-      `<button type="button" class="back-button">; and src/App.svelte wires WorkoutDetail to the day list ` +
+      `<button type="button" class="back-button">, plus a role="alert" write-error live region and a ` +
+      `.retry-button Retry control; and src/App.svelte wires WorkoutDetail to the day list ` +
       `(selectedDate, onOpen=, <WorkoutDetail mount) and handleSelect closes it via handleCloseDetail() on a ` +
       `tab switch; and WorkoutDetail.svelte wires the Story 2.2 LogEntry Data Store (getLogEntry(/` +
       `setCompleted() calls) and mounts <ButtonPrimary/<CompletionCelebration; and ButtonPrimary.svelte routes ` +

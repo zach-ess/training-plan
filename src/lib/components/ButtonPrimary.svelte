@@ -79,4 +79,9 @@
     outline: 2px solid var(--accent-primary);
     outline-offset: 2px;
   }
+
+  .button-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 </style>
