@@ -170,6 +170,14 @@ const workoutEditFormSveltePath = path.join(
   'components',
   'WorkoutEditForm.svelte',
 );
+const streakIndicatorSveltePath = path.join(
+  __dirname,
+  '..',
+  'src',
+  'lib',
+  'components',
+  'StreakIndicator.svelte',
+);
 const rootSveltePath = path.join(__dirname, '..', 'src', 'Root.svelte');
 const mainTsPath = path.join(__dirname, '..', 'src', 'main.ts');
 
@@ -681,9 +689,22 @@ function checkSkeletonDayRowWiring(failures) {
  * for this component specifically (Accessibility Floor / Consistency
  * Conventions): a real `<button type="button">` root (never a bare
  * clickable `<div>`) and a status chip carrying `aria-hidden="true"` (the
- * adjacent text label, not the chip, carries the accessible name). */
+ * adjacent text label, not the chip, carries the accessible name).
+ *
+ * Story 2.4 -- Streak Tracking & Missed-Day Indication -- extends this with
+ * the wiring this story adds: a real `getLogEntry(` read (replacing the
+ * hardcoded `undefined` every prior story passed to `getDayView`), and the
+ * new Missed-state markup (`chip-missed`, a visible "Missed" text label, the
+ * `accent-caution` full-row tint, and the exact "missed — no log entry" meta
+ * copy). Checked against `maskAllComments(source)`, not raw `source` -- this
+ * file's own header comment (and this function's) discuss "Missed" and
+ * "getLogEntry" at length in prose, and a comment-blind `source.includes()`
+ * check would be satisfied by that prose alone even if the real code were
+ * ever reverted (the same defensive convention `checkWorkoutEditFormWiring`
+ * already applies for the same reason). */
 function checkDayRowCardWiring(failures) {
   const source = readFileSync(dayRowCardSveltePath, 'utf8');
+  const scriptMasked = maskAllComments(source);
 
   if (!/<button[^>]*type="button"[^>]*>/.test(source)) {
     failures.push(
@@ -710,6 +731,45 @@ function checkDayRowCardWiring(failures) {
     failures.push(
       'src/lib/components/DayRowCard.svelte: no onclick={() => onOpen(date)} found -- tapping a day ' +
         'row must open Workout Detail',
+    );
+  }
+
+  // Story 2.4 -- Home's day list must actually read the real LogEntry now,
+  // not always pass `undefined` to `getDayView` (this story's Always
+  // section).
+  if (!scriptMasked.includes('getLogEntry(')) {
+    failures.push(
+      'src/lib/components/DayRowCard.svelte: no getLogEntry( call found -- Story 2.4 requires reading ' +
+        'the real LogEntry from the Data Store instead of always passing undefined to getDayView',
+    );
+  }
+
+  if (!scriptMasked.includes('chip-missed')) {
+    failures.push(
+      'src/lib/components/DayRowCard.svelte: no chip-missed class found -- a past scheduled day with ' +
+        'no LogEntry must render the distinct Missed chip (Story 2.4)',
+    );
+  }
+
+  if (!/>\s*Missed\s*</.test(scriptMasked)) {
+    failures.push(
+      'src/lib/components/DayRowCard.svelte: no visible "Missed" text label found -- the Missed chip ' +
+        'must be paired with a text label, never color-only (Story 2.4, Accessibility Floor)',
+    );
+  }
+
+  if (!scriptMasked.includes('missed — no log entry')) {
+    failures.push(
+      'src/lib/components/DayRowCard.svelte: no "missed — no log entry" meta text found -- a Missed ' +
+        "row's meta line must read exactly this literal copy (Story 2.4, DESIGN.md)",
+    );
+  }
+
+  if (!/color-mix\(in srgb,\s*var\(--accent-caution\)/.test(scriptMasked)) {
+    failures.push(
+      'src/lib/components/DayRowCard.svelte: no accent-caution row tint found -- a Missed row needs a ' +
+        "faint full-row tint mixing accent-caution into --background, mirroring .day-row.today's own " +
+        'tint recipe (Story 2.4)',
     );
   }
 
@@ -1095,6 +1155,30 @@ function checkWorkoutEditFormWiring(failures) {
   scanColorWiring(source, 'src/lib/components/WorkoutEditForm.svelte', SAFE_NON_TOKEN_VALUES, failures);
 }
 
+/** Story 2.4's StreakIndicator.svelte -- the new quiet, always-visible
+ * Streak counter mounted on Home. Same color-token-wiring scan as every
+ * other component check above, plus this story's own textual requirement
+ * (Code Map / DESIGN.md's `streak-indicator` token mapping): it renders
+ * "{streak}-day streak" verbatim -- checked against `maskAllComments(source)`
+ * so a comment merely describing this format string (this file's own header
+ * comment does) can't satisfy it in place of the real markup. This story
+ * deliberately renders the same format uniformly for every count, including
+ * `0` (AC6 / this story's "honest zeros, never hidden" rule), so there is no
+ * separate empty-state string to check for. */
+function checkStreakIndicatorWiring(failures) {
+  const source = readFileSync(streakIndicatorSveltePath, 'utf8');
+  const markupOnly = maskAllComments(source);
+
+  if (!/\{\s*streak\s*\}-day streak/.test(markupOnly)) {
+    failures.push(
+      'src/lib/components/StreakIndicator.svelte: no {streak}-day streak text found -- must render ' +
+        "this exact format uniformly for every count, including 0 (this story's Always section / AC6)",
+    );
+  }
+
+  scanColorWiring(source, 'src/lib/components/StreakIndicator.svelte', SAFE_NON_TOKEN_VALUES, failures);
+}
+
 /** Blanks `<!-- -->`, `/* *\/`, and `//` line comments out of a JS/Svelte
  * source, keeping everything else (including quoted-string contents and any
  * markup text) at its original offsets -- the same "check a comment-stripped
@@ -1250,6 +1334,37 @@ function checkWorkoutDetailAppWiring(failures) {
   }
 }
 
+/** Story 2.4 review pass 2 (2026-09-25): a real gap found independently by
+ * both the Blind Hunter and Verification Gap Reviewer lenses -- nothing
+ * checked that `src/App.svelte` actually wires up the Streak, unlike every
+ * other cross-component integration this script already guards (see
+ * `checkWorkoutDetailAppWiring` above). Without this, a regression that
+ * silently drops the `<StreakIndicator>` mount, or de-reactivates `streak`
+ * into a one-time snapshot instead of `$derived(computeStreak(...))`, would
+ * ship with `npm run check` fully green -- demonstrated by the Verification
+ * Gap Reviewer via mutation test. Checked against `maskAllComments(source)`
+ * for the same reason every other wiring check here is: this file's own
+ * prose comments already discuss "computeStreak" and "StreakIndicator" at
+ * length. */
+function checkAppSvelteStreakWiring(failures) {
+  const source = readFileSync(appSveltePath, 'utf8');
+  const masked = maskAllComments(source);
+
+  if (!/\$derived\(computeStreak\(/.test(masked)) {
+    failures.push(
+      'src/App.svelte: no $derived(computeStreak(...)) found -- the Streak must be reactively ' +
+        'derived, not computed once as a stale snapshot (Story 2.4 AC5)',
+    );
+  }
+
+  if (!masked.includes('<StreakIndicator')) {
+    failures.push(
+      'src/App.svelte: no <StreakIndicator mount found -- Home must display the running Streak ' +
+        '(Story 2.4)',
+    );
+  }
+}
+
 /** A fresh-review pass on Story 1.6 found that nothing in this file's other
  * checks (or `svelte-check`) would notice if the actual error-boundary
  * wiring regressed -- e.g. `main.ts` reverting to `mount(App, ...)`, or
@@ -1329,6 +1444,8 @@ function main() {
   checkButtonPrimaryWiring(failures);
   checkCompletionCelebrationWiring(failures);
   checkWorkoutEditFormWiring(failures);
+  checkStreakIndicatorWiring(failures);
+  checkAppSvelteStreakWiring(failures);
   checkRootWiring(failures);
 
   if (failures.length > 0) {
@@ -1367,9 +1484,14 @@ function main() {
       `aria-live="polite" announcement; and WorkoutEditForm.svelte routes its color declarations ` +
       `through tokens and carries a closed <select> type dropdown (five presets plus Other), an ` +
       `Other-gated free-text reveal, a role="alert"/.retry-button write-error UI, a replaceLogEntry( ` +
-      `write call, and case-fold+trim normalization of the Other value; and main.ts/Root.svelte still ` +
-      `wire the error boundary itself (mount(Root, ...), <svelte:boundary>, the failed snippet, and ` +
-      `both window listeners).`,
+      `write call, and case-fold+trim normalization of the Other value; and DayRowCard.svelte now reads ` +
+      `getLogEntry( and carries the Story 2.4 Missed-state markup (chip-missed, a "Missed" text label, ` +
+      `the accent-caution row tint, and the exact "missed — no log entry" meta copy); and ` +
+      `StreakIndicator.svelte routes its color declarations through tokens and renders the exact ` +
+      `"{streak}-day streak" format; and src/App.svelte reactively derives the Streak ` +
+      `($derived(computeStreak() and mounts <StreakIndicator; and main.ts/Root.svelte still wire the ` +
+      `error boundary itself (mount(Root, ...), <svelte:boundary>, the failed snippet, and both window ` +
+      `listeners).`,
   );
 }
 

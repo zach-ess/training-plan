@@ -2,19 +2,19 @@
 // LogEntry for rendering. `DayRowCard`, `WorkoutDetail`/`WorkoutDetailStat`,
 // and History's day-by-day rendering are all meant to call this one
 // function rather than each writing their own merge logic (AD-8's stated
-// purpose). Story 1.5's own call site (`DayRowCard`) still always passes
-// `logEntry: undefined` (Home's day list is untouched by Story 2.2, per this
-// story's Design Notes); Story 2.2 adds `WorkoutDetail` as the first real
-// caller of the `'logged'`/`'orphaned-log'` branches, reading an actual
-// LogEntry from the new Data Store (`data/logStore.svelte.ts`).
+// purpose). Story 1.5's own call site (`DayRowCard`) originally always
+// passed `logEntry: undefined` (Home's day list was untouched by Story 2.2);
+// Story 2.2 added `WorkoutDetail` as the first real caller of the
+// `'logged'`/`'orphaned-log'` branches, reading an actual LogEntry from the
+// new Data Store (`data/logStore.svelte.ts`); Story 2.4 then made `DayRowCard`
+// itself LogEntry-aware too (comment updated 2026-09-25 -- was stale after
+// that change), so every caller of this function now reads a real LogEntry.
 //
 // `logEntry` stays deliberately untyped (`unknown`) rather than the
 // `LogEntry` interface Story 2.2's Data Store (`data/logStore.svelte.ts`)
-// introduced -- this function is called from both `DayRowCard` (which still
-// always passes `logEntry: undefined`, per this story's Design Notes) and
-// `WorkoutDetail` (which now passes a real `LogEntry`), and reading it the
-// same defensively tolerant way `parsePlan` reads a raw Workout keeps this
-// one function correct for either caller without importing the Data Store's
+// introduced -- every caller (`DayRowCard`, `WorkoutDetail`) reads it the
+// same defensively tolerant way `parsePlan` reads a raw Workout, keeping this
+// one function correct for any caller without importing the Data Store's
 // type into the Derived Domain layer. `readLoggedFields` below is the single
 // place that knows LogEntry's field names.
 

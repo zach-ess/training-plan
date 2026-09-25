@@ -15,9 +15,12 @@
   import SkeletonDayRow from './lib/components/SkeletonDayRow.svelte';
   import DayRowCard from './lib/components/DayRowCard.svelte';
   import WorkoutDetail from './lib/components/WorkoutDetail.svelte';
+  import StreakIndicator from './lib/components/StreakIndicator.svelte';
   import { planStore, loadPlan } from './lib/data/planStore.svelte';
+  import { logStore } from './lib/data/logStore.svelte';
   import { parsePlan } from './lib/domain/parsePlan';
   import { getPlanDayRange } from './lib/domain/getPlanDayRange';
+  import { computeStreak } from './lib/domain/computeStreak';
   import { getTodayIso } from './lib/domain/date';
 
   type Tab = 'home' | 'history';
@@ -81,6 +84,14 @@
   // the same date overwrites an earlier one in the map -- "the later array
   // entry wins for that date" (I/O matrix).
   const workoutsByDate = $derived(new Map(plan.workouts.map((workout) => [workout.date, workout])));
+
+  // Story 2.4 -- the running Streak (FR-8), recomputed from `logStore.entries`
+  // directly (not a snapshot/callback) -- `$derived` picks up a later
+  // successful `setCompleted`/`replaceLogEntry` write the moment it
+  // reassigns `logStore.entries`, the same reactive mechanism `WorkoutDetail`
+  // already relies on for its own `dayView` (AC5: recomputes "in the same
+  // moment as Completion Feedback," with no explicit event/callback wiring).
+  const streak = $derived(computeStreak(dayRange, workoutsByDate, logStore.entries, todayIso));
 
   // Scrolls today's row into view once, right after the 'loaded' panel's day
   // list first mounts -- never re-fired by a later reactive update within
@@ -213,6 +224,7 @@
         <button type="button" class="retry-button" onclick={loadPlan}>Retry</button>
       </div>
     {:else}
+      <StreakIndicator {streak} />
       <div class="day-list" use:scrollToToday>
         {#each dayRange as date (date)}
           <DayRowCard
