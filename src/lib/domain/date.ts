@@ -36,3 +36,18 @@ export function parseLocalDate(iso: string): Date {
   const [year, month, day] = iso.split('-').map(Number);
   return new Date(year, month - 1, day);
 }
+
+/** Story 3.2 -- Rollups & Trend Chart. Returns the ISO date of the Sunday
+ * that starts `dateIso`'s calendar week, local time -- this app's fixed
+ * "week" boundary (Boundaries: "Sunday–Saturday, local time") for
+ * `computeTrend` (and, later, Story 3.3). Built the same way as every other
+ * function in this file: parse via `parseLocalDate` (never `new Date(iso)`),
+ * do the arithmetic on local getters, and re-render via `toLocalIsoDate`
+ * (never `toISOString()`), so this never drifts a day for a user west/east
+ * of UTC the way a UTC-based day-of-week calculation would (AD-2). */
+export function getWeekStartIso(dateIso: string): string {
+  const date = parseLocalDate(dateIso);
+  const dayOfWeek = date.getDay(); // 0 (Sunday) .. 6 (Saturday), local time
+  const weekStart = new Date(date.getFullYear(), date.getMonth(), date.getDate() - dayOfWeek);
+  return toLocalIsoDate(weekStart);
+}

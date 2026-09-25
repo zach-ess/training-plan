@@ -107,6 +107,21 @@
 // its old placeholder (or wiring a second/duplicate handler) doesn't slip
 // past every other check staying green.
 //
+// Story 3.2 -- Rollups & Trend Chart -- adds `checkTrendChartWiring`/
+// `checkRollupSummaryWiring`, the same color-token-wiring scan for the two
+// new components `TrendChart.svelte`/`RollupSummary.svelte`, plus each one's
+// own semantic/behavioral requirements from this story's Boundaries/Code
+// Map: TrendChart's exact zero-state copy and its `computeTrend(` call;
+// RollupSummary's `computeRollup(` call, its use of `--type-stat-value-*`
+// typography for the per-type counts, and that it never reaches for
+// `--type-rollup-readout-*` (reserved for Story 3.3's grid). It also adds
+// `checkHistoryViewRollupsWiring`, the same "check the wiring, not just the
+// component" gap `checkHistoryViewWiring`/`checkWorkoutDetailAppWiring`
+// already close for their own stories: asserts `HistoryView.svelte` actually
+// reads `logStore.entries` and mounts `<TrendChart>` then `<RollupSummary>`
+// above `.history-list`, in that fixed order, each forwarded
+// `entries={logStore.entries}` -- not merely present anywhere in the file.
+//
 // No test runner (vitest/jest) is installed in this project yet, so this is
 // a plain Node script run via `npm run test:tokens` -- it exits non-zero
 // (and prints errors) on any mismatch.
@@ -202,6 +217,22 @@ const historyViewSveltePath = path.join(
   'lib',
   'components',
   'HistoryView.svelte',
+);
+const trendChartSveltePath = path.join(
+  __dirname,
+  '..',
+  'src',
+  'lib',
+  'components',
+  'TrendChart.svelte',
+);
+const rollupSummarySveltePath = path.join(
+  __dirname,
+  '..',
+  'src',
+  'lib',
+  'components',
+  'RollupSummary.svelte',
 );
 
 const SANS = "system-ui, -apple-system, 'Segoe UI', sans-serif";
@@ -1502,6 +1533,142 @@ function checkHistoryViewWiring(failures) {
   scanColorWiring(source, 'src/lib/components/HistoryView.svelte', SAFE_NON_TOKEN_VALUES, failures);
 }
 
+/** Story 3.2's TrendChart.svelte -- the new single-color bar-chart component.
+ * Same color-token-wiring scan as every other component check above, plus
+ * this story's own requirements from the Boundaries/Tasks: the exact
+ * zero-state copy (checked against `markupOnly` so a comment merely
+ * mentioning it can't satisfy this) and a real `computeTrend(` call (scanned
+ * against `maskAllComments(source)`, since this file's own header comment
+ * already discusses "computeTrend" at length in prose). */
+function checkTrendChartWiring(failures) {
+  const source = readFileSync(trendChartSveltePath, 'utf8');
+  // `maskAllComments`, not just an HTML-comment strip: this file's own header
+  // comment quotes the zero-state copy in prose ("the exact 'insufficient
+  // data' copy"), which an HTML-only strip leaves intact -- the same pitfall
+  // `checkHistoryViewRollupsWiring`'s own comment documents.
+  const scriptMasked = maskAllComments(source);
+
+  if (
+    !scriptMasked.includes("Your trends will show up here once you've logged a few workouts")
+  ) {
+    failures.push(
+      'src/lib/components/TrendChart.svelte: missing the exact zero-state copy "Your trends will ' +
+        'show up here once you\'ve logged a few workouts" -- AC3 requires this literal text when ' +
+        'there are zero Log Entries anywhere',
+    );
+  }
+
+  if (!scriptMasked.includes('computeTrend(')) {
+    failures.push(
+      'src/lib/components/TrendChart.svelte: no computeTrend( call found -- the chart must be built ' +
+        "from this story's new domain function, not some ad hoc aggregation",
+    );
+  }
+
+  scanColorWiring(source, 'src/lib/components/TrendChart.svelte', SAFE_NON_TOKEN_VALUES, failures);
+}
+
+/** Story 3.2's RollupSummary.svelte -- the new per-type month-to-date/
+ * year-to-date totals component. Same color-token-wiring scan as every other
+ * component check above, plus this story's own requirements from the
+ * Boundaries/Tasks: a real `computeRollup(` call, the per-type counts routed
+ * through `--type-stat-value-*` typography (AC6), and -- the flip side of
+ * that same rule -- that `--type-rollup-readout-*` (reserved for Story 3.3's
+ * grid) never appears here at all. Scanned against `maskAllComments(source)`,
+ * since this file's own header comment already discusses "computeRollup"/
+ * "--type-stat-value" at length in prose. */
+function checkRollupSummaryWiring(failures) {
+  const source = readFileSync(rollupSummarySveltePath, 'utf8');
+  const scriptMasked = maskAllComments(source);
+
+  if (!scriptMasked.includes('computeRollup(')) {
+    failures.push(
+      'src/lib/components/RollupSummary.svelte: no computeRollup( call found -- the totals must be ' +
+        "built from this story's new domain function, not some ad hoc aggregation",
+    );
+  }
+
+  if (!scriptMasked.includes('var(--type-stat-value-size)')) {
+    failures.push(
+      'src/lib/components/RollupSummary.svelte: no var(--type-stat-value-size) found -- the per-type ' +
+        'counts must render in --type-stat-value-* typography (AC6)',
+    );
+  }
+
+  if (scriptMasked.includes('--type-rollup-readout')) {
+    failures.push(
+      'src/lib/components/RollupSummary.svelte: found a --type-rollup-readout-* reference -- that ' +
+        "typography role is reserved for Story 3.3's grid, never this story's totals (this story's " +
+        'Always section)',
+    );
+  }
+
+  scanColorWiring(source, 'src/lib/components/RollupSummary.svelte', SAFE_NON_TOKEN_VALUES, failures);
+}
+
+/** Story 3.2 -- mirrors `checkHistoryViewWiring`/`checkWorkoutDetailAppWiring`'s
+ * own "check the wiring, not just the component" precedent: asserts
+ * `HistoryView.svelte` actually reads the real `logStore.entries` (this
+ * story's Always section: HistoryView reads it for the first time and
+ * forwards it down) and mounts `<TrendChart>` then `<RollupSummary>` above
+ * `.history-list`, in that fixed order, each wired with
+ * `entries={logStore.entries}` -- not merely a component file that exists in
+ * isolation, mirroring the class of gap those checks already close for their
+ * own stories. Scanned against a comment-stripped copy for the same reason
+ * every other wiring check in this file is. */
+function checkHistoryViewRollupsWiring(failures) {
+  const source = readFileSync(historyViewSveltePath, 'utf8');
+  // `maskAllComments`, not just an HTML-comment strip: this file's own
+  // Story 3.2 header comment mentions `` `<TrendChart>` ``/`` `<RollupSummary>` ``
+  // in backticked prose inside a `//` line comment, which an HTML-only strip
+  // leaves intact -- the same pitfall `checkButtonPrimaryWiring`'s own header
+  // comment documents hitting live.
+  const markupOnly = maskAllComments(source);
+
+  if (!markupOnly.includes('logStore.entries')) {
+    failures.push(
+      'src/lib/components/HistoryView.svelte: no logStore.entries read found -- this story requires ' +
+        'reading the real LogEntry Data Store and forwarding it to TrendChart/RollupSummary',
+    );
+  }
+
+  const trendMatch = markupOnly.match(/<TrendChart(?![\w-])[\s\S]*?\/>/);
+  const rollupMatch = markupOnly.match(/<RollupSummary(?![\w-])[\s\S]*?\/>/);
+  const historyListIndex = markupOnly.search(/<div\s+class="history-list"/);
+
+  if (!trendMatch) {
+    failures.push('src/lib/components/HistoryView.svelte: no <TrendChart mount found');
+  }
+  if (!rollupMatch) {
+    failures.push('src/lib/components/HistoryView.svelte: no <RollupSummary mount found');
+  }
+  if (historyListIndex === -1) {
+    failures.push('src/lib/components/HistoryView.svelte: no <div class="history-list"> found');
+  }
+
+  if (trendMatch && rollupMatch && historyListIndex !== -1) {
+    if (!(trendMatch.index < rollupMatch.index && rollupMatch.index < historyListIndex)) {
+      failures.push(
+        'src/lib/components/HistoryView.svelte: TrendChart/RollupSummary/.history-list are not in ' +
+          'the required mount order (chart, then summary, then day list) -- this story\'s Always section',
+      );
+    }
+  }
+
+  const entriesBinding = /(?<![\w-])entries(?![\w-])\s*=\s*\{\s*logStore\.entries\s*\}/;
+  if (trendMatch && !entriesBinding.test(trendMatch[0])) {
+    failures.push(
+      'src/lib/components/HistoryView.svelte: <TrendChart is not wired with entries={logStore.entries}',
+    );
+  }
+  if (rollupMatch && !entriesBinding.test(rollupMatch[0])) {
+    failures.push(
+      'src/lib/components/HistoryView.svelte: <RollupSummary is not wired with ' +
+        'entries={logStore.entries}',
+    );
+  }
+}
+
 /** Story 3.1 -- mirrors `checkWorkoutDetailAppWiring`/
  * `checkAppSvelteStreakWiring`'s own "check the wiring, not just the
  * component" precedent: asserts `src/App.svelte` actually mounts
@@ -1575,6 +1742,9 @@ function main() {
   checkAppSvelteStreakWiring(failures);
   checkHistoryViewWiring(failures);
   checkHistoryViewAppWiring(failures);
+  checkTrendChartWiring(failures);
+  checkRollupSummaryWiring(failures);
+  checkHistoryViewRollupsWiring(failures);
   checkRootWiring(failures);
 
   if (failures.length > 0) {
@@ -1622,7 +1792,12 @@ function main() {
       `error boundary itself (mount(Root, ...), <svelte:boundary>, the failed snippet, and both window ` +
       `listeners); and HistoryView.svelte routes its color declarations through tokens and mounts ` +
       `<DayRowCard forwarding all of date/workout/isToday/onOpen; and src/App.svelte mounts <HistoryView ` +
-      `wired with onOpen={handleOpenDetail}.`,
+      `wired with onOpen={handleOpenDetail}; and TrendChart.svelte/RollupSummary.svelte route their color ` +
+      `declarations through tokens, call computeTrend(/computeRollup(, TrendChart renders the exact ` +
+      `zero-state copy, and RollupSummary routes its per-type counts through --type-stat-value-* typography ` +
+      `while never reaching for the reserved --type-rollup-readout-*; and HistoryView.svelte reads the real ` +
+      `logStore.entries and mounts <TrendChart then <RollupSummary above .history-list, in that order, each ` +
+      `wired with entries={logStore.entries}.`,
   );
 }
 

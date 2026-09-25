@@ -17,9 +17,25 @@
   // fetch degraded `parsePlan(planStore.plan)` to `{ workouts: [] }` and
   // rendered an ordinary, clickable "today, rest day" row instead of Home's
   // own loading/error feedback (Review Triage Log, medium/bad_spec).
+  //
+  // Story 3.2 -- Rollups & Trend Chart. This is the first time this
+  // component reads `logStore` at all (the note above, "this component never
+  // reads logStore itself," was true through Story 3.1 only): `<TrendChart>`
+  // and `<RollupSummary>` both need the raw `logStore.entries` record --
+  // never a Data Store import of their own (this story's Always section) --
+  // so this component does the one read and forwards it down as their
+  // `entries` prop, the same "one owner reads the store, everyone else takes
+  // a prop" shape `App.svelte` already uses for `logStore.entries` ->
+  // `computeStreak`. Mounted above `.history-list`, in that fixed order
+  // (chart, then summary, then day list) -- neither reads/derives anything
+  // from `planStore`, so they're unaffected by the loading/error branches
+  // above and only ever render in this `{:else}` (loaded) branch.
   import SkeletonDayRow from './SkeletonDayRow.svelte';
   import DayRowCard from './DayRowCard.svelte';
+  import TrendChart from './TrendChart.svelte';
+  import RollupSummary from './RollupSummary.svelte';
   import { planStore, loadPlan } from '../data/planStore.svelte';
+  import { logStore } from '../data/logStore.svelte';
   import { parsePlan } from '../domain/parsePlan';
   import { getPlanDayRange } from '../domain/getPlanDayRange';
   import { getTodayIso } from '../domain/date';
@@ -69,6 +85,8 @@
       <button type="button" class="retry-button" onclick={loadPlan}>Retry</button>
     </div>
   {:else}
+    <TrendChart entries={logStore.entries} />
+    <RollupSummary entries={logStore.entries} />
     <!-- Independently scrollable from the rest of the page (AC1), distinct
          from Home's own `.day-list`, which scrolls as part of the whole
          document -- see this rule's `overflow-y`/`max-height` below. -->

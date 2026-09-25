@@ -270,3 +270,49 @@ describe('HistoryView -- reactivity to planStore changes after mount', () => {
     expect(updatedRow?.textContent).not.toContain('Run');
   });
 });
+
+describe('HistoryView -- Rollups & Trend Chart wiring (Story 3.2)', () => {
+  it('mounts TrendChart/RollupSummary above the day list and reflects a real logStore.entries write, not just a source-text check', () => {
+    // 'Mobility' is a sentinel type no other test in this file writes, so its
+    // rendered count can only have come from this test's own write to the
+    // real (module-level, unreset-between-tests) logStore -- proving
+    // HistoryView actually reads `logStore.entries` and forwards it down,
+    // not a mocked/stubbed prop.
+    const date = FIXED_TODAY;
+    const workout: Workout = { date, type: 'Mobility', duration: '20 min' };
+    setCompleted(date, true, workout);
+    setLoadedPlan([workout]);
+
+    const { container } = render(HistoryView, { props: { onOpen: vi.fn() } });
+
+    // TrendChart: real Log Entries exist, so the zero-state copy is gone and
+    // at least one real bar renders (the current week's, containing `date`).
+    expect(
+      container.textContent,
+    ).not.toContain("Your trends will show up here once you've logged a few workouts");
+    expect(container.querySelectorAll('.trend-bar').length).toBeGreaterThan(0);
+
+    // RollupSummary: month-to-date's "Mobility" row reflects the write.
+    const monthSection = Array.from(container.querySelectorAll('section')).find(
+      (el) => el.getAttribute('aria-label') === 'Month to date',
+    );
+    const mobilityItem = Array.from(monthSection?.querySelectorAll('.rollup-item') ?? []).find(
+      (el) => el.querySelector('.rollup-type-label')?.textContent === 'Mobility',
+    );
+    expect(mobilityItem?.querySelector('.rollup-stat-value')?.textContent).toBe('1');
+
+    // Mount order: TrendChart and RollupSummary both precede the day list.
+    const trendEl = container.querySelector('.trend-chart');
+    const rollupEl = container.querySelector('.rollup-summary');
+    const historyListEl = container.querySelector('.history-list');
+    expect(trendEl).not.toBeNull();
+    expect(rollupEl).not.toBeNull();
+    expect(historyListEl).not.toBeNull();
+    expect(
+      trendEl!.compareDocumentPosition(rollupEl!) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(
+      rollupEl!.compareDocumentPosition(historyListEl!) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+  });
+});
