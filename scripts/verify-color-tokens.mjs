@@ -69,6 +69,16 @@
 // (and the new WorkoutDetail check) now call this one function instead of
 // each re-implementing the same scan (Epic 1 retro action item B1).
 //
+// Story 2.3 -- Edit a Log Entry -- adds `checkWorkoutEditFormWiring`, the
+// same color-token-wiring scan for the new `WorkoutEditForm.svelte`, plus its
+// own semantic requirements from this story's Boundaries/Code Map: the type
+// field renders as a closed `<select>` with an option for each of the five
+// presets plus "Other", the "Other" free-text input is gated behind
+// `typeSelection === 'Other'`, a failed save renders the same
+// `role="alert"`/`.retry-button` write-error UI convention as Mark Complete's
+// own, and Save actually writes through `replaceLogEntry(` (AD-9) with the
+// "Other" value's case-fold+trim normalization present somewhere in the file.
+//
 // Story 2.2 -- Mark Complete & Completion Feedback -- adds
 // `checkButtonPrimaryWiring`/`checkCompletionCelebrationWiring`, the same
 // color-token-wiring scan for the two new components `ButtonPrimary.svelte`
@@ -151,6 +161,14 @@ const completionCelebrationSveltePath = path.join(
   'lib',
   'components',
   'CompletionCelebration.svelte',
+);
+const workoutEditFormSveltePath = path.join(
+  __dirname,
+  '..',
+  'src',
+  'lib',
+  'components',
+  'WorkoutEditForm.svelte',
 );
 const rootSveltePath = path.join(__dirname, '..', 'src', 'Root.svelte');
 const mainTsPath = path.join(__dirname, '..', 'src', 'main.ts');
@@ -991,6 +1009,92 @@ function checkCompletionCelebrationWiring(failures) {
   );
 }
 
+/** Story 2.3's WorkoutEditForm.svelte -- the Edit form `WorkoutDetail` swaps
+ * in for its own view-mode markup. Same color-token-wiring scan as every
+ * other component check above, plus this story's own semantic/behavioral
+ * requirements (Boundaries/Code Map): a closed `<select>` dropdown carrying
+ * an `<option>` for each of the five presets plus "Other" (not a free-text
+ * input by default), the "Other" free-text reveal gated behind
+ * `typeSelection === 'Other'`, the same `role="alert"`/`.retry-button`
+ * write-error convention Mark Complete's own write path uses, a real
+ * `replaceLogEntry(` write call (AD-9, not some other write path), and the
+ * "Other" value's case-fold+trim normalization actually present in the
+ * script. Scanned against a comment-stripped copy, same convention as
+ * `checkCrashFallbackWiring`/`checkWorkoutDetailWiring` above -- this file's
+ * own header comment quotes several of these same substrings in prose (e.g.
+ * "case-fold + trim"), so an HTML/JS-comment-blind `source.includes()` check
+ * here would be satisfied by that comment alone even if the real code were
+ * ever reverted. */
+function checkWorkoutEditFormWiring(failures) {
+  const source = readFileSync(workoutEditFormSveltePath, 'utf8');
+  const markupOnly = source.replace(/<!--[\s\S]*?-->/g, (comment) =>
+    comment.replace(/[^\n]/g, ' '),
+  );
+  const scriptMasked = maskAllComments(source);
+
+  if (!/<select[^>]*>/.test(markupOnly)) {
+    failures.push(
+      'src/lib/components/WorkoutEditForm.svelte: no <select> found -- the type field must be a ' +
+        "closed dropdown, not a free-text input (this story's Boundaries)",
+    );
+  }
+
+  // The five presets are rendered via an `{#each}` over a TYPE_PRESETS-style
+  // array rather than five literal `<option>` tags, so this checks for the
+  // exact literal preset list in the script (in this order) plus a literal
+  // `<option value="Other">` in the markup, rather than searching for each
+  // preset name as its own rendered `<option>` tag.
+  if (!/\[\s*'Run'\s*,\s*'Bike'\s*,\s*'Lift'\s*,\s*'Mobility'\s*,\s*'Stretch'\s*\]/.test(scriptMasked)) {
+    failures.push(
+      'src/lib/components/WorkoutEditForm.svelte: no [\'Run\', \'Bike\', \'Lift\', \'Mobility\', ' +
+        '\'Stretch\'] preset list found -- the type dropdown must offer exactly this closed set (FR3, ' +
+        'confirmed with Zach 2026-09-17)',
+    );
+  }
+  if (!/<option[^>]*value="Other"[^>]*>/.test(markupOnly)) {
+    failures.push(
+      'src/lib/components/WorkoutEditForm.svelte: no <option value="Other"> found in the type dropdown',
+    );
+  }
+
+  if (!/\{#if\s+typeSelection\s*===\s*'Other'\s*\}/.test(markupOnly)) {
+    failures.push(
+      'src/lib/components/WorkoutEditForm.svelte: the "Other" free-text input is not gated behind ' +
+        "{#if typeSelection === 'Other'} -- it must only reveal when Other is selected (FR3, UX-DR15)",
+    );
+  }
+
+  if (!markupOnly.includes('role="alert"')) {
+    failures.push(
+      'src/lib/components/WorkoutEditForm.svelte: no role="alert" found -- a failed save must be an ' +
+        'assertive live region, mirroring Mark Complete\'s own write-error pattern (this story\'s ' +
+        'Boundaries)',
+    );
+  }
+  if (!markupOnly.includes('class="retry-button"')) {
+    failures.push(
+      'src/lib/components/WorkoutEditForm.svelte: no class="retry-button" found -- a failed save must ' +
+        'render a Retry control',
+    );
+  }
+
+  if (!scriptMasked.includes('replaceLogEntry(')) {
+    failures.push(
+      'src/lib/components/WorkoutEditForm.svelte: no replaceLogEntry( call found -- Save must write ' +
+        "through AD-9's full-overwrite operation, not setCompleted or some other write path",
+    );
+  }
+
+  if (!/\.trim\(\)\.toLowerCase\(\)/.test(scriptMasked)) {
+    failures.push(
+      'src/lib/components/WorkoutEditForm.svelte: no .trim().toLowerCase() found -- the "Other" ' +
+        'free-text value must be case-folded and trimmed before write (FR3, UX-DR15)',
+    );
+  }
+
+  scanColorWiring(source, 'src/lib/components/WorkoutEditForm.svelte', SAFE_NON_TOKEN_VALUES, failures);
+}
+
 /** Blanks `<!-- -->`, `/* *\/`, and `//` line comments out of a JS/Svelte
  * source, keeping everything else (including quoted-string contents and any
  * markup text) at its original offsets -- the same "check a comment-stripped
@@ -1224,6 +1328,7 @@ function main() {
   checkWorkoutDetailAppWiring(failures);
   checkButtonPrimaryWiring(failures);
   checkCompletionCelebrationWiring(failures);
+  checkWorkoutEditFormWiring(failures);
   checkRootWiring(failures);
 
   if (failures.length > 0) {
@@ -1259,8 +1364,12 @@ function main() {
       `setCompleted() calls) and mounts <ButtonPrimary/<CompletionCelebration; and ButtonPrimary.svelte routes ` +
       `its color declarations through tokens and carries a real <button type="button"> plus aria-pressed; and ` +
       `CompletionCelebration.svelte routes its color declarations through tokens and carries an ` +
-      `aria-live="polite" announcement; and main.ts/Root.svelte still wire the error boundary itself ` +
-      `(mount(Root, ...), <svelte:boundary>, the failed snippet, and both window listeners).`,
+      `aria-live="polite" announcement; and WorkoutEditForm.svelte routes its color declarations ` +
+      `through tokens and carries a closed <select> type dropdown (five presets plus Other), an ` +
+      `Other-gated free-text reveal, a role="alert"/.retry-button write-error UI, a replaceLogEntry( ` +
+      `write call, and case-fold+trim normalization of the Other value; and main.ts/Root.svelte still ` +
+      `wire the error boundary itself (mount(Root, ...), <svelte:boundary>, the failed snippet, and ` +
+      `both window listeners).`,
   );
 }
 

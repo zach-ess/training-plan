@@ -215,3 +215,59 @@ export function setCompleted(date: string, value: boolean, workout?: Workout): W
   }
   return result;
 }
+
+// Story 2.3 -- the optional-fields shape `replaceLogEntry` accepts. Every key
+// is independently optional (this story's Boundaries: "Every field... is
+// independently optional") -- `WorkoutEditForm` is responsible for turning a
+// blank/cleared field into a genuinely-omitted key *before* calling this
+// function (e.g. an empty duration input becomes `fields.duration ===
+// undefined`, not `''`), since this function itself does not know which
+// fields the on-screen form even has; it only knows how to write whatever it
+// is given.
+export type LogEntryFields = Pick<LogEntry, 'type' | 'duration' | 'distance' | 'notes'>;
+
+/**
+ * AD-9's full-overwrite write: replaces the entire LogEntry for `date` with a
+ * brand-new record built only from `fields` -- unlike `setCompleted`'s
+ * `{ ...existing, ... }` patch above, the previous record (if any) is never
+ * spread in here, so a key `fields` doesn't carry is genuinely absent from
+ * the written record, never persisted as `null`/`''` (this story's Always
+ * section / the canonical LogEntry shape's omit-key convention). Used by
+ * Edit, where Save always means "this is the whole truth of what happened,"
+ * not a partial patch.
+ *
+ * `completed` is unconditionally set to `true` on every call, regardless of
+ * the LogEntry's prior value (decided 2026-09-24) -- saving via Edit is
+ * itself an act of logging that the day happened, just possibly with
+ * different specifics than planned. This also holds even when neither a
+ * Workout nor a prior LogEntry existed for `date` at all (a rest day being
+ * logged for the first time): the resulting record is a legitimate
+ * orphaned-log LogEntry (AD-8), the same as any other.
+ *
+ * Same `persist`/fresh-read/never-throws contract as `setCompleted` above:
+ * re-reads `localStorage` fresh via `loadInitialEntries` rather than
+ * spreading the possibly-stale in-memory `logStore.entries`, and
+ * `logStore.entries` is only reassigned to match exactly what was persisted
+ * after a successful write -- a failed write leaves it, and every other
+ * date's LogEntry, untouched.
+ */
+export function replaceLogEntry(date: string, fields: LogEntryFields): WriteResult {
+  const freshEntries = loadInitialEntries();
+
+  const nextEntry: LogEntry = {
+    date,
+    completed: true,
+    schemaVersion: CURRENT_SCHEMA_VERSION,
+    ...(fields.type !== undefined ? { type: fields.type } : {}),
+    ...(fields.duration !== undefined ? { duration: fields.duration } : {}),
+    ...(fields.distance !== undefined ? { distance: fields.distance } : {}),
+    ...(fields.notes !== undefined ? { notes: fields.notes } : {}),
+  };
+
+  const nextEntries = { ...freshEntries, [date]: nextEntry };
+  const result = persist(nextEntries);
+  if (result.ok) {
+    logStore.entries = nextEntries;
+  }
+  return result;
+}

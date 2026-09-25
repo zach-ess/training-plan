@@ -20,12 +20,25 @@
   // `$derived` off the Data Store, so a successful `setCompleted` write
   // (which reassigns `logStore.entries`) re-renders `dayView`/`ButtonPrimary`
   // in place too.
+  // Story 2.3 -- adds the Edit trigger and `WorkoutEditForm`. `editing` swaps
+  // this dialog's own body between the existing view-mode markup and the
+  // form in place (Boundaries: "one dialog, one focus trap," never a second
+  // `role="dialog"` stacked on top) -- opening/closing Edit never touches
+  // this dialog's own focus-trap effect below. Back and Escape, while
+  // `editing` is true, are rerouted to `handleEditCancel()` instead of
+  // `onClose()` so a mid-edit Back/Escape returns to view mode (discarding
+  // the in-progress edit) rather than silently closing the whole dialog out
+  // from under it. The Edit trigger itself renders even on a rest day
+  // (`isRestDay`), unlike `ButtonPrimary`, so a completely unplanned day can
+  // still be logged from here (AD-8's orphaned-log case).
+  import { tick } from 'svelte';
   import { getDayView } from '../domain/getDayView';
   import type { Workout } from '../domain/parsePlan';
   import { getLogEntry, setCompleted } from '../data/logStore.svelte';
   import WorkoutDetailStat from './WorkoutDetailStat.svelte';
   import ButtonPrimary from './ButtonPrimary.svelte';
   import CompletionCelebration from './CompletionCelebration.svelte';
+  import WorkoutEditForm from './WorkoutEditForm.svelte';
 
   let { date, workout, onClose }: { date: string; workout: Workout | undefined; onClose: () => void } =
     $props();
@@ -103,9 +116,61 @@
     celebrating = false;
   }
 
+  // Story 2.3 -- whether `WorkoutEditForm` is swapped in for the view-mode
+  // markup below. `editButtonEl` is the Edit trigger's own DOM ref, refocused
+  // (via `tick()` below, since the button it targets doesn't exist in the DOM
+  // yet in the same synchronous tick a state flip happens in -- mirrors
+  // App.svelte's `handleSelect` doing the same for `panel-${tab}`) whenever
+  // the form closes back to view mode, whether by Save success or Cancel, so
+  // focus never silently drops to `document.body` when the form's own
+  // controls unmount.
+  let editing = $state(false);
+  let editButtonEl = $state<HTMLButtonElement | undefined>();
+
+  async function handleEditClick() {
+    editing = true;
+    // A stale write-error banner from an earlier failed Mark Complete/
+    // Incomplete attempt must never resurface once Edit is opened -- clear
+    // it here so it can't reappear in view mode after this editing session
+    // ends (Save success or Cancel), since neither of those touches Mark
+    // Complete's own write path at all.
+    writeErrorReason = undefined;
+    // `.actions` (including this just-clicked, currently-focused button)
+    // unmounts once `editing` flips true -- `tick()` first, since
+    // `WorkoutEditForm`'s own fields don't exist in the DOM yet in this same
+    // synchronous tick, then move focus into its first control (the Type
+    // select) rather than letting it drop to `document.body`.
+    await tick();
+    panelEl?.querySelector<HTMLElement>('#edit-type')?.focus();
+  }
+
+  async function handleEditSaved() {
+    editing = false;
+    await tick();
+    // Focus `backButtonEl`, not `editButtonEl`: `celebrating = true` below
+    // disables `editButtonEl` via its own `disabled={celebrating}` binding
+    // (same as `markButtonEl`'s), so focusing it here would immediately drop
+    // focus to `document.body` the instant it becomes disabled -- mirrors
+    // `handleToggleComplete`'s own guard above for the exact same hazard.
+    backButtonEl?.focus();
+    // Completion Feedback fires unconditionally on every successful Edit
+    // save (this story's Boundaries) -- unlike Mark Complete's `celebrating`
+    // flip above, this is never gated on "did this newly turn completion on."
+    // `replaceLogEntry` itself already guaranteed `completed: true` on the
+    // just-written record before this callback ever runs.
+    celebrating = true;
+  }
+
+  async function handleEditCancel() {
+    editing = false;
+    await tick();
+    editButtonEl?.focus();
+  }
+
   let backButtonEl = $state<HTMLButtonElement | undefined>();
   let markButtonEl = $state<HTMLButtonElement | undefined>();
   let retryButtonEl = $state<HTMLButtonElement | undefined>();
+  let panelEl = $state<HTMLDivElement | undefined>();
 
   // Mirrors Root.svelte's `$effect` + `addEventListener` + cleanup pattern
   // (this app's only prior example of an imperative mount/cleanup effect):
@@ -121,7 +186,14 @@
 
     function handleKeydown(event: KeyboardEvent) {
       if (event.key === 'Escape') {
-        onClose();
+        // Mid-edit, Escape returns to view mode (discarding the in-progress
+        // edit) rather than closing the whole dialog out from under an open
+        // form -- same reasoning as the Back button's own `onclick` below.
+        if (editing) {
+          handleEditCancel();
+        } else {
+          onClose();
+        }
         return;
       }
       // Focus trap: the day list underneath stays mounted and visible
@@ -130,22 +202,34 @@
       // scrim -- not "the dialog's contents," which is what a keyboard user
       // tabbing through an open dialog should stay inside.
       //
-      // Story 2.2 -- this dialog can now have up to three focusable controls
+      // Story 2.2 -- this dialog can have several focusable controls
       // (`ButtonPrimary` whenever `dayView.kind !== 'empty'`, plus a Retry
       // button whenever the last write failed), so this cycles Tab/Shift+Tab
-      // between whichever controls actually exist right now (each one is
-      // `undefined` when not rendered -- a rest day has only Back, same as
-      // Story 2.1) rather than pinning to one fixed element or hardcoding a
-      // fixed-length list that could leave the Retry button Tab-unreachable.
+      // between whichever controls actually exist right now.
+      //
+      // Story 2.3 -- generalized from a hardcoded three-ref array
+      // (`[backButtonEl, markButtonEl, retryButtonEl]`) to a live query over
+      // `panelEl`'s current DOM: `WorkoutEditForm` (Boundaries: "no second
+      // `role="dialog"`/focus trap for the edit form -- it lives inside
+      // WorkoutDetail's existing dialog") adds a `<select>`, several
+      // `<input>`s, a `<textarea>`, and its own Save/Cancel/Retry buttons --
+      // enumerating each of those individually here, on top of the existing
+      // three, would make this trap one hardcoded-list edit away from
+      // silently stranding a field Tab-unreachable every time either
+      // component's controls change. A live query naturally covers whatever
+      // is actually mounted and focusable right now, in both view mode and
+      // edit mode, with no separate list to keep in sync.
       if (event.key === 'Tab') {
         event.preventDefault();
-        const focusables = [backButtonEl, markButtonEl, retryButtonEl].filter(
-          (el): el is HTMLButtonElement => el !== undefined && !el.disabled,
-        );
+        const focusableSelector =
+          'button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled])';
+        const focusables = panelEl
+          ? Array.from(panelEl.querySelectorAll<HTMLElement>(focusableSelector))
+          : [];
         if (focusables.length === 0) {
           return;
         }
-        const activeIndex = focusables.indexOf(document.activeElement as HTMLButtonElement);
+        const activeIndex = focusables.indexOf(document.activeElement as HTMLElement);
         const step = event.shiftKey ? -1 : 1;
         const nextIndex =
           activeIndex === -1
@@ -181,51 +265,100 @@
     aria-modal="true"
     aria-labelledby="workout-detail-title"
     tabindex="-1"
+    bind:this={panelEl}
     onclick={(event) => event.stopPropagation()}
   >
-    <button type="button" class="back-button" bind:this={backButtonEl} onclick={onClose}>
+    <!-- Mid-edit, Back returns to view mode (discarding the in-progress
+         edit) instead of bypassing `editing` and closing the whole dialog
+         out from under the open form -- same reasoning as Escape above. -->
+    <button
+      type="button"
+      class="back-button"
+      bind:this={backButtonEl}
+      onclick={() => (editing ? handleEditCancel() : onClose())}
+    >
       ← Back
     </button>
     <h2 id="workout-detail-title" class="title">{title}</h2>
-    {#if isRestDay}
-      <p class="empty-copy">Nothing scheduled to log yet</p>
+    <!-- Story 2.3 -- `editing` swaps this whole body between the existing
+         view-mode markup and `WorkoutEditForm`, in place, without touching
+         this dialog's own `role="dialog"`/focus trap (Boundaries). -->
+    {#if editing}
+      <WorkoutEditForm {date} {workout} onSaved={handleEditSaved} onCancel={handleEditCancel} />
     {:else}
-      {#if dayView.duration || dayView.distance}
-        <div class="stats">
-          {#if dayView.duration}
-            <WorkoutDetailStat value={dayView.duration} label="Duration" />
-          {/if}
-          {#if dayView.distance}
-            <WorkoutDetailStat value={dayView.distance} label="Distance" />
-          {/if}
-        </div>
+      {#if isRestDay}
+        <p class="empty-copy">Nothing scheduled to log yet</p>
       {:else}
-        <p class="empty-copy">No stats logged for this workout</p>
+        {#if dayView.duration || dayView.distance}
+          <div class="stats">
+            {#if dayView.duration}
+              <WorkoutDetailStat value={dayView.duration} label="Duration" />
+            {/if}
+            {#if dayView.distance}
+              <WorkoutDetailStat value={dayView.distance} label="Distance" />
+            {/if}
+          </div>
+        {:else}
+          <p class="empty-copy">No stats logged for this workout</p>
+        {/if}
       {/if}
-      <!-- Story 2.2 -- renders for `'planned'`/`'logged'`/`'orphaned-log'`
-           kinds (never `'empty'`, since this whole branch is already gated
-           on `!isRestDay`), per this story's Boundaries. -->
+      <!-- Story 2.3 -- this row itself now always renders, even on a rest
+           day (`isRestDay`), so the Edit trigger is reachable there too
+           (Boundaries: "not gated behind !isRestDay the way ButtonPrimary
+           is") -- only `ButtonPrimary` and the Mark Complete write-error
+           stay scoped to `!isRestDay`, same as Story 2.2. -->
       <div class="actions">
-        <ButtonPrimary
-          completed={isCompleted}
+        <button
+          type="button"
+          class="edit-trigger"
+          aria-label="Edit"
+          bind:this={editButtonEl}
           disabled={celebrating}
-          onclick={handleToggleComplete}
-          bind:buttonEl={markButtonEl}
-        />
-        {#if writeErrorReason}
-          <p class="write-error" role="alert">
-            {writeErrorReason === 'quota-exceeded'
-              ? "Couldn't save — your device storage is full. Free up space and try again."
-              : "Couldn't save — something went wrong. Try again."}
-            <button
-              type="button"
-              class="retry-button"
-              bind:this={retryButtonEl}
-              onclick={handleToggleComplete}
-            >
-              Retry
-            </button>
-          </p>
+          onclick={handleEditClick}
+        >
+          <!-- Placeholder inline SVG icon (no icon spec exists anywhere in
+               the UX docs or mockups) -- same convention as TabBar.svelte's
+               own header comment: `stroke="currentColor"`/no fill, so this
+               icon inherits color from the button's own `color` property. -->
+          <svg
+            viewBox="0 0 24 24"
+            width="20"
+            height="20"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M12 20h9" />
+            <path
+              d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"
+            />
+          </svg>
+        </button>
+        {#if !isRestDay}
+          <ButtonPrimary
+            completed={isCompleted}
+            disabled={celebrating}
+            onclick={handleToggleComplete}
+            bind:buttonEl={markButtonEl}
+          />
+          {#if writeErrorReason}
+            <p class="write-error" role="alert">
+              {writeErrorReason === 'quota-exceeded'
+                ? "Couldn't save — your device storage is full. Free up space and try again."
+                : "Couldn't save — something went wrong. Try again."}
+              <button
+                type="button"
+                class="retry-button"
+                bind:this={retryButtonEl}
+                onclick={handleToggleComplete}
+              >
+                Retry
+              </button>
+            </p>
+          {/if}
         {/if}
       </div>
     {/if}
@@ -323,6 +456,35 @@
     flex-direction: column;
     gap: var(--space-5);
     margin-top: var(--space-7);
+  }
+
+  /* Story 2.3 -- Edit trigger. An icon-only button (no visible text label,
+     hence `aria-label="Edit"` above) -- sized to the same 48dp-equivalent
+     minimum tap target as every other interactive control in this file, but
+     square/self-sized rather than full-width like `button-primary`. */
+  .edit-trigger {
+    all: unset;
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    align-self: flex-start;
+    width: 3rem;
+    height: 3rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    color: var(--text-secondary);
+  }
+
+  .edit-trigger:focus-visible {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: 2px;
+  }
+
+  .edit-trigger:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 
   .write-error {
