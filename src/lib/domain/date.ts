@@ -51,3 +51,22 @@ export function getWeekStartIso(dateIso: string): string {
   const weekStart = new Date(date.getFullYear(), date.getMonth(), date.getDate() - dayOfWeek);
   return toLocalIsoDate(weekStart);
 }
+
+/** Story 3.3 -- Week-End Review. Returns all 7 ISO dates, Sunday through
+ * Saturday, of the calendar week that starts at `weekStartIso` (a value
+ * `getWeekStartIso` itself produced, or any other Sunday ISO date) -- built
+ * the same way as every other function in this file: parse via
+ * `parseLocalDate` (never `new Date(iso)`), do the arithmetic on local
+ * getters, and re-render via `toLocalIsoDate` (never `toISOString()`), so
+ * this never drifts a day for a user west/east of UTC the way a UTC-based
+ * calculation would (AD-2). Used to scope `computeMissedCount` to exactly
+ * one week's 7 dates. */
+export function getWeekDates(weekStartIso: string): string[] {
+  const start = parseLocalDate(weekStartIso);
+  const dates: string[] = [];
+  for (let i = 0; i < 7; i++) {
+    const day = new Date(start.getFullYear(), start.getMonth(), start.getDate() + i);
+    dates.push(toLocalIsoDate(day));
+  }
+  return dates;
+}

@@ -122,6 +122,28 @@
 // above `.history-list`, in that fixed order, each forwarded
 // `entries={logStore.entries}` -- not merely present anywhere in the file.
 //
+// Story 3.3 -- Week-End Review -- adds `checkWeekEndReviewWiring`, the same
+// color-token-wiring scan for the new `WeekEndReview.svelte`, plus this
+// story's own requirements from the Boundaries/Code Map: real dialog
+// semantics (`role="dialog"`, `aria-modal="true"`, `aria-labelledby` naming
+// the title, a real `<button type="button" class="back-button">`), the
+// rollup-grid's three domain-function calls (`computeRollup(`/
+// `computeStreak(`/`computeMissedCount(`) and its `--type-rollup-readout-*`
+// typography (this story's Always section: "the app's only use of it"), the
+// `saveReview(` write call, and the same `role="alert"`/`.retry-button`
+// write-error convention every other write path in this app uses. It also
+// adds `checkAppSvelteWeekEndReviewWiring` and
+// `checkHistoryViewWeekEndReviewWiring`, the same "check the wiring, not
+// just the component" precedent `checkWorkoutDetailAppWiring`/
+// `checkHistoryViewRollupsWiring` already establish: the first asserts
+// `App.svelte` actually gates the banner on Sunday + `'loaded'` +
+// no-saved-Review-yet, mounts it with the right id/class, mounts
+// `<WeekEndReview` off a `reviewDialog` state, forwards `onOpenReview` to
+// `<HistoryView`, and folds `reviewDialog` into both tab panels'
+// `inert`/`aria-hidden`; the second asserts `HistoryView.svelte` actually
+// reads `weekEndReviewStore.reviews` and threads `onOpenReview` through to
+// the day list, per this story's Decisions.
+//
 // No test runner (vitest/jest) is installed in this project yet, so this is
 // a plain Node script run via `npm run test:tokens` -- it exits non-zero
 // (and prints errors) on any mismatch.
@@ -233,6 +255,14 @@ const rollupSummarySveltePath = path.join(
   'lib',
   'components',
   'RollupSummary.svelte',
+);
+const weekEndReviewSveltePath = path.join(
+  __dirname,
+  '..',
+  'src',
+  'lib',
+  'components',
+  'WeekEndReview.svelte',
 );
 
 const SANS = "system-ui, -apple-system, 'Segoe UI', sans-serif";
@@ -1488,9 +1518,14 @@ function checkAppSvelteColorWiring(failures) {
  * (e.g. `updatedDate={`) can't satisfy a prop match. */
 function checkHistoryViewWiring(failures) {
   const source = readFileSync(historyViewSveltePath, 'utf8');
-  const markupOnly = source.replace(/<!--[\s\S]*?-->/g, (comment) =>
-    comment.replace(/[^\n]/g, ' '),
-  );
+  // `maskAllComments`, not just an HTML-comment strip: Story 3.3's own
+  // implementation pass found that a `//` line comment in this file's
+  // <script> block merely mentioning "<DayRowCard>" in prose could desync
+  // the markup assertions below (an HTML-only strip leaves `//` comments
+  // intact) -- the same pitfall `checkHistoryViewRollupsWiring`'s/
+  // `checkTrendChartWiring`'s own comments already document and guard
+  // against elsewhere in this file.
+  const markupOnly = maskAllComments(source);
 
   const mountMatch = markupOnly.match(/<DayRowCard(?![\w-])[\s\S]*?\/>/);
   if (!mountMatch) {
@@ -1708,6 +1743,246 @@ function checkHistoryViewAppWiring(failures) {
   }
 }
 
+/** Story 3.3's WeekEndReview.svelte -- the new full-screen Week-End Review
+ * dialog. Same color-token-wiring scan as every other component check above,
+ * plus this story's own real-dialog-semantics requirement (Boundaries:
+ * "mirrors WorkoutDetail.svelte exactly"): `role="dialog"`,
+ * `aria-modal="true"`, an `aria-labelledby` naming the title, and a real,
+ * focusable `<button type="button" class="back-button">` -- the same
+ * convention `checkWorkoutDetailWiring` already applies to its own dialog.
+ * Also asserts the rollup-grid's three domain-function calls
+ * (`computeRollup(`/`computeStreak(`/`computeMissedCount(`, not some ad hoc
+ * aggregation), its `--type-rollup-readout-*` typography (this story's Always
+ * section names this component as "the app's only use of it" -- the flip
+ * side of `checkRollupSummaryWiring`'s own reservation check), the
+ * `saveReview(` write call, and the same `role="alert"`/`.retry-button`
+ * write-error convention every other write path in this app already uses.
+ * Scanned against a comment-stripped copy, same reasoning as
+ * `checkWorkoutDetailWiring` above -- this file's own header comment
+ * discusses all of these at length in prose. */
+function checkWeekEndReviewWiring(failures) {
+  const source = readFileSync(weekEndReviewSveltePath, 'utf8');
+  // `maskAllComments`, not just an HTML-comment strip: this file's own
+  // header comment (Story 3.3 review fix) literally discusses
+  // role="dialog"/aria-modal="true"/the back-button class in prose, which an
+  // HTML-only strip leaves intact -- the same pitfall already fixed in
+  // `checkHistoryViewWiring` and already guarded against in
+  // `checkAppSvelteWeekEndReviewWiring` below.
+  const markupOnly = maskAllComments(source);
+  const scriptMasked = markupOnly;
+
+  if (!markupOnly.includes('role="dialog"')) {
+    failures.push(
+      'src/lib/components/WeekEndReview.svelte: no role="dialog" found -- this story\'s Boundaries ' +
+        'require the same real dialog semantics as WorkoutDetail.svelte',
+    );
+  }
+  if (!markupOnly.includes('aria-modal="true"')) {
+    failures.push(
+      'src/lib/components/WeekEndReview.svelte: no aria-modal="true" found -- this story\'s Boundaries ' +
+        'require the same real dialog semantics as WorkoutDetail.svelte',
+    );
+  }
+
+  // Story 3.3 review fix: this file has two aria-labelledby pairings (the
+  // dialog's own title, and the read-only reflection-readout's caption) --
+  // `matchAll` over a global regex checks every one of them, not just
+  // whichever happens to appear first in source order.
+  const labelledbyMatches = [...markupOnly.matchAll(/aria-labelledby="([^"]+)"/g)];
+  if (labelledbyMatches.length === 0) {
+    failures.push(
+      'src/lib/components/WeekEndReview.svelte: no aria-labelledby found -- the dialog must name its ' +
+        "title (this story's Boundaries)",
+    );
+  } else {
+    for (const match of labelledbyMatches) {
+      if (!markupOnly.includes(`id="${match[1]}"`)) {
+        failures.push(
+          `src/lib/components/WeekEndReview.svelte: aria-labelledby="${match[1]}" has no matching ` +
+            `id="${match[1]}" in the file`,
+        );
+      }
+    }
+  }
+
+  if (!/<button[^>]*type="button"[^>]*class="back-button"[^>]*>/.test(markupOnly)) {
+    failures.push(
+      'src/lib/components/WeekEndReview.svelte: no <button type="button" class="back-button"> found -- ' +
+        'the Back control must be a real, focusable button (same convention as checkWorkoutDetailWiring)',
+    );
+  }
+
+  for (const call of ['computeRollup(', 'computeStreak(', 'computeMissedCount(']) {
+    if (!scriptMasked.includes(call)) {
+      failures.push(
+        `src/lib/components/WeekEndReview.svelte: no ${call} call found -- the rollup-grid must be ` +
+          'built from these existing domain functions (this story\'s Code Map), not some ad hoc ' +
+          'aggregation',
+      );
+    }
+  }
+
+  if (!scriptMasked.includes('var(--type-rollup-readout')) {
+    failures.push(
+      'src/lib/components/WeekEndReview.svelte: no var(--type-rollup-readout-*) reference found -- ' +
+        "the rollup-grid must use this typography role (this story's Always section: \"the app's only " +
+        'use of it")',
+    );
+  }
+
+  if (!scriptMasked.includes('saveReview(')) {
+    failures.push(
+      'src/lib/components/WeekEndReview.svelte: no saveReview( call found -- Save must write through ' +
+        "this story's Data Store",
+    );
+  }
+
+  if (!markupOnly.includes('role="alert"')) {
+    failures.push(
+      'src/lib/components/WeekEndReview.svelte: no role="alert" found -- a failed Save must render an ' +
+        'assertive write-error live region, same convention as every other write path in this app',
+    );
+  }
+  if (!markupOnly.includes('class="retry-button"')) {
+    failures.push(
+      'src/lib/components/WeekEndReview.svelte: no class="retry-button" found -- a failed Save must ' +
+        'render a Retry control',
+    );
+  }
+
+  // The reflection field must actually branch on `readOnly`: an editable
+  // `<textarea>` in the unsaved/editable mode, a plain read-only readout in
+  // the saved-week mode (this story's Never section: "no editing a saved
+  // Review's reflection... after Save").
+  if (!scriptMasked.includes('class="reflection-input"')) {
+    failures.push(
+      'src/lib/components/WeekEndReview.svelte: no class="reflection-input" <textarea> found -- the ' +
+        'editable/unsaved dialog must offer a real reflection field',
+    );
+  }
+  if (!scriptMasked.includes('class="reflection-readout"')) {
+    failures.push(
+      'src/lib/components/WeekEndReview.svelte: no class="reflection-readout" found -- the read-only ' +
+        "dialog must render the saved reflection text, never an editable field (this story's Never " +
+        'section)',
+    );
+  }
+
+  scanColorWiring(source, 'src/lib/components/WeekEndReview.svelte', SAFE_NON_TOKEN_VALUES, failures);
+}
+
+/** Story 3.3 -- mirrors `checkWorkoutDetailAppWiring`/`checkAppSvelteStreakWiring`'s
+ * own "check the wiring, not just the component" precedent: asserts
+ * `App.svelte` actually gates the banner on this story's three conditions
+ * (Sunday, a `'loaded'` Plan, no saved Review yet for that week), mounts it
+ * with the expected id/class behind that gate, drives `<WeekEndReview` off a
+ * `reviewDialog` state, forwards `onOpenReview` to `<HistoryView`, and folds
+ * `reviewDialog` into both tab panels' `inert`/`aria-hidden` the same way
+ * `selectedDate` already is. Scanned against `maskAllComments(source)` for
+ * the same reason every other wiring check here is -- this file's own prose
+ * comments already discuss all of these at length. */
+function checkAppSvelteWeekEndReviewWiring(failures) {
+  const source = readFileSync(appSveltePath, 'utf8');
+  const masked = maskAllComments(source);
+
+  if (!/(?<![\w-])isSundayToday(?![\w-])/.test(masked)) {
+    failures.push(
+      'src/App.svelte: no isSundayToday found -- the banner must be gated on today being that ' +
+        "week's own Sunday",
+    );
+  }
+  if (!/weekEndReviewStore\.reviews\[/.test(masked)) {
+    failures.push(
+      'src/App.svelte: no weekEndReviewStore.reviews[ read found -- the banner must be gated on no ' +
+        'WeekEndReview existing yet for the current week',
+    );
+  }
+  if (!/showWeekEndReviewBanner\s*=\s*\$derived\(/.test(masked)) {
+    failures.push(
+      'src/App.svelte: no showWeekEndReviewBanner = $derived(...) found -- the banner\'s visibility ' +
+        'must be reactive (so a successful Save drops it in the same render, AC7), not a one-time ' +
+        'snapshot',
+    );
+  }
+
+  if (!masked.includes('id="week-end-review-banner"')) {
+    failures.push('src/App.svelte: no id="week-end-review-banner" found');
+  }
+  if (!masked.includes('class="week-end-review-banner"')) {
+    failures.push('src/App.svelte: no class="week-end-review-banner" found');
+  }
+  if (!/\{#if\s+showWeekEndReviewBanner\s*\}/.test(masked)) {
+    failures.push(
+      'src/App.svelte: the week-end-review-banner is not gated behind {#if showWeekEndReviewBanner} -- ' +
+        'it must render only when all three conditions hold, never unconditionally',
+    );
+  }
+
+  if (!masked.includes('reviewDialog')) {
+    failures.push(
+      'src/App.svelte: no reviewDialog found -- the Review dialog must be driven by its own state ' +
+        "(this story's Code Map), separate from selectedDate",
+    );
+  }
+  if (!masked.includes('<WeekEndReview')) {
+    failures.push('src/App.svelte: no <WeekEndReview mount found');
+  }
+
+  const historyMountMatch = masked.match(/<HistoryView(?![\w-])[\s\S]*?\/>/);
+  if (
+    !historyMountMatch ||
+    !/(?<![\w-])onOpenReview(?![\w-])\s*=\s*\{\s*handleOpenReview\s*\}/.test(historyMountMatch[0])
+  ) {
+    failures.push(
+      'src/App.svelte: <HistoryView is not wired with onOpenReview={handleOpenReview} -- a saved ' +
+        "week's Sunday row must be able to open the read-only Review (this story's Decisions)",
+    );
+  }
+
+  if (!/inert=\{[^}]*reviewDialog\s*!==\s*null[^}]*\}/.test(masked)) {
+    failures.push(
+      'src/App.svelte: no inert={...reviewDialog !== null...} found -- both tab panels must go inert ' +
+        'while the Review dialog is open, the same way selectedDate already does for WorkoutDetail',
+    );
+  }
+}
+
+/** Story 3.3 -- mirrors `checkHistoryViewAppWiring`'s own "check the wiring,
+ * not just the component" precedent: asserts `HistoryView.svelte` actually
+ * reads `weekEndReviewStore.reviews` and accepts/uses an `onOpenReview` prop,
+ * so a regression silently dropping the Decisions-mandated Sunday-row
+ * routing doesn't pass every other check in this file. Scanned against
+ * `maskAllComments(source)` for the same reason every other wiring check
+ * here is. */
+function checkHistoryViewWeekEndReviewWiring(failures) {
+  const source = readFileSync(historyViewSveltePath, 'utf8');
+  const masked = maskAllComments(source);
+
+  if (!/weekEndReviewStore\.reviews\[/.test(masked)) {
+    failures.push(
+      'src/lib/components/HistoryView.svelte: no weekEndReviewStore.reviews[ read found -- a saved ' +
+        "week's Sunday row must be detected from this story's Data Store",
+    );
+  }
+
+  if (!/(?<![\w-])onOpenReview(?![\w-])/.test(masked)) {
+    failures.push(
+      'src/lib/components/HistoryView.svelte: no onOpenReview found -- this component must accept and ' +
+        'use an onOpenReview prop to route a saved week\'s Sunday row to the read-only Review ' +
+        "(this story's Decisions)",
+    );
+  }
+
+  const mountMatch = masked.match(/<DayRowCard(?![\w-])[\s\S]*?\/>/);
+  if (mountMatch && !/onOpenReview/.test(mountMatch[0])) {
+    failures.push(
+      'src/lib/components/HistoryView.svelte: the <DayRowCard mount\'s onOpen never references ' +
+        'onOpenReview -- a saved week\'s Sunday row must be able to route there instead of the plain ' +
+        'onOpen/WorkoutDetail path',
+    );
+  }
+}
+
 function main() {
   /** @type {string[]} */
   const failures = [];
@@ -1745,6 +2020,9 @@ function main() {
   checkTrendChartWiring(failures);
   checkRollupSummaryWiring(failures);
   checkHistoryViewRollupsWiring(failures);
+  checkWeekEndReviewWiring(failures);
+  checkAppSvelteWeekEndReviewWiring(failures);
+  checkHistoryViewWeekEndReviewWiring(failures);
   checkRootWiring(failures);
 
   if (failures.length > 0) {
@@ -1797,7 +2075,15 @@ function main() {
       `zero-state copy, and RollupSummary routes its per-type counts through --type-stat-value-* typography ` +
       `while never reaching for the reserved --type-rollup-readout-*; and HistoryView.svelte reads the real ` +
       `logStore.entries and mounts <TrendChart then <RollupSummary above .history-list, in that order, each ` +
-      `wired with entries={logStore.entries}.`,
+      `wired with entries={logStore.entries}; and WeekEndReview.svelte routes its color declarations through ` +
+      `tokens, carries role="dialog"/aria-modal="true"/aria-labelledby/a real back-button, calls ` +
+      `computeRollup(/computeStreak(/computeMissedCount(, uses --type-rollup-readout-* for the rollup-grid, ` +
+      `writes through saveReview(, and renders role="alert"/.retry-button on a failed Save plus a real ` +
+      `reflection-input/reflection-readout split between editable and read-only mode; and src/App.svelte gates ` +
+      `the week-end-review-banner on isSundayToday/planStore.status/weekEndReviewStore.reviews, drives ` +
+      `<WeekEndReview off a reviewDialog state, wires <HistoryView with onOpenReview={handleOpenReview}, and ` +
+      `folds reviewDialog into both tab panels' inert; and HistoryView.svelte reads weekEndReviewStore.reviews ` +
+      `and routes a saved week's Sunday row to onOpenReview.`,
   );
 }
 

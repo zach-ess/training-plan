@@ -26,6 +26,7 @@ import HistoryView from './HistoryView.svelte';
 import { planStore } from '../data/planStore.svelte';
 import * as planStoreModule from '../data/planStore.svelte';
 import { setCompleted } from '../data/logStore.svelte';
+import { weekEndReviewStore, type WeekEndReview } from '../data/weekEndReviewStore.svelte';
 import type { Workout } from '../domain/parsePlan';
 
 const FIXED_TODAY = '2026-09-25';
@@ -59,7 +60,7 @@ describe('HistoryView -- I/O matrix', () => {
     setCompleted(date, true, workout);
     setLoadedPlan([workout]);
 
-    const { container } = render(HistoryView, { props: { onOpen: vi.fn() } });
+    const { container } = render(HistoryView, { props: { onOpen: vi.fn(), onOpenReview: vi.fn() } });
     const row = rowFor(container, date);
 
     expect(row).not.toBeNull();
@@ -74,7 +75,7 @@ describe('HistoryView -- I/O matrix', () => {
     setCompleted(date, false, workout);
     setLoadedPlan([workout]);
 
-    const { container } = render(HistoryView, { props: { onOpen: vi.fn() } });
+    const { container } = render(HistoryView, { props: { onOpen: vi.fn(), onOpenReview: vi.fn() } });
     const row = rowFor(container, date);
 
     expect(row).toHaveClass('missed');
@@ -88,7 +89,7 @@ describe('HistoryView -- I/O matrix', () => {
     const workout: Workout = { date, type: 'Lift', duration: '20 min' };
     setLoadedPlan([workout]);
 
-    const { container } = render(HistoryView, { props: { onOpen: vi.fn() } });
+    const { container } = render(HistoryView, { props: { onOpen: vi.fn(), onOpenReview: vi.fn() } });
     const row = rowFor(container, date);
 
     expect(row).toHaveClass('missed');
@@ -101,7 +102,7 @@ describe('HistoryView -- I/O matrix', () => {
     const workout: Workout = { date, type: 'Run', duration: '40 min', distance: '8 km' };
     setLoadedPlan([workout]);
 
-    const { container } = render(HistoryView, { props: { onOpen: vi.fn() } });
+    const { container } = render(HistoryView, { props: { onOpen: vi.fn(), onOpenReview: vi.fn() } });
     const row = rowFor(container, date);
 
     expect(row).not.toBeNull();
@@ -118,7 +119,7 @@ describe('HistoryView -- I/O matrix', () => {
     setCompleted(orphanDate, false); // no `workout` arg -- a real orphaned-log write
     setLoadedPlan([before, after]);
 
-    const { container } = render(HistoryView, { props: { onOpen: vi.fn() } });
+    const { container } = render(HistoryView, { props: { onOpen: vi.fn(), onOpenReview: vi.fn() } });
     const row = rowFor(container, orphanDate);
 
     expect(row).not.toBeNull();
@@ -133,7 +134,7 @@ describe('HistoryView -- I/O matrix', () => {
     setLoadedPlan([workout]);
     const onOpen = vi.fn();
 
-    const { container } = render(HistoryView, { props: { onOpen } });
+    const { container } = render(HistoryView, { props: { onOpen, onOpenReview: vi.fn() } });
     const row = rowFor(container, date);
     expect(row).not.toBeNull();
 
@@ -143,10 +144,56 @@ describe('HistoryView -- I/O matrix', () => {
     expect(onOpen).toHaveBeenCalledWith(date);
   });
 
+  it("tap a Sunday row whose week already has a saved Week-End Review: routes to onOpenReview instead of onOpen (Story 3.3 review fix -- this branch was never previously exercised by a real click)", async () => {
+    const sunday = '2026-09-13'; // a real Sunday, elapsed relative to FIXED_TODAY
+    const workout: Workout = { date: sunday, type: 'Run', duration: '20 min' };
+    setLoadedPlan([workout]);
+    const savedReview: WeekEndReview = {
+      weekStartIso: sunday,
+      workoutsCompleted: 1,
+      byType: { Run: 1, Bike: 0, Lift: 0, Mobility: 0, Stretch: 0, Other: 0, Unspecified: 0 },
+      streak: 1,
+      missedCount: 0,
+      reflection: 'Good week.',
+      schemaVersion: 1,
+    };
+    weekEndReviewStore.reviews[sunday] = savedReview;
+    const onOpen = vi.fn();
+    const onOpenReview = vi.fn();
+
+    const { container } = render(HistoryView, { props: { onOpen, onOpenReview } });
+    const row = rowFor(container, sunday);
+    expect(row).not.toBeNull();
+
+    await fireEvent.click(row as HTMLElement);
+
+    expect(onOpenReview).toHaveBeenCalledTimes(1);
+    expect(onOpenReview).toHaveBeenCalledWith(sunday);
+    expect(onOpen).not.toHaveBeenCalled();
+  });
+
+  it('tap a Sunday row whose week has NOT been saved yet: still routes to onOpen, same as any other row', async () => {
+    const sunday = '2026-09-06'; // a different real Sunday, no saved review for it
+    const workout: Workout = { date: sunday, type: 'Run', duration: '20 min' };
+    setLoadedPlan([workout]);
+    const onOpen = vi.fn();
+    const onOpenReview = vi.fn();
+
+    const { container } = render(HistoryView, { props: { onOpen, onOpenReview } });
+    const row = rowFor(container, sunday);
+    expect(row).not.toBeNull();
+
+    await fireEvent.click(row as HTMLElement);
+
+    expect(onOpen).toHaveBeenCalledTimes(1);
+    expect(onOpen).toHaveBeenCalledWith(sunday);
+    expect(onOpenReview).not.toHaveBeenCalled();
+  });
+
   it('empty Plan: renders exactly one row (today, rest-day treatment), no History-specific empty-state copy', () => {
     setLoadedPlan([]);
 
-    const { container } = render(HistoryView, { props: { onOpen: vi.fn() } });
+    const { container } = render(HistoryView, { props: { onOpen: vi.fn(), onOpenReview: vi.fn() } });
     const rows = container.querySelectorAll('[data-date]');
 
     expect(rows).toHaveLength(1);
@@ -162,7 +209,7 @@ describe('HistoryView -- planStore.status branches (review pass 1, bad_spec)', (
     planStore.plan = null;
     planStore.status = 'loading';
 
-    const { container } = render(HistoryView, { props: { onOpen: vi.fn() } });
+    const { container } = render(HistoryView, { props: { onOpen: vi.fn(), onOpenReview: vi.fn() } });
 
     expect(container.querySelectorAll('[data-date]')).toHaveLength(0);
     expect(container.querySelectorAll('.skeleton-day-row')).toHaveLength(5);
@@ -174,7 +221,7 @@ describe('HistoryView -- planStore.status branches (review pass 1, bad_spec)', (
     planStore.status = 'error';
     const loadPlanSpy = vi.spyOn(planStoreModule, 'loadPlan').mockImplementation(() => Promise.resolve());
 
-    const { container, getByRole } = render(HistoryView, { props: { onOpen: vi.fn() } });
+    const { container, getByRole } = render(HistoryView, { props: { onOpen: vi.fn(), onOpenReview: vi.fn() } });
 
     expect(container.querySelectorAll('[data-date]')).toHaveLength(0);
     expect(getByRole('alert')).toBeTruthy();
@@ -197,7 +244,7 @@ describe('HistoryView -- multi-date render (row order, cross-row independence)',
     // `missed.date` deliberately left with no LogEntry.
     setLoadedPlan([loggedComplete, missed, futurePlanned]);
 
-    const { container } = render(HistoryView, { props: { onOpen: vi.fn() } });
+    const { container } = render(HistoryView, { props: { onOpen: vi.fn(), onOpenReview: vi.fn() } });
 
     const dates = Array.from(container.querySelectorAll('[data-date]')).map((el) =>
       el.getAttribute('data-date'),
@@ -235,7 +282,7 @@ describe('HistoryView -- reactivity to planStore changes after mount', () => {
     planStore.plan = null;
     planStore.status = 'loading';
 
-    const { container } = render(HistoryView, { props: { onOpen: vi.fn() } });
+    const { container } = render(HistoryView, { props: { onOpen: vi.fn(), onOpenReview: vi.fn() } });
     expect(container.querySelectorAll('.skeleton-day-row')).toHaveLength(5);
     expect(container.querySelectorAll('[data-date]')).toHaveLength(0);
 
@@ -283,7 +330,7 @@ describe('HistoryView -- Rollups & Trend Chart wiring (Story 3.2)', () => {
     setCompleted(date, true, workout);
     setLoadedPlan([workout]);
 
-    const { container } = render(HistoryView, { props: { onOpen: vi.fn() } });
+    const { container } = render(HistoryView, { props: { onOpen: vi.fn(), onOpenReview: vi.fn() } });
 
     // TrendChart: real Log Entries exist, so the zero-state copy is gone and
     // at least one real bar renders (the current week's, containing `date`).

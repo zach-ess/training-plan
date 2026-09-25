@@ -22,12 +22,14 @@
   import WorkoutDetail from './lib/components/WorkoutDetail.svelte';
   import StreakIndicator from './lib/components/StreakIndicator.svelte';
   import HistoryView from './lib/components/HistoryView.svelte';
+  import WeekEndReview from './lib/components/WeekEndReview.svelte';
   import { planStore, loadPlan } from './lib/data/planStore.svelte';
   import { logStore } from './lib/data/logStore.svelte';
+  import { weekEndReviewStore } from './lib/data/weekEndReviewStore.svelte';
   import { parsePlan } from './lib/domain/parsePlan';
   import { getPlanDayRange } from './lib/domain/getPlanDayRange';
   import { computeStreak } from './lib/domain/computeStreak';
-  import { getTodayIso } from './lib/domain/date';
+  import { getTodayIso, getWeekStartIso } from './lib/domain/date';
 
   type Tab = 'home' | 'history';
 
@@ -63,12 +65,26 @@
     // while the dialog was open, fall back to the Home panel's own
     // container (already a real focus target via its `tabindex="0"`) rather
     // than silently dropping focus to `<body>`.
+    //
+    // Story 3.3 review fix: scoped to `#panel-${activeTab}`, not a bare
+    // document-wide `[data-date="..."]` selector -- since Story 3.1,
+    // HistoryView's own day list renders a row for the exact same dates
+    // (the full Plan day range), and Workout Detail can be opened from
+    // either tab's list via this same handler. Home's `#panel-home` is
+    // always declared first in the DOM, so an unscoped selector would match
+    // Home's *hidden* row first whenever this dialog was opened from
+    // History, and `.focus()` on a hidden element silently no-ops (the same
+    // hazard `skipFocusRestore`/Epic 2 retro finding F1 already guards
+    // against elsewhere in this file) -- dropping focus to `<body>` instead
+    // of back into the row the user actually tapped.
     if (closedDate) {
-      const row = document.querySelector<HTMLElement>(`[data-date="${closedDate}"]`);
+      const row = document.querySelector<HTMLElement>(
+        `#panel-${activeTab} [data-date="${closedDate}"]`,
+      );
       if (row) {
         row.focus();
       } else {
-        document.getElementById('panel-home')?.focus();
+        document.getElementById(`panel-${activeTab}`)?.focus();
       }
     }
   }
@@ -98,6 +114,73 @@
   // already relies on for its own `dayView` (AC5: recomputes "in the same
   // moment as Completion Feedback," with no explicit event/callback wiring).
   const streak = $derived(computeStreak(dayRange, workoutsByDate, logStore.entries, todayIso));
+
+  // Story 3.3 -- Week-End Review. `todayWeekStartIso` is computed once, not
+  // re-derived reactively (mirrors `todayIso`'s own "today never
+  // live-recomputes" convention above) -- if `todayWeekStartIso === todayIso`,
+  // today itself is that week's Sunday. This is the same equality
+  // `getWeekStartIso` already guarantees for a Sunday input (a Sunday's own
+  // week starts on itself), so it doubles as this app's one "is today
+  // Sunday" test without a separate day-of-week check.
+  const todayWeekStartIso = getWeekStartIso(todayIso);
+  const isSundayToday = todayWeekStartIso === todayIso;
+
+  // Banner gate (this story's Always section): a real Plan loaded (the
+  // dialog needs its day range), today is that week's own Sunday, and no
+  // WeekEndReview has been saved for it yet. `$derived` off
+  // `weekEndReviewStore.reviews` so a successful Save (which reassigns that
+  // object wholesale) drops the banner in the same render, with no separate
+  // event wiring (AC7).
+  const showWeekEndReviewBanner = $derived(
+    planStore.status === 'loaded' &&
+      isSundayToday &&
+      weekEndReviewStore.reviews[todayWeekStartIso] === undefined,
+  );
+
+  // Which week's Review dialog is open, if any, and whether it's read-only
+  // (a saved week, opened from a History row) or the live/editable one (only
+  // ever the current week, opened from the banner). An overlay flag, same
+  // convention as `selectedDate` above -- opening/closing it never touches
+  // `activeTab`/`dayRange`/scroll position.
+  let reviewDialog = $state<{ weekStartIso: string; readOnly: boolean } | null>(null);
+
+  function handleOpenReviewBanner() {
+    reviewDialog = { weekStartIso: todayWeekStartIso, readOnly: false };
+  }
+
+  // Passed to HistoryView as `onOpenReview` -- called only for a Sunday row
+  // whose week already has a saved Review (this story's Decisions), so
+  // `readOnly` is always `true` here; the live/editable dialog is only ever
+  // reachable via the banner above.
+  function handleOpenReview(weekStartIso: string) {
+    reviewDialog = { weekStartIso, readOnly: true };
+  }
+
+  function handleCloseReview() {
+    const closedWeekStartIso = reviewDialog?.weekStartIso;
+    reviewDialog = null;
+    if (closedWeekStartIso) {
+      // Mirrors `handleCloseDetail`'s own query-selector convention (and its
+      // review-fix scoping, above): refocus the row/banner that opened this,
+      // falling back to whichever tab panel is actually active right now if
+      // it's no longer there to refocus (e.g. a successful Save just dropped
+      // the banner it was opened from). Scoped to `#panel-${activeTab}`, not
+      // a bare document-wide selector -- a saved week's Sunday date exists
+      // as a row in *both* Home's and History's day lists (both span the
+      // full Plan day range), and Home's markup is always declared first in
+      // the DOM, so an unscoped selector would match Home's hidden row first
+      // when this dialog was opened from a History row, silently dropping
+      // focus instead of returning it to the tapped row.
+      const row = document.querySelector<HTMLElement>(
+        `#panel-${activeTab} [data-date="${closedWeekStartIso}"]`,
+      );
+      if (row) {
+        row.focus();
+      } else {
+        document.getElementById(`panel-${activeTab}`)?.focus();
+      }
+    }
+  }
 
   // Scrolls today's row into view once, right after the 'loaded' panel's day
   // list first mounts -- never re-fired by a later reactive update within
@@ -132,8 +215,26 @@
     // into the tab the user is actually switching to, below, is also the
     // more correct target regardless -- there is no reason to send focus
     // back into a panel the user just navigated away from.
+    let closedAModal = false;
     if (selectedDate) {
       handleCloseDetail({ skipFocusRestore: true });
+      closedAModal = true;
+    }
+    // Story 3.3 -- the Week-End Review dialog is the same kind of
+    // scrim-stops-short-of-the-tab-bar overlay as WorkoutDetail (this
+    // story's Boundaries: "mirrors WorkoutDetail.svelte exactly"), so a tab
+    // switch must close it too rather than leaving it open behind the
+    // now-active tab. A bare `reviewDialog = null` here (not routed through
+    // `handleCloseReview`) is deliberate: that function's own row/banner
+    // refocus logic targets the panel being switched *away* from, the exact
+    // same hazard `skipFocusRestore` guards against for `handleCloseDetail`
+    // above -- the `tick().then(...)` below already restores focus into the
+    // tab actually being switched to.
+    if (reviewDialog) {
+      reviewDialog = null;
+      closedAModal = true;
+    }
+    if (closedAModal) {
       // `tick()` first: `activeTab = tab` above hasn't flushed to the DOM
       // yet at this point in the same synchronous handler, so `panel-${tab}`
       // is still `hidden` here -- focusing it immediately would silently
@@ -196,8 +297,8 @@
     aria-labelledby="tab-home"
     tabindex="0"
     hidden={activeTab !== 'home'}
-    inert={selectedDate !== null}
-    aria-hidden={selectedDate !== null}
+    inert={selectedDate !== null || reviewDialog !== null}
+    aria-hidden={selectedDate !== null || reviewDialog !== null}
   >
     {#if planStore.status === 'loading'}
       <!-- Cold load, nothing cached yet: skeleton day-row placeholders,
@@ -231,6 +332,21 @@
       </div>
     {:else}
       <StreakIndicator {streak} />
+      <!-- Story 3.3 -- Sunday-only, non-dismissible: no close/dismiss control
+           exists anywhere on this banner (this story's I/O matrix: "Try to
+           dismiss banner unopened -- No dismiss action exists") -- tapping
+           it is the only interaction it offers, and that interaction opens
+           the Review rather than dismissing anything. -->
+      {#if showWeekEndReviewBanner}
+        <button
+          type="button"
+          id="week-end-review-banner"
+          class="week-end-review-banner"
+          onclick={handleOpenReviewBanner}
+        >
+          Review your week
+        </button>
+      {/if}
       <div class="day-list" use:scrollToToday>
         {#each dayRange as date (date)}
           <DayRowCard
@@ -249,16 +365,21 @@
     aria-labelledby="tab-history"
     tabindex="0"
     hidden={activeTab !== 'history'}
-    inert={selectedDate !== null}
-    aria-hidden={selectedDate !== null}
+    inert={selectedDate !== null || reviewDialog !== null}
+    aria-hidden={selectedDate !== null || reviewDialog !== null}
   >
     <!-- Story 3.1 -- HistoryView turned out not to need `plan`/`todayIso`
          threaded in as props at all: it reads `planStore.plan`/`getTodayIso()`
          itself, the same way App.svelte does, so `onOpen` is the only prop
          passed. This `#panel-history`'s own `id`/`hidden`/`inert`/
          `aria-hidden` wiring above is untouched -- only this child markup
-         changed. -->
-    <HistoryView onOpen={handleOpenDetail} />
+         changed.
+         Story 3.3 -- `onOpenReview` is the second prop: HistoryView itself
+         decides, per row, whether a Sunday's saved Review routes there
+         instead of `onOpen`/WorkoutDetail (this story's Decisions) -- App.svelte
+         stays the sole owner of the resulting `reviewDialog` state, same as
+         `selectedDate` above. -->
+    <HistoryView onOpen={handleOpenDetail} onOpenReview={handleOpenReview} />
   </div>
   {#key selectedDate}
     {#if selectedDate}
@@ -266,6 +387,15 @@
         date={selectedDate}
         workout={workoutsByDate.get(selectedDate)}
         onClose={handleCloseDetail}
+      />
+    {/if}
+  {/key}
+  {#key reviewDialog ? `${reviewDialog.weekStartIso}:${reviewDialog.readOnly}` : null}
+    {#if reviewDialog}
+      <WeekEndReview
+        weekStartIso={reviewDialog.weekStartIso}
+        readOnly={reviewDialog.readOnly}
+        onClose={handleCloseReview}
       />
     {/if}
   {/key}
@@ -303,6 +433,37 @@
     display: flex;
     flex-direction: column;
     border-top: 1px solid var(--border);
+  }
+
+  /* Story 3.3 -- Sunday-only Week-End Review banner. A real
+     `<button type="button">` (this app's established "no bare clickable
+     div" convention -- checkDayRowCardWiring/checkCrashFallbackWiring apply
+     the same rule to their own components), styled to read as a prompt
+     rather than a plain row: --accent-primary background, same shape as
+     `.retry-button` above. */
+  .week-end-review-banner {
+    all: unset;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 3rem; /* epic's tap-target floor */
+    margin-bottom: var(--space-6);
+    padding: var(--space-4) var(--space-7);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    text-align: center;
+    background: var(--accent-primary);
+    color: var(--surface);
+    font-family: var(--type-row-label-font-family);
+    font-size: var(--type-row-label-size);
+    font-weight: var(--type-row-label-weight);
+  }
+
+  .week-end-review-banner:focus-visible {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: 2px;
   }
 
   .plan-error {
