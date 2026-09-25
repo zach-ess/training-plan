@@ -10,12 +10,18 @@
   // `DayRowCard` per date across the Plan's span, always including today)
   // instead of the placeholder paragraph the previous two stories left
   // there.
+  //
+  // Story 3.1 -- `#panel-history`'s own placeholder paragraph is replaced by
+  // `<HistoryView>`, which does its own day-list rendering/loading/error
+  // composition internally (see HistoryView.svelte) -- this file only wires
+  // its `onOpen` prop to the same `handleOpenDetail` Home already uses.
   import { tick, untrack } from 'svelte';
   import TabBar from './lib/components/TabBar.svelte';
   import SkeletonDayRow from './lib/components/SkeletonDayRow.svelte';
   import DayRowCard from './lib/components/DayRowCard.svelte';
   import WorkoutDetail from './lib/components/WorkoutDetail.svelte';
   import StreakIndicator from './lib/components/StreakIndicator.svelte';
+  import HistoryView from './lib/components/HistoryView.svelte';
   import { planStore, loadPlan } from './lib/data/planStore.svelte';
   import { logStore } from './lib/data/logStore.svelte';
   import { parsePlan } from './lib/domain/parsePlan';
@@ -246,7 +252,13 @@
     inert={selectedDate !== null}
     aria-hidden={selectedDate !== null}
   >
-    <p>History &amp; Trends placeholder -- content arrives in Epic 3.</p>
+    <!-- Story 3.1 -- HistoryView turned out not to need `plan`/`todayIso`
+         threaded in as props at all: it reads `planStore.plan`/`getTodayIso()`
+         itself, the same way App.svelte does, so `onOpen` is the only prop
+         passed. This `#panel-history`'s own `id`/`hidden`/`inert`/
+         `aria-hidden` wiring above is untouched -- only this child markup
+         changed. -->
+    <HistoryView onOpen={handleOpenDetail} />
   </div>
   {#key selectedDate}
     {#if selectedDate}

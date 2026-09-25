@@ -92,6 +92,21 @@
 // the same "check the wiring, not just the component" gap
 // `checkWorkoutDetailAppWiring` closes for `App.svelte`.
 //
+// Story 3.1 -- History & Trends Day List -- adds `checkHistoryViewWiring`,
+// the same color-token-wiring scan for the new `HistoryView.svelte`, plus
+// asserting it actually mounts `<DayRowCard` forwarding all four of
+// `date`/`workout`/`isToday`/`onOpen` (not just `onOpen` -- a regression
+// silently dropping one of the other three would otherwise pass this static
+// check even though `npm test` would still catch it, mirroring
+// `checkDayRowCardWiring`'s own level of scrutiny for its sibling component).
+// It also adds `checkHistoryViewAppWiring`, the same "check the wiring, not
+// just the component" gap `checkWorkoutDetailAppWiring`/
+// `checkAppSvelteStreakWiring` already close for their own stories: asserts
+// `App.svelte` actually mounts `<HistoryView` wired with
+// `onOpen={handleOpenDetail}`, so a regression reverting `#panel-history` to
+// its old placeholder (or wiring a second/duplicate handler) doesn't slip
+// past every other check staying green.
+//
 // No test runner (vitest/jest) is installed in this project yet, so this is
 // a plain Node script run via `npm run test:tokens` -- it exits non-zero
 // (and prints errors) on any mismatch.
@@ -180,6 +195,14 @@ const streakIndicatorSveltePath = path.join(
 );
 const rootSveltePath = path.join(__dirname, '..', 'src', 'Root.svelte');
 const mainTsPath = path.join(__dirname, '..', 'src', 'main.ts');
+const historyViewSveltePath = path.join(
+  __dirname,
+  '..',
+  'src',
+  'lib',
+  'components',
+  'HistoryView.svelte',
+);
 
 const SANS = "system-ui, -apple-system, 'Segoe UI', sans-serif";
 const MONO = "ui-monospace, 'SF Mono', 'Roboto Mono', Menlo, Consolas, monospace";
@@ -1414,6 +1437,110 @@ function checkAppSvelteColorWiring(failures) {
   scanColorWiring(source, 'src/App.svelte', APP_SVELTE_SAFE_NON_TOKEN_VALUES, failures);
 }
 
+/** Story 3.1's HistoryView.svelte -- the new History & Trends day list. Same
+ * color-token-wiring scan as every other component check above, plus
+ * asserting its `<DayRowCard` mount actually forwards all four expected
+ * props -- `date`/`workout`/`isToday`/`onOpen` -- not merely `onOpen` on its
+ * own (Review Triage Log, low/patch: a regression silently dropping
+ * `date`/`workout`/`isToday` would otherwise pass this static check, though
+ * `npm test` would still catch it), and that the mount actually sits inside
+ * an `{#each ...}` block rather than being a hardcoded single row (a fresh
+ * review pass found nothing asserted this). Scanned against a
+ * comment-stripped copy, same convention as
+ * `checkDayRowCardWiring`/`checkWorkoutDetailWiring` above -- this file's own
+ * header comment discusses `onOpen`/`DayRowCard` at length in prose.
+ *
+ * The tag-name and per-prop matches below all use a `(?![\w-])`/`(?<![\w-])`
+ * word-boundary guard (a fresh review pass found the original versions had
+ * none) so `<DayRowCardOld` can't satisfy the tag match, and an unrelated
+ * attribute that merely ends or starts with the same text as a prop name
+ * (e.g. `updatedDate={`) can't satisfy a prop match. */
+function checkHistoryViewWiring(failures) {
+  const source = readFileSync(historyViewSveltePath, 'utf8');
+  const markupOnly = source.replace(/<!--[\s\S]*?-->/g, (comment) =>
+    comment.replace(/[^\n]/g, ' '),
+  );
+
+  const mountMatch = markupOnly.match(/<DayRowCard(?![\w-])[\s\S]*?\/>/);
+  if (!mountMatch) {
+    failures.push(
+      'src/lib/components/HistoryView.svelte: no <DayRowCard ... /> mount found -- History must ' +
+        "render one DayRowCard per date in the Plan's day range (AC1-4)",
+    );
+  } else {
+    const mount = mountMatch[0];
+    for (const prop of ['date', 'workout', 'isToday', 'onOpen']) {
+      // Covers both the shorthand (`{date}`) and explicit (`date={...}`)
+      // Svelte prop-passing forms, since either is a legitimate way to
+      // forward a prop of the same name. `boundary` keeps either form from
+      // matching a longer identifier that merely contains this prop's name
+      // as a substring.
+      const boundary = `(?<![\\w-])${prop}(?![\\w-])`;
+      const shorthand = new RegExp(`\\{\\s*${boundary}\\s*\\}`);
+      const explicit = new RegExp(`${boundary}\\s*=\\s*\\{`);
+      if (!shorthand.test(mount) && !explicit.test(mount)) {
+        failures.push(
+          `src/lib/components/HistoryView.svelte: <DayRowCard mount never forwards "${prop}" -- ` +
+            'all four of date/workout/isToday/onOpen must be forwarded, not just onOpen',
+        );
+      }
+    }
+
+    // The mount must be reached via iteration over the Plan's day range, not
+    // a single hardcoded row -- checked by requiring an `{#each ...}` opening
+    // tag to appear somewhere before this mount in the file.
+    const eachIndex = markupOnly.search(/\{#each\b/);
+    if (eachIndex === -1 || eachIndex > mountMatch.index) {
+      failures.push(
+        'src/lib/components/HistoryView.svelte: the <DayRowCard mount is not preceded by an ' +
+          "{#each ...} block -- History must render one row per date in the Plan's day range, not a " +
+          'hardcoded single row (AC1-4)',
+      );
+    }
+  }
+
+  scanColorWiring(source, 'src/lib/components/HistoryView.svelte', SAFE_NON_TOKEN_VALUES, failures);
+}
+
+/** Story 3.1 -- mirrors `checkWorkoutDetailAppWiring`/
+ * `checkAppSvelteStreakWiring`'s own "check the wiring, not just the
+ * component" precedent: asserts `src/App.svelte` actually mounts
+ * `<HistoryView` with its `onOpen` prop bound to `handleOpenDetail` (the same
+ * handler Home's own `DayRowCard` rows use), so a regression reverting
+ * `#panel-history` back to its old placeholder paragraph -- or wiring a
+ * second, divergent close/open handler instead of reusing the one shared
+ * `selectedDate` state -- doesn't silently pass every other check in this
+ * file. Checked against `maskAllComments(source)` for the same reason every
+ * other wiring check here is: this file's own prose comments already discuss
+ * "HistoryView"/"handleOpenDetail" at length.
+ *
+ * Both the tag-name match and the `onOpen` prop match below use a
+ * `(?![\w-])`/`(?<![\w-])` word-boundary guard (a fresh review pass found
+ * the original versions had none), so a differently-named mount (e.g.
+ * `<HistoryViewOld`) or an unrelated attribute merely ending in "onOpen"
+ * can't satisfy them. */
+function checkHistoryViewAppWiring(failures) {
+  const source = readFileSync(appSveltePath, 'utf8');
+  const masked = maskAllComments(source);
+
+  const mountMatch = masked.match(/<HistoryView(?![\w-])[\s\S]*?\/>/);
+  if (!mountMatch) {
+    failures.push(
+      'src/App.svelte: no <HistoryView mount found -- #panel-history must render HistoryView instead ' +
+        'of its old placeholder paragraph (Story 3.1)',
+    );
+    return;
+  }
+
+  if (!/(?<![\w-])onOpen(?![\w-])\s*=\s*\{\s*handleOpenDetail\s*\}/.test(mountMatch[0])) {
+    failures.push(
+      'src/App.svelte: <HistoryView is not wired with onOpen={handleOpenDetail} -- History must reuse ' +
+        "the same handler/selectedDate state Home's own DayRowCard rows use, not a second close/open " +
+        'path (this story\'s Boundaries)',
+    );
+  }
+}
+
 function main() {
   /** @type {string[]} */
   const failures = [];
@@ -1446,6 +1573,8 @@ function main() {
   checkWorkoutEditFormWiring(failures);
   checkStreakIndicatorWiring(failures);
   checkAppSvelteStreakWiring(failures);
+  checkHistoryViewWiring(failures);
+  checkHistoryViewAppWiring(failures);
   checkRootWiring(failures);
 
   if (failures.length > 0) {
@@ -1491,7 +1620,9 @@ function main() {
       `"{streak}-day streak" format; and src/App.svelte reactively derives the Streak ` +
       `($derived(computeStreak() and mounts <StreakIndicator; and main.ts/Root.svelte still wire the ` +
       `error boundary itself (mount(Root, ...), <svelte:boundary>, the failed snippet, and both window ` +
-      `listeners).`,
+      `listeners); and HistoryView.svelte routes its color declarations through tokens and mounts ` +
+      `<DayRowCard forwarding all of date/workout/isToday/onOpen; and src/App.svelte mounts <HistoryView ` +
+      `wired with onOpen={handleOpenDetail}.`,
   );
 }
 
