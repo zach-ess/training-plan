@@ -15,6 +15,7 @@
 // parameter rather than calling `getTodayIso()` itself.
 
 import { getWeekStartIso, parseLocalDate, toLocalIsoDate } from './date';
+import { isRecord } from './guards';
 
 const TREND_WINDOW_WEEKS = 12;
 
@@ -27,9 +28,6 @@ export interface TrendWeek {
   count: number;
 }
 
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null && !Array.isArray(value);
-}
 
 /**
  * Returns exactly `TREND_WINDOW_WEEKS` (12) weeks, oldest first, ending with

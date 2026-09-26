@@ -35,7 +35,15 @@
   // week already has a saved Review routes that one row to the read-only
   // Review dialog instead of `WorkoutDetail` -- everywhere else, `DayRowCard`
   // is untouched (this story's Never section) and behaves exactly as before.
-  // This component reads `weekEndReviewStore.reviews` itself (mirroring its
+  // Epic 3 retro fix (F3, 2026-09-26): `isSavedReviewSunday` used to be
+  // defined locally, right here, as this component's own copy. A whole-epic
+  // review found `App.svelte`'s own Home day-list needed the identical
+  // check and had none -- the same date rendered a row in both places, but
+  // only History's routed correctly. The predicate is now a single shared
+  // export from `weekEndReviewStore.svelte.ts` (it already owns the
+  // `reviews` state the check reads), imported by both call sites instead
+  // of each keeping its own copy.
+  // This component reads that shared predicate (mirroring its
   // own `logStore.entries` read above) purely to decide, per row, which
   // callback to hand that one `DayRowCard` as its `onOpen` prop -- `App.svelte`
   // stays the sole owner of the resulting dialog state (`reviewDialog`), the
@@ -47,10 +55,10 @@
   import RollupSummary from './RollupSummary.svelte';
   import { planStore, loadPlan } from '../data/planStore.svelte';
   import { logStore } from '../data/logStore.svelte';
-  import { weekEndReviewStore } from '../data/weekEndReviewStore.svelte';
+  import { isSavedReviewSunday } from '../data/weekEndReviewStore.svelte';
   import { parsePlan } from '../domain/parsePlan';
   import { getPlanDayRange } from '../domain/getPlanDayRange';
-  import { getTodayIso, parseLocalDate } from '../domain/date';
+  import { getTodayIso } from '../domain/date';
 
   // `onOpen` opens WorkoutDetail (forwarded straight through to every
   // `DayRowCard` mount, same as before Story 3.3); `onOpenReview` opens the
@@ -63,17 +71,6 @@
     onOpen,
     onOpenReview,
   }: { onOpen: (date: string) => void; onOpenReview: (weekStartIso: string) => void } = $props();
-
-  /** True only when `date` is that week's own Sunday (`getWeekStartIso`'s
-   * own convention: a Sunday's week starts on itself, so `weekStartIso ===
-   * date` for a Sunday) AND a Review has already been saved for it -- any
-   * other date (including a Sunday with nothing saved yet, which only ever
-   * happens for *today*, reachable only via the banner, never a History row
-   * per this story's Decisions) keeps opening `WorkoutDetail` exactly as
-   * before. */
-  function isSavedReviewSunday(date: string): boolean {
-    return parseLocalDate(date).getDay() === 0 && weekEndReviewStore.reviews[date] !== undefined;
-  }
 
   // Computed once, not re-derived reactively -- mirrors App.svelte's/
   // DayRowCard's own `todayIso` (the Never section is explicit that "today"

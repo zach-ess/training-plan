@@ -25,7 +25,7 @@
   import WeekEndReview from './lib/components/WeekEndReview.svelte';
   import { planStore, loadPlan } from './lib/data/planStore.svelte';
   import { logStore } from './lib/data/logStore.svelte';
-  import { weekEndReviewStore } from './lib/data/weekEndReviewStore.svelte';
+  import { weekEndReviewStore, isSavedReviewSunday } from './lib/data/weekEndReviewStore.svelte';
   import { parsePlan } from './lib/domain/parsePlan';
   import { getPlanDayRange } from './lib/domain/getPlanDayRange';
   import { computeStreak } from './lib/domain/computeStreak';
@@ -144,6 +144,14 @@
   // `activeTab`/`dayRange`/scroll position.
   let reviewDialog = $state<{ weekStartIso: string; readOnly: boolean } | null>(null);
 
+  // Epic 3 retro fix (F1, 2026-09-26): `todayWeekStartIso` here is used only
+  // as the review's identity/storage key (the Sunday it's filed under, which
+  // `HistoryView`'s saved-Sunday lookup also depends on) -- it is NOT the
+  // start of the date range actually reviewed. Zach's own convention is
+  // Sunday as the LAST day of his workout week, so `WeekEndReview.svelte`
+  // itself computes the live rollup over the 7 days ending on this date, not
+  // starting from it. No change needed here: passing today's own date as the
+  // key was always correct.
   function handleOpenReviewBanner() {
     reviewDialog = { weekStartIso: todayWeekStartIso, readOnly: false };
   }
@@ -347,13 +355,22 @@
           Review your week
         </button>
       {/if}
+      <!-- Epic 3 retro fix (F3, 2026-09-26): Home's own day list never had
+           this routing -- only `HistoryView.svelte`'s row list checked
+           `isSavedReviewSunday` and forwarded to the read-only Review
+           dialog. The same date can render a row in both places (a saved
+           Sunday within Home's own visible range), so it must route
+           identically regardless of which tab is active. Now both call
+           sites import the one shared predicate from
+           `weekEndReviewStore.svelte.ts` rather than each keeping (or
+           silently drifting from) their own copy. -->
       <div class="day-list" use:scrollToToday>
         {#each dayRange as date (date)}
           <DayRowCard
             {date}
             workout={workoutsByDate.get(date)}
             isToday={date === todayIso}
-            onOpen={handleOpenDetail}
+            onOpen={isSavedReviewSunday(date) ? handleOpenReview : handleOpenDetail}
           />
         {/each}
       </div>

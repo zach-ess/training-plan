@@ -19,6 +19,7 @@
 // place that knows LogEntry's field names.
 
 import type { Workout } from './parsePlan';
+import { isRecord } from './guards';
 
 export type DayViewKind = 'logged' | 'planned' | 'orphaned-log' | 'empty';
 
@@ -33,9 +34,6 @@ export interface DayView {
   completed?: boolean;
 }
 
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null && !Array.isArray(value);
-}
 
 /** Reads whichever of `type`/`duration`/`distance`/`completed` are present
  * off an opaque LogEntry-shaped value -- mirrors parsePlan's tolerant

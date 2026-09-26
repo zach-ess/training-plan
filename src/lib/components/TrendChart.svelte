@@ -19,10 +19,7 @@
   // component's job, not `computeTrend`'s (this story's Tasks).
   import { computeTrend } from '../domain/computeTrend';
   import { getTodayIso, getWeekStartIso } from '../domain/date';
-
-  function isRecord(value: unknown): value is Record<string, unknown> {
-    return typeof value === 'object' && value !== null && !Array.isArray(value);
-  }
+  import { isRecord } from '../domain/guards';
 
   let { entries }: { entries: Record<string, unknown> } = $props();
 
@@ -75,20 +72,33 @@
   // Trims any week strictly before the first-ever Log Entry's own week
   // (AC4) -- when `firstEntryWeekStartIso` predates the whole window (the
   // full trend-window case), every week in `trend` already satisfies the
-  // lower bound, so nothing is trimmed there. Also clamps the upper bound to
-  // the current week: a stray future-dated Log Entry (nothing currently
-  // prevents marking a future-scheduled workout complete) would otherwise
-  // push `firstEntryWeekStartIso` past every week in `trend`, leaving
-  // `visibleWeeks` empty while `hasAnyEntries` is still true -- an
-  // unexplained blank chart instead of real bars.
-  const visibleWeeks = $derived(
+  // lower bound, so nothing is trimmed there.
+  //
+  // Epic 3 retro fix (F2, 2026-09-26): a stray future-dated Log Entry
+  // (nothing currently prevents marking a future-scheduled workout complete)
+  // can push `firstEntryWeekStartIso` *past* `currentWeekStartIso` -- `trend`
+  // itself never contains a week beyond `currentWeekStartIso`, so clamping
+  // only the filter's *upper* bound (the original fix) can never help: every
+  // week still fails the *lower*-bound test against an out-of-range
+  // `firstEntryWeekStartIso`, leaving `visibleWeeks` empty while
+  // `hasAnyEntries` stays true -- the exact "unexplained blank chart" this
+  // clamp exists to prevent, confirmed still reproducible by directly
+  // executing this logic before this fix. Clamping `firstEntryWeekStartIso`
+  // itself (never letting it exceed `currentWeekStartIso`) is what actually
+  // closes it: once clamped, every week in `trend` again satisfies the lower
+  // bound whenever `hasAnyEntries` is true, so real bars render instead of an
+  // empty box.
+  const effectiveFirstWeekStartIso = $derived(
     firstEntryWeekStartIso === undefined
+      ? undefined
+      : firstEntryWeekStartIso > currentWeekStartIso
+        ? currentWeekStartIso
+        : firstEntryWeekStartIso,
+  );
+  const visibleWeeks = $derived(
+    effectiveFirstWeekStartIso === undefined
       ? []
-      : trend.filter(
-          (week) =>
-            week.weekStartIso >= firstEntryWeekStartIso &&
-            week.weekStartIso <= currentWeekStartIso,
-        ),
+      : trend.filter((week) => week.weekStartIso >= effectiveFirstWeekStartIso),
   );
 
   const maxCount = $derived(Math.max(1, ...visibleWeeks.map((week) => week.count)));

@@ -19,6 +19,7 @@
 // without duplicating the try/catch/schemaVersion plumbing.
 
 import type { Workout } from '../domain/parsePlan';
+import { isRecord } from '../domain/guards';
 
 // Canonical LogEntry field shape (epics.md Technical Decisions / this
 // story's Code Map): `date` is the id; `completed` is always explicit;
@@ -48,9 +49,6 @@ interface LogStoreState {
   entries: Record<string, LogEntry>;
 }
 
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null && !Array.isArray(value);
-}
 
 /** Tolerantly reads one raw stored record into a `LogEntry`, the same
  * "accept what's usable, drop what isn't" convention `parsePlan.ts` applies

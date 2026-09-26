@@ -10,6 +10,7 @@ import {
   weekEndReviewStore,
   getReview,
   saveReview,
+  isSavedReviewSunday,
   CURRENT_SCHEMA_VERSION,
   type WeekEndReviewInput,
 } from './weekEndReviewStore.svelte';
@@ -129,6 +130,32 @@ describe('weekEndReviewStore -- getReview/saveReview', () => {
 
     expect(getReview(savedWeek)?.workoutsCompleted).toBe(3);
     expect(getReview(failingWeek)).toBeUndefined();
+  });
+});
+
+describe('weekEndReviewStore -- isSavedReviewSunday', () => {
+  // Epic 3 retro fix (F3, 2026-09-26): this predicate used to be a copy
+  // pasted directly inside `HistoryView.svelte`, exercised only indirectly
+  // through that component's own render tests. Now that it's a standalone
+  // shared export (also consumed by `App.svelte`'s Home day list), it gets
+  // its own direct unit coverage here rather than staying only
+  // component-test-observable.
+  it('true for a Sunday whose week already has a saved Review', () => {
+    const weekStartIso = '2026-10-04'; // a genuine Sunday, isolated from every other test's week in this file
+    saveReview(input(weekStartIso));
+
+    expect(isSavedReviewSunday(weekStartIso)).toBe(true);
+  });
+
+  it('false for a Sunday with nothing saved for its week', () => {
+    expect(isSavedReviewSunday('2026-10-11')).toBe(false);
+  });
+
+  it('false for a non-Sunday date, even one that falls inside a week with a saved Review', () => {
+    const weekStartIso = '2026-10-04';
+    saveReview(input(weekStartIso));
+
+    expect(isSavedReviewSunday('2026-10-05')).toBe(false); // the Monday right after that same saved Sunday
   });
 });
 

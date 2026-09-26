@@ -106,6 +106,25 @@ describe('TrendChart', () => {
     expect(columns).toHaveLength(3);
   });
 
+  it('Epic 3 retro regression (F2): a future-dated completed entry (marking a future-scheduled workout complete is not prevented elsewhere) never leaves an unexplained empty chart', () => {
+    // The only Log Entry is dated after `currentWeekStartIso` -- confirmed
+    // reproducible before this fix: `hasAnyEntries` was true (suppressing the
+    // zero-state copy) while `visibleWeeks` was empty (no bars at all),
+    // because clamping only the filter's upper bound can't fix a
+    // `firstEntryWeekStartIso` that itself exceeds the trend window's own
+    // upper bound.
+    const entries: Record<string, unknown> = {
+      '2026-10-15': { type: 'Run', completed: true }, // FIXED_TODAY is 2026-09-25
+    };
+
+    const { container, queryByText } = render(TrendChart, { props: { entries } });
+
+    expect(
+      queryByText("Your trends will show up here once you've logged a few workouts"),
+    ).toBeNull();
+    expect(container.querySelectorAll('.trend-bar-column').length).toBeGreaterThan(0);
+  });
+
   it('AC2: recomputes when the entries prop changes to a new object (live update, no manual refresh)', async () => {
     const { container, rerender } = render(TrendChart, { props: { entries: {} } });
     expect(container.querySelectorAll('.trend-bar')).toHaveLength(0);

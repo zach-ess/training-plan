@@ -4,6 +4,8 @@
 // getDayView, DayRowCard, App.svelte) works only with the typed `Plan`
 // this returns.
 
+import { isRecord } from './guards';
+
 export interface Workout {
   date: string;
   type?: string;
@@ -14,10 +16,6 @@ export interface Workout {
 export interface Plan {
   planName?: string;
   workouts: Workout[];
-}
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
 // Architecture's Consistency Conventions: "Dates are ISO 8601 strings

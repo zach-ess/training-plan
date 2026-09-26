@@ -27,9 +27,9 @@
   import { parsePlan } from '../domain/parsePlan';
   import { getPlanDayRange } from '../domain/getPlanDayRange';
   import { computeStreak } from '../domain/computeStreak';
-  import { computeRollup, type RollupType } from '../domain/computeRollup';
+  import { computeRollup, ROLLUP_TYPE_ORDER } from '../domain/computeRollup';
   import { computeMissedCount } from '../domain/computeMissedCount';
-  import { getTodayIso, getWeekDates, parseLocalDate } from '../domain/date';
+  import { getTodayIso, getWeekDates, parseLocalDate, toLocalIsoDate } from '../domain/date';
 
   let {
     weekStartIso,
@@ -37,17 +37,12 @@
     onClose,
   }: { weekStartIso: string; readOnly: boolean; onClose: () => void } = $props();
 
-  // Rendered in this fixed order regardless of which counts are zero --
-  // mirrors RollupSummary.svelte's own TYPE_ORDER precedent.
-  const TYPE_ORDER: RollupType[] = [
-    'Run',
-    'Bike',
-    'Lift',
-    'Mobility',
-    'Stretch',
-    'Other',
-    'Unspecified',
-  ];
+  // Rendered in this fixed order regardless of which counts are zero.
+  //
+  // Epic 3 retro fix (F6, 2026-09-26): this used to be its own local
+  // `TYPE_ORDER` array, whose own comment admitted it was hand-duplicated
+  // from `RollupSummary.svelte`'s own copy rather than sharing it -- now the
+  // one shared `ROLLUP_TYPE_ORDER` export from `computeRollup.ts`.
 
   // Computed once, not re-derived reactively -- mirrors every other
   // `getTodayIso()` call site in this app.
@@ -63,20 +58,45 @@
   const dayRange = $derived(getPlanDayRange(plan.workouts, todayIso));
   const workoutsByDate = $derived(new Map(plan.workouts.map((workout) => [workout.date, workout])));
 
-  const weekDates = $derived(getWeekDates(weekStartIso));
-  const weekEndIso = $derived(weekDates[weekDates.length - 1]);
+  // Epic 3 retro fix (F1, 2026-09-26): despite its name, `weekStartIso` is
+  // the Sunday this review is filed under -- App.svelte's banner and
+  // HistoryView's saved-Sunday lookup both depend on that value staying the
+  // Sunday's own date, so it isn't renamed here. But Zach's own convention
+  // is Sunday as the LAST day of his workout week (Monday-Sunday), not the
+  // first -- confirmed directly with him during this retro, after the
+  // original implementation (and this file's own earlier review passes)
+  // assumed the opposite, matching `computeTrend`'s Sun-Sat bucketing
+  // convention. That mismatch meant the live rollup-grid computed a window
+  // starting *today* and running into the future -- `computeMissedCount`
+  // could only ever return 0 (every date in range is `>= todayIso`), and
+  // `computeRollup` only ever saw whatever was logged on the Sunday itself.
+  // The window is now built backward: the 7 days ending on and including
+  // `weekStartIso`, via the same parseLocalDate/toLocalIsoDate arithmetic
+  // every other date computation in this app uses (never `new
+  // Date(iso)`/`toISOString()`, per AD-2) -- `getWeekDates` itself is
+  // unchanged (it still just returns 7 consecutive dates starting from
+  // whatever ISO date it's given); only which date this file feeds it as
+  // that start changed. Scope confirmed with Zach: this fix is scoped to
+  // Week-End Review alone -- `computeTrend`'s own Sun-Sat bucketing for the
+  // already-shipped Trend Chart (Story 3.2) is deliberately left untouched.
+  const windowStartIso = $derived.by(() => {
+    const weekEnd = parseLocalDate(weekStartIso);
+    return toLocalIsoDate(new Date(weekEnd.getFullYear(), weekEnd.getMonth(), weekEnd.getDate() - 6));
+  });
+  const weekDates = $derived(getWeekDates(windowStartIso));
+  const weekEndIso = $derived(weekStartIso);
 
   const weekRangeLabel = $derived.by(() => {
     const fmt = (iso: string) =>
       parseLocalDate(iso).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-    return `${fmt(weekStartIso)} – ${fmt(weekEndIso)}`;
+    return `${fmt(windowStartIso)} – ${fmt(weekEndIso)}`;
   });
 
   // Live rollup-grid values (Always section: "computes fresh at open time...
   // live until Save freezes it"). Always computed, even in read-only mode --
   // cheap, pure, and it keeps this file from needing two separate code paths
   // for "what Save would write" vs. "what's shown."
-  const liveByType = $derived(computeRollup(logStore.entries, weekStartIso, weekEndIso));
+  const liveByType = $derived(computeRollup(logStore.entries, windowStartIso, weekEndIso));
   const liveWorkoutsCompleted = $derived(
     (Object.values(liveByType) as number[]).reduce((sum, count) => sum + count, 0),
   );
@@ -209,7 +229,7 @@
       <div class="rollup-cell rollup-cell-bytype">
         <span class="rollup-cell-label">By type</span>
         <ul class="rollup-bytype-list">
-          {#each TYPE_ORDER as type (type)}
+          {#each ROLLUP_TYPE_ORDER as type (type)}
             <li class="rollup-bytype-item">
               <span class="rollup-type-label">{type}</span>
               <span class="rollup-cell-value">{byType[type]}</span>

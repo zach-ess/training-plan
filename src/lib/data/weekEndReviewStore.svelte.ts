@@ -12,7 +12,10 @@
 // "patch just the reflection" or "patch just one number" path at all, by
 // design: a WeekEndReview is immutable once saved (Never section).
 
-import type { Rollup, RollupType } from '../domain/computeRollup';
+import type { Rollup } from '../domain/computeRollup';
+import { ROLLUP_TYPE_ORDER } from '../domain/computeRollup';
+import { parseLocalDate } from '../domain/date';
+import { isRecord } from '../domain/guards';
 
 // Canonical WeekEndReview field shape (this story's Always section):
 // `weekStartIso` is the id (that week's Sunday, `getWeekStartIso`'s own
@@ -45,17 +48,13 @@ interface WeekEndReviewStoreState {
   reviews: Record<string, WeekEndReview>;
 }
 
-// Mirrors `computeRollup.ts`'s own closed bucket set exactly -- kept as a
-// local list here (rather than importing something `computeRollup.ts`
-// doesn't itself export) purely so a hand-edited/corrupted stored `byType`
-// value can be tolerantly reconstructed key-by-key on read, the same
-// "accept what's usable, drop what isn't" convention `toLogEntry` applies to
-// LogEntry's own fields.
-const ROLLUP_TYPES: RollupType[] = ['Run', 'Bike', 'Lift', 'Mobility', 'Stretch', 'Other', 'Unspecified'];
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null && !Array.isArray(value);
-}
+// Epic 3 retro fix (F6, 2026-09-26): this used to be its own hand-duplicated
+// local copy of `computeRollup.ts`'s closed bucket set, kept local only
+// because that module didn't export any such list at the time. It now does
+// (`ROLLUP_TYPE_ORDER`), so this reuses that export directly -- used here
+// purely so a hand-edited/corrupted stored `byType` value can be tolerantly
+// reconstructed key-by-key on read, the same "accept what's usable, drop
+// what isn't" convention `toLogEntry` applies to LogEntry's own fields.
 
 /** Tolerantly reconstructs a `Rollup` from an opaque raw value -- any key
  * missing or not a number defaults to `0` rather than dropping the whole
@@ -63,7 +62,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
  * omitted" convention. */
 function toRollup(raw: unknown): Rollup {
   const rollup = {} as Rollup;
-  for (const type of ROLLUP_TYPES) {
+  for (const type of ROLLUP_TYPE_ORDER) {
     rollup[type] = isRecord(raw) && typeof raw[type] === 'number' ? raw[type] : 0;
   }
   return rollup;
@@ -177,6 +176,20 @@ function persist(reviews: Record<string, WeekEndReview>): WriteResult {
  * reassigns `weekEndReviewStore.reviews`) re-renders any reader in place. */
 export function getReview(weekStartIso: string): WeekEndReview | undefined {
   return weekEndReviewStore.reviews[weekStartIso];
+}
+
+/** Epic 3 retro fix (F3, 2026-09-26): true when `date` is a Sunday whose week
+ * already has a saved Review -- the one predicate that decides whether a
+ * day-row's tap opens the read-only Week-End Review instead of the ordinary
+ * WorkoutDetail dialog (this story's Decisions). Originally written only
+ * inside `HistoryView.svelte`; extracted here once a whole-epic review found
+ * `App.svelte`'s own Home day-list needed the identical check -- the same
+ * date rendered a row in both places, but only History's routed correctly,
+ * so the identical date opened two different dialogs depending on which tab
+ * was active. Both call sites now import this one function rather than each
+ * keeping (or silently drifting from) their own copy. */
+export function isSavedReviewSunday(date: string): boolean {
+  return parseLocalDate(date).getDay() === 0 && weekEndReviewStore.reviews[date] !== undefined;
 }
 
 // The shape `saveReview` accepts -- every field this story's rollup-grid

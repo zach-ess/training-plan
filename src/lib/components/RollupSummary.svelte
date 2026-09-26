@@ -17,7 +17,7 @@
   // including honest all-zero totals for a brand-new install with nothing
   // logged yet (AC3), the same "show zeros, don't hide them" precedent
   // `StreakIndicator` already established for the Streak count.
-  import { computeRollup, type RollupType } from '../domain/computeRollup';
+  import { computeRollup, ROLLUP_TYPE_ORDER } from '../domain/computeRollup';
   import { getTodayIso, parseLocalDate, toLocalIsoDate } from '../domain/date';
 
   let { entries }: { entries: Record<string, unknown> } = $props();
@@ -46,22 +46,18 @@
   // Rendered in this fixed order regardless of which counts are zero --
   // never reordered by count, so the layout stays stable as Log Entries
   // accumulate.
-  const TYPE_ORDER: RollupType[] = [
-    'Run',
-    'Bike',
-    'Lift',
-    'Mobility',
-    'Stretch',
-    'Other',
-    'Unspecified',
-  ];
+  //
+  // Epic 3 retro fix (F6, 2026-09-26): this used to be its own local
+  // `TYPE_ORDER` array, hand-duplicated (identically) in 2 other files --
+  // now the one shared `ROLLUP_TYPE_ORDER` export from `computeRollup.ts`,
+  // which already owns `RollupType` itself.
 </script>
 
 <div class="rollup-summary">
   <section class="rollup-period" aria-label="Month to date">
     <p class="rollup-period-label">Month to date</p>
     <ul class="rollup-list">
-      {#each TYPE_ORDER as type (type)}
+      {#each ROLLUP_TYPE_ORDER as type (type)}
         <li class="rollup-item">
           <span class="rollup-type-label">{type}</span>
           <span class="rollup-stat-value">{monthToDate[type]}</span>
@@ -72,7 +68,7 @@
   <section class="rollup-period" aria-label="Year to date">
     <p class="rollup-period-label">Year to date</p>
     <ul class="rollup-list">
-      {#each TYPE_ORDER as type (type)}
+      {#each ROLLUP_TYPE_ORDER as type (type)}
         <li class="rollup-item">
           <span class="rollup-type-label">{type}</span>
           <span class="rollup-stat-value">{yearToDate[type]}</span>

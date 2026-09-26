@@ -14,8 +14,20 @@ import WeekEndReview from './WeekEndReview.svelte';
 import { planStore } from '../data/planStore.svelte';
 import { setCompleted } from '../data/logStore.svelte';
 import { getReview, weekEndReviewStore } from '../data/weekEndReviewStore.svelte';
-import { getWeekDates } from '../domain/date';
+import { getWeekDates, parseLocalDate, toLocalIsoDate } from '../domain/date';
 import type { Workout } from '../domain/parsePlan';
+
+/** Epic 3 retro fix (F1, 2026-09-26): the 7 dates in the reviewed window
+ * ending on (and including) `weekEndIso` -- mirrors WeekEndReview.svelte's
+ * own corrected windowing (Sunday is the LAST day of the reviewed week, per
+ * Zach's own convention, not the first). Fixture dates below must land
+ * inside this backward-looking window, not `getWeekDates(weekEndIso)`'s
+ * forward one. */
+function reviewWindowDates(weekEndIso: string): string[] {
+  const end = parseLocalDate(weekEndIso);
+  const start = toLocalIsoDate(new Date(end.getFullYear(), end.getMonth(), end.getDate() - 6));
+  return getWeekDates(start);
+}
 
 // Six real, consecutive Sundays -- one per test that needs its own isolated
 // week, well before FIXED_TODAY so every date in every one of these weeks
@@ -73,7 +85,7 @@ describe('WeekEndReview -- I/O matrix (editable/unsaved mode)', () => {
   });
 
   it("Banner-opened dialog: rollup-grid is pre-populated live from that week's Log Entries, nothing to re-enter", () => {
-    const [, , runDate, bikeDate] = getWeekDates(WEEK_2); // two days inside WEEK_2
+    const [, , runDate, bikeDate] = reviewWindowDates(WEEK_2); // two days inside the window ending on WEEK_2
     const runWorkout: Workout = { date: runDate, type: 'Run', duration: '30 min' };
     const bikeWorkout: Workout = { date: bikeDate, type: 'Bike', duration: '45 min' };
     setCompleted(runDate, true, runWorkout);
@@ -87,6 +99,27 @@ describe('WeekEndReview -- I/O matrix (editable/unsaved mode)', () => {
     expect(cellValue(container, 'Workouts completed')).toBe('2');
     expect(byTypeValue(container, 'Run')).toBe('1');
     expect(byTypeValue(container, 'Bike')).toBe('1');
+  });
+
+  it('Epic 3 retro regression (F1): the reviewed window ends on weekStartIso (inclusive) and runs backward 6 days -- a workout logged ON that Sunday counts, one logged the day after does not', () => {
+    const weekEndIso = '2026-11-15'; // its own isolated Sunday, well clear of every other test's window in this file
+    const onTheSunday: Workout = { date: weekEndIso, type: 'Run', duration: '20 min' };
+    // The day *after* weekStartIso -- inside the old (buggy) forward-looking
+    // window this story originally shipped with, and must NOT be counted
+    // under the corrected backward-looking window.
+    const dayAfter = '2026-11-16';
+    const afterWorkout: Workout = { date: dayAfter, type: 'Bike', duration: '20 min' };
+    setCompleted(weekEndIso, true, onTheSunday);
+    setCompleted(dayAfter, true, afterWorkout);
+    setLoadedPlan([onTheSunday, afterWorkout]);
+
+    const { container } = render(WeekEndReview, {
+      props: { weekStartIso: weekEndIso, readOnly: false, onClose: vi.fn() },
+    });
+
+    expect(cellValue(container, 'Workouts completed')).toBe('1');
+    expect(byTypeValue(container, 'Run')).toBe('1');
+    expect(byTypeValue(container, 'Bike')).toBe('0');
   });
 
   it('rollup-grid numbers render as .rollup-cell-value elements (AC3 -- the static token-wiring check in scripts/verify-color-tokens.mjs confirms these route through --type-rollup-readout-*)', () => {
@@ -104,7 +137,7 @@ describe('WeekEndReview -- I/O matrix (editable/unsaved mode)', () => {
   });
 
   it('Log another day, reopen before Save: the grid recomputes live in the same mounted instance', () => {
-    const [, , firstDate, secondDate] = getWeekDates(WEEK_4); // two days inside WEEK_4
+    const [, , firstDate, secondDate] = reviewWindowDates(WEEK_4); // two days inside the window ending on WEEK_4
     const firstWorkout: Workout = { date: firstDate, type: 'Run', duration: '20 min' };
     setCompleted(firstDate, true, firstWorkout);
     setLoadedPlan([firstWorkout]);
@@ -124,7 +157,7 @@ describe('WeekEndReview -- I/O matrix (editable/unsaved mode)', () => {
   });
 
   it('Save tapped: numbers and reflection save together in one action, and a successful Save closes the dialog', async () => {
-    const [, , date] = getWeekDates(WEEK_5); // a day inside WEEK_5
+    const [, , date] = reviewWindowDates(WEEK_5); // a day inside the window ending on WEEK_5
     const workout: Workout = { date, type: 'Run', duration: '30 min' };
     setCompleted(date, true, workout);
     setLoadedPlan([workout]);
@@ -193,7 +226,7 @@ describe('WeekEndReview -- I/O matrix (editable/unsaved mode)', () => {
 describe('WeekEndReview -- I/O matrix (read-only, reopening a saved week)', () => {
   it("Reopen a saved week: renders the frozen snapshot verbatim, never recomputed even after that week's Log Entries are later edited", async () => {
     const week = '2027-02-07'; // its own week, unused elsewhere in this file
-    const [, , date] = getWeekDates(week);
+    const [, , date] = reviewWindowDates(week);
     const workout: Workout = { date, type: 'Run', duration: '30 min' };
     setCompleted(date, true, workout);
     setLoadedPlan([workout]);
@@ -234,7 +267,7 @@ describe('WeekEndReview -- I/O matrix (read-only, reopening a saved week)', () =
 
   it('read-only mode has no Save button and no write-error UI, only Back', () => {
     const week = '2027-01-03';
-    const [, , date] = getWeekDates(week);
+    const [, , date] = reviewWindowDates(week);
     setCompleted(date, true, { date, type: 'Run', duration: '30 min' });
     weekEndReviewStore.reviews[week] = {
       weekStartIso: week,

@@ -14,15 +14,30 @@
 // value (WorkoutEditForm's own "Other" free-text, already case-fold+trimmed
 // at write time).
 
+import { isRecord } from './guards';
+
 const TYPE_PRESETS = ['Run', 'Bike', 'Lift', 'Mobility', 'Stretch'] as const;
 
 export type RollupType = (typeof TYPE_PRESETS)[number] | 'Other' | 'Unspecified';
 
 export type Rollup = Record<RollupType, number>;
 
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value !== null && !Array.isArray(value);
-}
+/** Epic 3 retro fix (F6, 2026-09-26): the one shared display order for every
+ * `RollupType`, consolidated from 3 hand-duplicated copies of this exact
+ * 7-item array (`RollupSummary.svelte`'s own `TYPE_ORDER`,
+ * `WeekEndReview.svelte`'s own `TYPE_ORDER` -- which its own comment
+ * explicitly said "mirrors RollupSummary.svelte's own TYPE_ORDER precedent"
+ * rather than importing it -- and `weekEndReviewStore.svelte.ts`'s own
+ * `ROLLUP_TYPES`, used there only for tolerant-read reconstruction, not
+ * display). This module already owns `RollupType` itself, so it's the
+ * obvious single source of truth for the one fixed order every renderer of
+ * it agrees on -- presets first (mirroring `TYPE_PRESETS` above), then the
+ * two catch-alls, `Other` before `Unspecified`. */
+export const ROLLUP_TYPE_ORDER: RollupType[] = [
+  ...TYPE_PRESETS,
+  'Other',
+  'Unspecified',
+];
 
 function isPreset(value: string): value is (typeof TYPE_PRESETS)[number] {
   return (TYPE_PRESETS as readonly string[]).includes(value);

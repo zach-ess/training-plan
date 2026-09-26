@@ -881,9 +881,17 @@ function checkCrashFallbackWiring(failures) {
   // `maskComments` already solves for `/* ... */` CSS comments, but for
   // `<!-- ... -->` HTML comments instead. Both semantic-markup checks below
   // scan this comment-stripped copy, not `source`, for exactly that reason.
-  const markupOnly = source.replace(/<!--[\s\S]*?-->/g, (comment) =>
-    comment.replace(/[^\n]/g, ' '),
-  );
+  //
+  // Epic 3 retro fix (F5, 2026-09-26): this was originally a narrow
+  // HTML-comment-only strip (`source.replace(/<!--[\s\S]*?-->/g, ...)`),
+  // which is exactly the gap shape independently rediscovered and fixed four
+  // separate times elsewhere in this file (`checkButtonPrimaryWiring`,
+  // `checkHistoryViewWiring` twice, `checkTrendChartWiring`,
+  // `checkWeekEndReviewWiring`) -- a `//`/`/* */` script comment merely
+  // mentioning `role="alert"` could still satisfy the narrow strip. This is
+  // the original instance of the pattern (Story 1.6), now finally closed
+  // with the same `maskAllComments` every other instance was fixed to use.
+  const markupOnly = maskAllComments(source);
 
   if (!markupOnly.includes('role="alert"')) {
     failures.push(
@@ -1134,9 +1142,11 @@ function checkButtonPrimaryWiring(failures) {
  * copy, same convention as the checks above. */
 function checkCompletionCelebrationWiring(failures) {
   const source = readFileSync(completionCelebrationSveltePath, 'utf8');
-  const markupOnly = source.replace(/<!--[\s\S]*?-->/g, (comment) =>
-    comment.replace(/[^\n]/g, ' '),
-  );
+  // Epic 3 retro fix (F5, 2026-09-26): was a narrow HTML-comment-only strip
+  // -- see `checkCrashFallbackWiring`'s own comment above for the full
+  // history of this gap shape being rediscovered and fixed piecemeal
+  // elsewhere in this file.
+  const markupOnly = maskAllComments(source);
 
   if (!markupOnly.includes('aria-live="polite"')) {
     failures.push(
@@ -1171,10 +1181,14 @@ function checkCompletionCelebrationWiring(failures) {
  * ever reverted. */
 function checkWorkoutEditFormWiring(failures) {
   const source = readFileSync(workoutEditFormSveltePath, 'utf8');
-  const markupOnly = source.replace(/<!--[\s\S]*?-->/g, (comment) =>
-    comment.replace(/[^\n]/g, ' '),
-  );
-  const scriptMasked = maskAllComments(source);
+  // Epic 3 retro fix (F5, 2026-09-26): `markupOnly` used to be its own
+  // narrow HTML-comment-only strip, separate from `scriptMasked` below --
+  // see `checkCrashFallbackWiring`'s own comment for the full history of
+  // this gap shape. Both are now the same `maskAllComments` pass (one
+  // variable, kept under both names at each call site below rather than
+  // renamed everywhere, to keep this diff minimal).
+  const markupOnly = maskAllComments(source);
+  const scriptMasked = markupOnly;
 
   if (!/<select[^>]*>/.test(markupOnly)) {
     failures.push(
@@ -1949,19 +1963,35 @@ function checkAppSvelteWeekEndReviewWiring(failures) {
 
 /** Story 3.3 -- mirrors `checkHistoryViewAppWiring`'s own "check the wiring,
  * not just the component" precedent: asserts `HistoryView.svelte` actually
- * reads `weekEndReviewStore.reviews` and accepts/uses an `onOpenReview` prop,
- * so a regression silently dropping the Decisions-mandated Sunday-row
- * routing doesn't pass every other check in this file. Scanned against
+ * detects a saved week's Sunday and accepts/uses an `onOpenReview` prop, so a
+ * regression silently dropping the Decisions-mandated Sunday-row routing
+ * doesn't pass every other check in this file. Scanned against
  * `maskAllComments(source)` for the same reason every other wiring check
- * here is. */
+ * here is.
+ *
+ * Epic 3 retro fix (F3, 2026-09-26): the Sunday-detection check used to look
+ * for a direct `weekEndReviewStore.reviews[` read in this file -- true until
+ * this same retro's F3 extracted that check into a single shared
+ * `isSavedReviewSunday` export (`weekEndReviewStore.svelte.ts`), imported
+ * here instead of hand-duplicated. Detection now looks for that import/use
+ * instead of the read it wraps.
+ *
+ * Epic 3 retro fix (F7, 2026-09-26): the `<DayRowCard` mount check used to
+ * only confirm the substring `onOpenReview` appeared anywhere inside the
+ * mount -- a regression that changed the ternary to unconditionally route
+ * every row to `onOpenReview` (breaking `WorkoutDetail` access entirely)
+ * would still have passed. It now asserts the actual conditional-routing
+ * shape: `onOpen`'s value is a ternary with `onOpenReview` and `onOpen` both
+ * present as *distinct* branches, not just as substrings anywhere in the
+ * mount. */
 function checkHistoryViewWeekEndReviewWiring(failures) {
   const source = readFileSync(historyViewSveltePath, 'utf8');
   const masked = maskAllComments(source);
 
-  if (!/weekEndReviewStore\.reviews\[/.test(masked)) {
+  if (!/isSavedReviewSunday/.test(masked)) {
     failures.push(
-      'src/lib/components/HistoryView.svelte: no weekEndReviewStore.reviews[ read found -- a saved ' +
-        "week's Sunday row must be detected from this story's Data Store",
+      'src/lib/components/HistoryView.svelte: no isSavedReviewSunday found -- a saved week\'s Sunday ' +
+        "row must be detected via this story's shared Data Store predicate",
     );
   }
 
@@ -1974,12 +2004,23 @@ function checkHistoryViewWeekEndReviewWiring(failures) {
   }
 
   const mountMatch = masked.match(/<DayRowCard(?![\w-])[\s\S]*?\/>/);
-  if (mountMatch && !/onOpenReview/.test(mountMatch[0])) {
-    failures.push(
-      'src/lib/components/HistoryView.svelte: the <DayRowCard mount\'s onOpen never references ' +
-        'onOpenReview -- a saved week\'s Sunday row must be able to route there instead of the plain ' +
-        'onOpen/WorkoutDetail path',
-    );
+  if (!mountMatch) {
+    failures.push('src/lib/components/HistoryView.svelte: no <DayRowCard mount found');
+  } else {
+    const onOpenPropMatch = mountMatch[0].match(/(?<![\w-])onOpen(?![\w-])\s*=\s*\{([^}]*)\}/);
+    const ternaryBody = onOpenPropMatch ? onOpenPropMatch[1] : '';
+    const hasBothBranches =
+      /\?/.test(ternaryBody) &&
+      /(?<![\w-])onOpenReview(?![\w-])/.test(ternaryBody) &&
+      /(?<![\w-])onOpen(?![\w-])/.test(ternaryBody.replace(/onOpenReview/g, ''));
+    if (!hasBothBranches) {
+      failures.push(
+        'src/lib/components/HistoryView.svelte: the <DayRowCard mount\'s onOpen is not a ternary with ' +
+          'distinct onOpenReview and onOpen branches -- a saved week\'s Sunday row must route to ' +
+          'onOpenReview while every other row still routes to plain onOpen/WorkoutDetail (this story\'s ' +
+          'Decisions); a regression that routes every row to onOpenReview must fail this check',
+      );
+    }
   }
 }
 
@@ -2082,8 +2123,9 @@ function main() {
       `reflection-input/reflection-readout split between editable and read-only mode; and src/App.svelte gates ` +
       `the week-end-review-banner on isSundayToday/planStore.status/weekEndReviewStore.reviews, drives ` +
       `<WeekEndReview off a reviewDialog state, wires <HistoryView with onOpenReview={handleOpenReview}, and ` +
-      `folds reviewDialog into both tab panels' inert; and HistoryView.svelte reads weekEndReviewStore.reviews ` +
-      `and routes a saved week's Sunday row to onOpenReview.`,
+      `folds reviewDialog into both tab panels' inert; and HistoryView.svelte detects a saved week's Sunday ` +
+      `via the shared isSavedReviewSunday predicate and routes that row to onOpenReview via a real onOpen ` +
+      `ternary, distinct from every other row's plain onOpen/WorkoutDetail path.`,
   );
 }
 
