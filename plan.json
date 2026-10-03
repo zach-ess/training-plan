@@ -1,17 +1,82 @@
 {
+  "planName": "Fall Base Block",
+  "workouts": [
+    { "date": "2026-10-06", "type": "Run", "duration": "20 min", "distance": "2 mi" },
+    { "date": "2026-10-08", "type": "Run", "duration": "30 min", "distance": "3 mi" },
+    { "date": "2026-10-11", "type": "Run", "duration": "30 min", "distance": "3 mi" },
+    { "date": "2026-10-13", "type": "Run", "duration": "40 min + 20 min strength", "distance": "4 mi" },
+    { "date": "2026-10-16", "type": "Run", "duration": "40 min + 20 min strength", "distance": "4 mi" },
+    { "date": "2026-10-18", "type": "Run", "duration": "40 min", "distance": "4 mi" },
+    { "date": "2026-10-20", "type": "Run", "duration": "30 min + 20 min strength", "distance": "3 mi" },
+    { "date": "2026-10-22", "type": "Run", "duration": "30 min", "distance": "3 mi" },
+    { "date": "2026-10-23", "type": "Run", "duration": "40 min + 20 min strength", "distance": "4 mi" },
+    { "date": "2026-10-25", "type": "Run", "duration": "50 min", "distance": "5 mi" },
+    { "date": "2026-10-27", "type": "Run", "duration": "30 min + 15 min strength", "distance": "3 mi" },
+    { "date": "2026-10-29", "type": "Run", "duration": "30 min", "distance": "3 mi" },
+    { "date": "2026-10-30", "type": "Run", "duration": "20 min + 15 min strength", "distance": "2 mi" },
+    { "date": "2026-11-01", "type": "Run", "duration": "40 min", "distance": "4 mi" },
+    { "date": "2026-11-03", "type": "Run", "duration": "40 min + 20 min strength", "distance": "4 mi" },
+    { "date": "2026-11-05", "type": "Run", "duration": "40 min", "distance": "4 mi" },
+    { "date": "2026-11-06", "type": "Run", "duration": "40 min + 20 min strength", "distance": "4 mi" },
+    { "date": "2026-11-08", "type": "Run", "duration": "65 min", "distance": "6 mi" },
+    { "date": "2026-11-10", "type": "Run", "duration": "40 min + 20 min strength", "distance": "4 mi" },
+    { "date": "2026-11-12", "type": "Run", "duration": "50 min", "distance": "5 mi" },
+    { "date": "2026-11-13", "type": "Run", "duration": "40 min + 20 min strength", "distance": "4 mi" },
+    { "date": "2026-11-15", "type": "Run", "duration": "75 min", "distance": "7 mi" },
+    { "date": "2026-11-17", "type": "Run", "duration": "50 min + 20 min strength", "distance": "5 mi" },
+    { "date": "2026-11-19", "type": "Run", "duration": "50 min", "distance": "5 mi" },
+    { "date": "2026-11-20", "type": "Run", "duration": "50 min + 20 min strength", "distance": "5 mi" },
+    { "date": "2026-11-22", "type": "Run", "duration": "75 min", "distance": "7 mi" },
+    { "date": "2026-11-24", "type": "Run", "duration": "40 min + 15 min strength", "distance": "4 mi" },
+    { "date": "2026-11-26", "type": "Run", "duration": "40 min", "distance": "4 mi" },
+    { "date": "2026-11-27", "type": "Run", "duration": "20 min + 15 min strength", "distance": "2 mi" },
+    { "date": "2026-11-29", "type": "Run", "duration": "65 min", "distance": "6 mi" },
+    { "date": "2026-12-01", "type": "Run", "duration": "50 min + 20 min strength", "distance": "5 mi" },
+    { "date": "2026-12-03", "type": "Run", "duration": "60 min", "distance": "6 mi" },
+    { "date": "2026-12-04", "type": "Run", "duration": "40 min + 20 min strength", "distance": "4 mi" },
+    { "date": "2026-12-06", "type": "Run", "duration": "85 min", "distance": "8 mi" },
+    { "date": "2026-12-08", "type": "Run", "duration": "50 min + 20 min strength", "distance": "5 mi" },
+    { "date": "2026-12-10", "type": "Run", "duration": "60 min", "distance": "6 mi" },
+    { "date": "2026-12-11", "type": "Run", "duration": "50 min + 20 min strength", "distance": "5 mi" },
+    { "date": "2026-12-13", "type": "Run", "duration": "85 min", "distance": "8 mi" },
+    { "date": "2026-12-15", "type": "Run", "duration": "50 min + 20 min strength", "distance": "5 mi" },
+    { "date": "2026-12-17", "type": "Run", "duration": "60 min", "distance": "6 mi" },
+    { "date": "2026-12-18", "type": "Run", "duration": "65 min + 20 min strength", "distance": "6 mi" },
+    { "date": "2026-12-20", "type": "Run", "duration": "95 min", "distance": "9 mi" },
+    { "date": "2026-12-22", "type": "Run", "duration": "40 min + 15 min strength", "distance": "4 mi" },
+    { "date": "2026-12-24", "type": "Run", "duration": "50 min", "distance": "5 mi" },
+    { "date": "2026-12-25", "type": "Run", "duration": "30 min + 15 min strength", "distance": "3 mi" },
+    { "date": "2026-12-27", "type": "Run", "duration": "75 min", "distance": "7 mi" },
+    { "date": "2026-12-29", "type": "Run", "duration": "65 min + 20 min strength", "distance": "6 mi" },
+    { "date": "2026-12-31", "type": "Run", "duration": "70 min", "distance": "7 mi" },
+    { "date": "2027-01-01", "type": "Run", "duration": "50 min + 15 min strength", "distance": "5 mi" },
+    { "date": "2027-01-03", "type": "Run", "duration": "95 min", "distance": "9 mi" },
+    { "date": "2027-01-05", "type": "Run", "duration": "65 min + 20 min strength", "distance": "6 mi" },
+    { "date": "2027-01-07", "type": "Run", "duration": "70 min", "distance": "7 mi" },
+    { "date": "2027-01-08", "type": "Run", "duration": "50 min + 15 min strength", "distance": "5 mi" },
+    { "date": "2027-01-10", "type": "Run", "duration": "105 min", "distance": "10 mi" },
+    { "date": "2027-01-12", "type": "Run", "duration": "75 min + 20 min strength", "distance": "7 mi" },
+    { "date": "2027-01-14", "type": "Run", "duration": "70 min", "distance": "7 mi" },
+    { "date": "2027-01-15", "type": "Run", "duration": "65 min + 20 min strength", "distance": "6 mi" },
+    { "date": "2027-01-17", "type": "Run", "duration": "105 min", "distance": "10 mi" },
+    { "date": "2027-01-19", "type": "Run", "duration": "50 min + 15 min strength", "distance": "5 mi" },
+    { "date": "2027-01-21", "type": "Run", "duration": "40 min", "distance": "4 mi" },
+    { "date": "2027-01-23", "type": "Run", "duration": "50 min", "distance": "6 mi" },
+    { "date": "2027-01-24", "type": "Run", "duration": "50 min", "distance": "5 mi" }
+  ],
   "version": "1.0",
   "meta": {
     "id": "base-block-2026-fall",
     "athlete": "Zach Essler",
     "event": "Fall Base Block",
-    "eventDate": "2027-01-17",
-    "planStartDate": "2026-09-28",
-    "planEndDate": "2027-01-17",
+    "eventDate": "2027-01-24",
+    "planStartDate": "2026-10-05",
+    "planEndDate": "2027-01-24",
     "createdAt": "2026-09-21T00:00:00Z",
-    "updatedAt": "2026-10-01T00:00:00Z",
+    "updatedAt": "2026-10-03T00:00:00Z",
     "totalWeeks": 16,
     "generatedBy": "Claude Coach",
-    "note": "Open-ended base block after the Sept 12 BurliMOT half (1:54:00). Restarted at Week 1 on Oct 1 2026 (first run Thu Oct 1). Four 4-week blocks; every 4th week is a flex week. Ends with a 5K time trial Jan 16 and a check-in on what comes next."
+    "note": "Open-ended base block after the Sept 12 BurliMOT half (1:54:00). Week 1 starts Mon Oct 5 2026 (first run Tue Oct 6). Four 4-week blocks; every 4th week is a flex week, with Thanksgiving and Christmas landing in flex weeks. Ends with a 5K time trial Jan 23 and a check-in on what comes next."
   },
   "preferences": {
     "run": "miles",
@@ -55,7 +120,7 @@
     ],
     "constraints": [
       "Knee: conservative volume progression, flex week every 4th week",
-      "Holidays: Thanksgiving, Christmas, New Year's fall in Blocks 3-4",
+      "Holidays: Thanksgiving (Week 8 flex), Christmas (Week 12 flex), New Year's (Week 13)",
       "Strength folded into Tue/Fri easy-run days"
     ]
   },
@@ -217,7 +282,7 @@
       "keyWorkouts": [
         "Steady 25-30 min",
         "Long run 10 mi",
-        "5K time trial Jan 16"
+        "5K time trial Jan 23"
       ],
       "physiologicalGoals": [
         "Consolidate base",
@@ -228,15 +293,15 @@
   "weeks": [
     {
       "weekNumber": 1,
-      "startDate": "2026-09-28",
-      "endDate": "2026-10-04",
+      "startDate": "2026-10-05",
+      "endDate": "2026-10-11",
       "phase": "Return",
-      "focus": "Restarted Oct 1 \u2014 short, easy, run/walk OK \u00b7 8 mi",
+      "focus": "Ease back in \u2014 short, easy, run/walk OK \u00b7 8 mi",
       "targetHours": 1.3,
       "isRecoveryWeek": false,
       "days": [
         {
-          "date": "2026-09-28",
+          "date": "2026-10-05",
           "dayOfWeek": "Monday",
           "workouts": [
             {
@@ -250,21 +315,25 @@
           ]
         },
         {
-          "date": "2026-09-29",
+          "date": "2026-10-06",
           "dayOfWeek": "Tuesday",
           "workouts": [
             {
-              "id": "w1-tue-rest",
-              "sport": "rest",
-              "type": "rest",
-              "name": "Rest Day",
-              "description": "Full rest. Walking is fine.",
+              "id": "w1-tue-run",
+              "sport": "run",
+              "type": "endurance",
+              "name": "Easy 2 mi",
+              "description": "FIRST RUN of the block. Run/walk is completely fine (4 min run / 1 min walk). Only goal: finish feeling like you could do it again tomorrow.\nKnee check: soreness that changes your stride or lingers into the next morning = take the next day off.",
+              "durationMinutes": 20,
+              "distanceMeters": 3219,
+              "primaryZone": "Zone 2",
+              "humanReadable": "2 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.\n\nFIRST RUN of the block. Run/walk is completely fine (4 min run / 1 min walk). Only goal: finish feeling like you could do it again tomorrow.\nKnee check: soreness that changes your stride or lingers into the next morning = take the next day off.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-09-30",
+          "date": "2026-10-07",
           "dayOfWeek": "Wednesday",
           "workouts": [
             {
@@ -278,43 +347,11 @@
           ]
         },
         {
-          "date": "2026-10-01",
+          "date": "2026-10-08",
           "dayOfWeek": "Thursday",
           "workouts": [
             {
               "id": "w1-thu-run",
-              "sport": "run",
-              "type": "endurance",
-              "name": "Easy 2 mi",
-              "description": "FIRST RUN of the restarted block. Run/walk is completely fine (4 min run / 1 min walk). Only goal: finish feeling like you could do it again tomorrow.\nKnee check: soreness that changes your stride or lingers into the next morning = take the next day off.",
-              "durationMinutes": 20,
-              "distanceMeters": 3219,
-              "primaryZone": "Zone 2",
-              "humanReadable": "2 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target \u2014 let HR and breathing decide.\n\nFIRST RUN of the restarted block. Run/walk is completely fine (4 min run / 1 min walk). Only goal: finish feeling like you could do it again tomorrow.\nKnee check: soreness that changes your stride or lingers into the next morning = take the next day off.",
-              "completed": false
-            }
-          ]
-        },
-        {
-          "date": "2026-10-02",
-          "dayOfWeek": "Friday",
-          "workouts": [
-            {
-              "id": "w1-fri-rest",
-              "sport": "rest",
-              "type": "rest",
-              "name": "Rest Day",
-              "description": "Full rest. Walking is fine.",
-              "completed": false
-            }
-          ]
-        },
-        {
-          "date": "2026-10-03",
-          "dayOfWeek": "Saturday",
-          "workouts": [
-            {
-              "id": "w1-sat-run",
               "sport": "run",
               "type": "endurance",
               "name": "Easy 3 mi",
@@ -328,7 +365,35 @@
           ]
         },
         {
-          "date": "2026-10-04",
+          "date": "2026-10-09",
+          "dayOfWeek": "Friday",
+          "workouts": [
+            {
+              "id": "w1-fri-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Full rest. Walking is fine.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-10-10",
+          "dayOfWeek": "Saturday",
+          "workouts": [
+            {
+              "id": "w1-sat-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Rest before tomorrow's long run.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-10-11",
           "dayOfWeek": "Sunday",
           "workouts": [
             {
@@ -340,7 +405,7 @@
               "durationMinutes": 30,
               "distanceMeters": 4828,
               "primaryZone": "Zone 2",
-              "humanReadable": "3 miles, all easy. Last mile can drift toward the top of Zone 2 if you feel great \u2014 never beyond.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target \u2014 let HR and breathing decide.\n\nBack-to-back days only because of the shifted start. Both are short and genuinely easy \u2014 but if Saturday leaves any knee soreness, skip this one. Normal Tue/Thu/Fri/Sun rhythm starts next week.",
+              "humanReadable": "3 miles, all easy. Last mile can drift toward the top of Zone 2 if you feel great \u2014 never beyond.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target \u2014 let HR and breathing decide.\n\nNormal Tue/Thu/Fri/Sun rhythm (with strength) starts next week.",
               "completed": false
             }
           ]
@@ -359,15 +424,15 @@
     },
     {
       "weekNumber": 2,
-      "startDate": "2026-10-05",
-      "endDate": "2026-10-11",
+      "startDate": "2026-10-12",
+      "endDate": "2026-10-18",
       "phase": "Return",
       "focus": "Rebuild the routine + strength begins \u00b7 12 mi",
       "targetHours": 2.7,
       "isRecoveryWeek": false,
       "days": [
         {
-          "date": "2026-10-05",
+          "date": "2026-10-12",
           "dayOfWeek": "Monday",
           "workouts": [
             {
@@ -381,7 +446,7 @@
           ]
         },
         {
-          "date": "2026-10-06",
+          "date": "2026-10-13",
           "dayOfWeek": "Tuesday",
           "workouts": [
             {
@@ -409,7 +474,7 @@
           ]
         },
         {
-          "date": "2026-10-07",
+          "date": "2026-10-14",
           "dayOfWeek": "Wednesday",
           "workouts": [
             {
@@ -423,7 +488,7 @@
           ]
         },
         {
-          "date": "2026-10-08",
+          "date": "2026-10-15",
           "dayOfWeek": "Thursday",
           "workouts": [
             {
@@ -437,7 +502,7 @@
           ]
         },
         {
-          "date": "2026-10-09",
+          "date": "2026-10-16",
           "dayOfWeek": "Friday",
           "workouts": [
             {
@@ -465,7 +530,7 @@
           ]
         },
         {
-          "date": "2026-10-10",
+          "date": "2026-10-17",
           "dayOfWeek": "Saturday",
           "workouts": [
             {
@@ -479,7 +544,7 @@
           ]
         },
         {
-          "date": "2026-10-11",
+          "date": "2026-10-18",
           "dayOfWeek": "Sunday",
           "workouts": [
             {
@@ -514,15 +579,15 @@
     },
     {
       "weekNumber": 3,
-      "startDate": "2026-10-12",
-      "endDate": "2026-10-18",
+      "startDate": "2026-10-19",
+      "endDate": "2026-10-25",
       "phase": "Return",
       "focus": "Move to 4 runs/week \u00b7 15 mi",
       "targetHours": 3.2,
       "isRecoveryWeek": false,
       "days": [
         {
-          "date": "2026-10-12",
+          "date": "2026-10-19",
           "dayOfWeek": "Monday",
           "workouts": [
             {
@@ -536,7 +601,7 @@
           ]
         },
         {
-          "date": "2026-10-13",
+          "date": "2026-10-20",
           "dayOfWeek": "Tuesday",
           "workouts": [
             {
@@ -564,7 +629,7 @@
           ]
         },
         {
-          "date": "2026-10-14",
+          "date": "2026-10-21",
           "dayOfWeek": "Wednesday",
           "workouts": [
             {
@@ -578,7 +643,7 @@
           ]
         },
         {
-          "date": "2026-10-15",
+          "date": "2026-10-22",
           "dayOfWeek": "Thursday",
           "workouts": [
             {
@@ -596,7 +661,7 @@
           ]
         },
         {
-          "date": "2026-10-16",
+          "date": "2026-10-23",
           "dayOfWeek": "Friday",
           "workouts": [
             {
@@ -624,7 +689,7 @@
           ]
         },
         {
-          "date": "2026-10-17",
+          "date": "2026-10-24",
           "dayOfWeek": "Saturday",
           "workouts": [
             {
@@ -638,7 +703,7 @@
           ]
         },
         {
-          "date": "2026-10-18",
+          "date": "2026-10-25",
           "dayOfWeek": "Sunday",
           "workouts": [
             {
@@ -673,15 +738,15 @@
     },
     {
       "weekNumber": 4,
-      "startDate": "2026-10-19",
-      "endDate": "2026-10-25",
+      "startDate": "2026-10-26",
+      "endDate": "2026-11-01",
       "phase": "Return",
       "focus": "FLEX WEEK \u2014 absorb life, consolidate \u00b7 12 mi",
       "targetHours": 2.5,
       "isRecoveryWeek": true,
       "days": [
         {
-          "date": "2026-10-19",
+          "date": "2026-10-26",
           "dayOfWeek": "Monday",
           "workouts": [
             {
@@ -695,7 +760,7 @@
           ]
         },
         {
-          "date": "2026-10-20",
+          "date": "2026-10-27",
           "dayOfWeek": "Tuesday",
           "workouts": [
             {
@@ -723,7 +788,7 @@
           ]
         },
         {
-          "date": "2026-10-21",
+          "date": "2026-10-28",
           "dayOfWeek": "Wednesday",
           "workouts": [
             {
@@ -737,7 +802,7 @@
           ]
         },
         {
-          "date": "2026-10-22",
+          "date": "2026-10-29",
           "dayOfWeek": "Thursday",
           "workouts": [
             {
@@ -755,7 +820,7 @@
           ]
         },
         {
-          "date": "2026-10-23",
+          "date": "2026-10-30",
           "dayOfWeek": "Friday",
           "workouts": [
             {
@@ -783,7 +848,7 @@
           ]
         },
         {
-          "date": "2026-10-24",
+          "date": "2026-10-31",
           "dayOfWeek": "Saturday",
           "workouts": [
             {
@@ -797,7 +862,7 @@
           ]
         },
         {
-          "date": "2026-10-25",
+          "date": "2026-11-01",
           "dayOfWeek": "Sunday",
           "workouts": [
             {
@@ -832,15 +897,15 @@
     },
     {
       "weekNumber": 5,
-      "startDate": "2026-10-26",
-      "endDate": "2026-11-01",
+      "startDate": "2026-11-02",
+      "endDate": "2026-11-08",
       "phase": "Aerobic Base",
       "focus": "Build the engine \u2014 strides return \u00b7 18 mi",
       "targetHours": 3.8,
       "isRecoveryWeek": false,
       "days": [
         {
-          "date": "2026-10-26",
+          "date": "2026-11-02",
           "dayOfWeek": "Monday",
           "workouts": [
             {
@@ -854,7 +919,7 @@
           ]
         },
         {
-          "date": "2026-10-27",
+          "date": "2026-11-03",
           "dayOfWeek": "Tuesday",
           "workouts": [
             {
@@ -882,7 +947,7 @@
           ]
         },
         {
-          "date": "2026-10-28",
+          "date": "2026-11-04",
           "dayOfWeek": "Wednesday",
           "workouts": [
             {
@@ -896,7 +961,7 @@
           ]
         },
         {
-          "date": "2026-10-29",
+          "date": "2026-11-05",
           "dayOfWeek": "Thursday",
           "workouts": [
             {
@@ -914,7 +979,7 @@
           ]
         },
         {
-          "date": "2026-10-30",
+          "date": "2026-11-06",
           "dayOfWeek": "Friday",
           "workouts": [
             {
@@ -942,7 +1007,7 @@
           ]
         },
         {
-          "date": "2026-10-31",
+          "date": "2026-11-07",
           "dayOfWeek": "Saturday",
           "workouts": [
             {
@@ -956,7 +1021,7 @@
           ]
         },
         {
-          "date": "2026-11-01",
+          "date": "2026-11-08",
           "dayOfWeek": "Sunday",
           "workouts": [
             {
@@ -991,15 +1056,15 @@
     },
     {
       "weekNumber": 6,
-      "startDate": "2026-11-02",
-      "endDate": "2026-11-08",
+      "startDate": "2026-11-09",
+      "endDate": "2026-11-15",
       "phase": "Aerobic Base",
       "focus": "Volume climbing \u2014 all easy \u00b7 20 mi",
       "targetHours": 4.1,
       "isRecoveryWeek": false,
       "days": [
         {
-          "date": "2026-11-02",
+          "date": "2026-11-09",
           "dayOfWeek": "Monday",
           "workouts": [
             {
@@ -1013,7 +1078,7 @@
           ]
         },
         {
-          "date": "2026-11-03",
+          "date": "2026-11-10",
           "dayOfWeek": "Tuesday",
           "workouts": [
             {
@@ -1041,7 +1106,7 @@
           ]
         },
         {
-          "date": "2026-11-04",
+          "date": "2026-11-11",
           "dayOfWeek": "Wednesday",
           "workouts": [
             {
@@ -1055,7 +1120,7 @@
           ]
         },
         {
-          "date": "2026-11-05",
+          "date": "2026-11-12",
           "dayOfWeek": "Thursday",
           "workouts": [
             {
@@ -1073,7 +1138,7 @@
           ]
         },
         {
-          "date": "2026-11-06",
+          "date": "2026-11-13",
           "dayOfWeek": "Friday",
           "workouts": [
             {
@@ -1101,7 +1166,7 @@
           ]
         },
         {
-          "date": "2026-11-07",
+          "date": "2026-11-14",
           "dayOfWeek": "Saturday",
           "workouts": [
             {
@@ -1115,7 +1180,7 @@
           ]
         },
         {
-          "date": "2026-11-08",
+          "date": "2026-11-15",
           "dayOfWeek": "Sunday",
           "workouts": [
             {
@@ -1150,15 +1215,15 @@
     },
     {
       "weekNumber": 7,
-      "startDate": "2026-11-09",
-      "endDate": "2026-11-15",
+      "startDate": "2026-11-16",
+      "endDate": "2026-11-22",
       "phase": "Aerobic Base",
       "focus": "Strides twice a week \u00b7 22 mi",
       "targetHours": 4.4,
       "isRecoveryWeek": false,
       "days": [
         {
-          "date": "2026-11-09",
+          "date": "2026-11-16",
           "dayOfWeek": "Monday",
           "workouts": [
             {
@@ -1172,7 +1237,7 @@
           ]
         },
         {
-          "date": "2026-11-10",
+          "date": "2026-11-17",
           "dayOfWeek": "Tuesday",
           "workouts": [
             {
@@ -1200,7 +1265,7 @@
           ]
         },
         {
-          "date": "2026-11-11",
+          "date": "2026-11-18",
           "dayOfWeek": "Wednesday",
           "workouts": [
             {
@@ -1214,7 +1279,7 @@
           ]
         },
         {
-          "date": "2026-11-12",
+          "date": "2026-11-19",
           "dayOfWeek": "Thursday",
           "workouts": [
             {
@@ -1232,7 +1297,7 @@
           ]
         },
         {
-          "date": "2026-11-13",
+          "date": "2026-11-20",
           "dayOfWeek": "Friday",
           "workouts": [
             {
@@ -1260,7 +1325,7 @@
           ]
         },
         {
-          "date": "2026-11-14",
+          "date": "2026-11-21",
           "dayOfWeek": "Saturday",
           "workouts": [
             {
@@ -1274,7 +1339,7 @@
           ]
         },
         {
-          "date": "2026-11-15",
+          "date": "2026-11-22",
           "dayOfWeek": "Sunday",
           "workouts": [
             {
@@ -1309,15 +1374,15 @@
     },
     {
       "weekNumber": 8,
-      "startDate": "2026-11-16",
-      "endDate": "2026-11-22",
+      "startDate": "2026-11-23",
+      "endDate": "2026-11-29",
       "phase": "Aerobic Base",
-      "focus": "FLEX WEEK \u00b7 16 mi",
+      "focus": "FLEX WEEK \u2014 Thanksgiving \u00b7 16 mi",
       "targetHours": 3.2,
       "isRecoveryWeek": true,
       "days": [
         {
-          "date": "2026-11-16",
+          "date": "2026-11-23",
           "dayOfWeek": "Monday",
           "workouts": [
             {
@@ -1331,7 +1396,7 @@
           ]
         },
         {
-          "date": "2026-11-17",
+          "date": "2026-11-24",
           "dayOfWeek": "Tuesday",
           "workouts": [
             {
@@ -1359,7 +1424,7 @@
           ]
         },
         {
-          "date": "2026-11-18",
+          "date": "2026-11-25",
           "dayOfWeek": "Wednesday",
           "workouts": [
             {
@@ -1373,7 +1438,7 @@
           ]
         },
         {
-          "date": "2026-11-19",
+          "date": "2026-11-26",
           "dayOfWeek": "Thursday",
           "workouts": [
             {
@@ -1381,17 +1446,17 @@
               "sport": "run",
               "type": "endurance",
               "name": "Easy 4 mi + 4 strides",
-              "description": "Aerobic base run.",
+              "description": "Thanksgiving. A Turkey Trot is a great way to get this in \u2014 run it easy, not as a race (skip the strides if you do).",
               "durationMinutes": 40,
               "distanceMeters": 6437,
               "primaryZone": "Zone 2",
-              "humanReadable": "4 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target \u2014 let HR and breathing decide.\nAfter the run: 4 x 20s strides \u2014 quick and relaxed, not sprints. Full walk-back recovery.",
+              "humanReadable": "4 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target \u2014 let HR and breathing decide.\nAfter the run: 4 x 20s strides \u2014 quick and relaxed, not sprints. Full walk-back recovery.\n\nThanksgiving. A Turkey Trot is a great way to get this in \u2014 run it easy, not as a race (skip the strides if you do).",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-11-20",
+          "date": "2026-11-27",
           "dayOfWeek": "Friday",
           "workouts": [
             {
@@ -1419,7 +1484,7 @@
           ]
         },
         {
-          "date": "2026-11-21",
+          "date": "2026-11-28",
           "dayOfWeek": "Saturday",
           "workouts": [
             {
@@ -1433,7 +1498,7 @@
           ]
         },
         {
-          "date": "2026-11-22",
+          "date": "2026-11-29",
           "dayOfWeek": "Sunday",
           "workouts": [
             {
@@ -1468,15 +1533,15 @@
     },
     {
       "weekNumber": 9,
-      "startDate": "2026-11-23",
-      "endDate": "2026-11-29",
+      "startDate": "2026-11-30",
+      "endDate": "2026-12-06",
       "phase": "Base + Quality",
-      "focus": "Thanksgiving week \u2014 steady run introduced (on Tuesday) \u00b7 23 mi",
+      "focus": "Steady run introduced; general strength \u00b7 23 mi",
       "targetHours": 4.6,
       "isRecoveryWeek": false,
       "days": [
         {
-          "date": "2026-11-23",
+          "date": "2026-11-30",
           "dayOfWeek": "Monday",
           "workouts": [
             {
@@ -1490,29 +1555,23 @@
           ]
         },
         {
-          "date": "2026-11-24",
+          "date": "2026-12-01",
           "dayOfWeek": "Tuesday",
           "workouts": [
             {
               "id": "w9-tue-run",
               "sport": "run",
-              "type": "tempo",
-              "name": "Steady Run \u2014 20 min steady",
-              "description": "One controlled, moderate effort to keep some sharpness while volume builds.",
-              "durationMinutes": 60,
-              "distanceMeters": 9656,
-              "primaryZone": "Zone 3",
-              "humanReadable": "Warm-up: 1.5 mi easy\nMain: 20 min STEADY @ ~9:00-9:20/mi (Zone 3, HR ~153-160). Comfortable but purposeful \u2014 you can talk in short sentences. This is NOT tempo.\nCool-down: easy to finish 6 mi total.\n\nIf HR drifts above 160 or the knee complains, back off to easy and call it a normal run.\n\nFirst steady run of the block. On Tuesday this week because of Thanksgiving \u2014 strength moves to Wednesday.",
+              "type": "endurance",
+              "name": "Easy 5 mi",
+              "description": "Aerobic base run.",
+              "durationMinutes": 50,
+              "distanceMeters": 8047,
+              "primaryZone": "Zone 2",
+              "humanReadable": "5 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target \u2014 let HR and breathing decide.",
               "completed": false
-            }
-          ]
-        },
-        {
-          "date": "2026-11-25",
-          "dayOfWeek": "Wednesday",
-          "workouts": [
+            },
             {
-              "id": "w9-wed-str",
+              "id": "w9-tue-str",
               "sport": "strength",
               "type": "endurance",
               "name": "Strength (after run)",
@@ -1524,25 +1583,39 @@
           ]
         },
         {
-          "date": "2026-11-26",
-          "dayOfWeek": "Thursday",
+          "date": "2026-12-02",
+          "dayOfWeek": "Wednesday",
           "workouts": [
             {
-              "id": "w9-thu-run",
-              "sport": "run",
-              "type": "endurance",
-              "name": "Easy 5 mi",
-              "description": "Thanksgiving. A Turkey Trot is a great way to get this in \u2014 run it easy/steady, not as a race.",
-              "durationMinutes": 50,
-              "distanceMeters": 8047,
-              "primaryZone": "Zone 2",
-              "humanReadable": "5 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target \u2014 let HR and breathing decide.\n\nThanksgiving. A Turkey Trot is a great way to get this in \u2014 run it easy/steady, not as a race.",
+              "id": "w9-wed-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Rest. In Blocks 3-4, an optional 2-3 mi very easy shakeout can replace this rest day if everything feels great \u2014 never add it the week after a missed run.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-11-27",
+          "date": "2026-12-03",
+          "dayOfWeek": "Thursday",
+          "workouts": [
+            {
+              "id": "w9-thu-run",
+              "sport": "run",
+              "type": "tempo",
+              "name": "Steady Run \u2014 20 min steady",
+              "description": "One controlled, moderate effort to keep some sharpness while volume builds.",
+              "durationMinutes": 60,
+              "distanceMeters": 9656,
+              "primaryZone": "Zone 3",
+              "humanReadable": "Warm-up: 1.5 mi easy\nMain: 20 min STEADY @ ~9:00-9:20/mi (Zone 3, HR ~153-160). Comfortable but purposeful \u2014 you can talk in short sentences. This is NOT tempo.\nCool-down: easy to finish 6 mi total.\n\nIf HR drifts above 160 or the knee complains, back off to easy and call it a normal run.\n\nFirst steady run of the block.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-12-04",
           "dayOfWeek": "Friday",
           "workouts": [
             {
@@ -1570,7 +1643,7 @@
           ]
         },
         {
-          "date": "2026-11-28",
+          "date": "2026-12-05",
           "dayOfWeek": "Saturday",
           "workouts": [
             {
@@ -1584,7 +1657,7 @@
           ]
         },
         {
-          "date": "2026-11-29",
+          "date": "2026-12-06",
           "dayOfWeek": "Sunday",
           "workouts": [
             {
@@ -1619,15 +1692,15 @@
     },
     {
       "weekNumber": 10,
-      "startDate": "2026-11-30",
-      "endDate": "2026-12-06",
+      "startDate": "2026-12-07",
+      "endDate": "2026-12-13",
       "phase": "Base + Quality",
-      "focus": "Back to the normal rhythm; general strength \u00b7 24 mi",
+      "focus": "Settle into the steady-run rhythm \u00b7 24 mi",
       "targetHours": 4.8,
       "isRecoveryWeek": false,
       "days": [
         {
-          "date": "2026-11-30",
+          "date": "2026-12-07",
           "dayOfWeek": "Monday",
           "workouts": [
             {
@@ -1641,7 +1714,7 @@
           ]
         },
         {
-          "date": "2026-12-01",
+          "date": "2026-12-08",
           "dayOfWeek": "Tuesday",
           "workouts": [
             {
@@ -1669,7 +1742,7 @@
           ]
         },
         {
-          "date": "2026-12-02",
+          "date": "2026-12-09",
           "dayOfWeek": "Wednesday",
           "workouts": [
             {
@@ -1683,7 +1756,7 @@
           ]
         },
         {
-          "date": "2026-12-03",
+          "date": "2026-12-10",
           "dayOfWeek": "Thursday",
           "workouts": [
             {
@@ -1701,7 +1774,7 @@
           ]
         },
         {
-          "date": "2026-12-04",
+          "date": "2026-12-11",
           "dayOfWeek": "Friday",
           "workouts": [
             {
@@ -1729,7 +1802,7 @@
           ]
         },
         {
-          "date": "2026-12-05",
+          "date": "2026-12-12",
           "dayOfWeek": "Saturday",
           "workouts": [
             {
@@ -1743,7 +1816,7 @@
           ]
         },
         {
-          "date": "2026-12-06",
+          "date": "2026-12-13",
           "dayOfWeek": "Sunday",
           "workouts": [
             {
@@ -1778,15 +1851,15 @@
     },
     {
       "weekNumber": 11,
-      "startDate": "2026-12-07",
-      "endDate": "2026-12-13",
+      "startDate": "2026-12-14",
+      "endDate": "2026-12-20",
       "phase": "Base + Quality",
       "focus": "Steady extends to 25 min \u00b7 26 mi",
       "targetHours": 5.2,
       "isRecoveryWeek": false,
       "days": [
         {
-          "date": "2026-12-07",
+          "date": "2026-12-14",
           "dayOfWeek": "Monday",
           "workouts": [
             {
@@ -1800,7 +1873,7 @@
           ]
         },
         {
-          "date": "2026-12-08",
+          "date": "2026-12-15",
           "dayOfWeek": "Tuesday",
           "workouts": [
             {
@@ -1828,7 +1901,7 @@
           ]
         },
         {
-          "date": "2026-12-09",
+          "date": "2026-12-16",
           "dayOfWeek": "Wednesday",
           "workouts": [
             {
@@ -1842,7 +1915,7 @@
           ]
         },
         {
-          "date": "2026-12-10",
+          "date": "2026-12-17",
           "dayOfWeek": "Thursday",
           "workouts": [
             {
@@ -1860,7 +1933,7 @@
           ]
         },
         {
-          "date": "2026-12-11",
+          "date": "2026-12-18",
           "dayOfWeek": "Friday",
           "workouts": [
             {
@@ -1888,7 +1961,7 @@
           ]
         },
         {
-          "date": "2026-12-12",
+          "date": "2026-12-19",
           "dayOfWeek": "Saturday",
           "workouts": [
             {
@@ -1902,7 +1975,7 @@
           ]
         },
         {
-          "date": "2026-12-13",
+          "date": "2026-12-20",
           "dayOfWeek": "Sunday",
           "workouts": [
             {
@@ -1937,15 +2010,15 @@
     },
     {
       "weekNumber": 12,
-      "startDate": "2026-12-14",
-      "endDate": "2026-12-20",
+      "startDate": "2026-12-21",
+      "endDate": "2026-12-27",
       "phase": "Base + Quality",
-      "focus": "FLEX WEEK \u2014 no steady run \u00b7 19 mi",
+      "focus": "FLEX WEEK \u2014 Christmas, no steady run \u00b7 19 mi",
       "targetHours": 3.8,
       "isRecoveryWeek": true,
       "days": [
         {
-          "date": "2026-12-14",
+          "date": "2026-12-21",
           "dayOfWeek": "Monday",
           "workouts": [
             {
@@ -1959,7 +2032,7 @@
           ]
         },
         {
-          "date": "2026-12-15",
+          "date": "2026-12-22",
           "dayOfWeek": "Tuesday",
           "workouts": [
             {
@@ -1987,7 +2060,7 @@
           ]
         },
         {
-          "date": "2026-12-16",
+          "date": "2026-12-23",
           "dayOfWeek": "Wednesday",
           "workouts": [
             {
@@ -2001,7 +2074,7 @@
           ]
         },
         {
-          "date": "2026-12-17",
+          "date": "2026-12-24",
           "dayOfWeek": "Thursday",
           "workouts": [
             {
@@ -2009,17 +2082,17 @@
               "sport": "run",
               "type": "endurance",
               "name": "Easy 5 mi + 4 strides",
-              "description": "Aerobic base run.",
+              "description": "Christmas Eve. If the day is packed, shorten it or drop the strides \u2014 fine.",
               "durationMinutes": 50,
               "distanceMeters": 8047,
               "primaryZone": "Zone 2",
-              "humanReadable": "5 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target \u2014 let HR and breathing decide.\nAfter the run: 4 x 20s strides \u2014 quick and relaxed, not sprints. Full walk-back recovery.",
+              "humanReadable": "5 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target \u2014 let HR and breathing decide.\nAfter the run: 4 x 20s strides \u2014 quick and relaxed, not sprints. Full walk-back recovery.\n\nChristmas Eve. If the day is packed, shorten it or drop the strides \u2014 fine.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-12-18",
+          "date": "2026-12-25",
           "dayOfWeek": "Friday",
           "workouts": [
             {
@@ -2027,11 +2100,11 @@
               "sport": "run",
               "type": "endurance",
               "name": "Easy 3 mi",
-              "description": "Aerobic base run.",
+              "description": "Christmas Day \u2014 skip or shorten freely; if you skip it, don't make it up.",
               "durationMinutes": 30,
               "distanceMeters": 4828,
               "primaryZone": "Zone 2",
-              "humanReadable": "3 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target \u2014 let HR and breathing decide.",
+              "humanReadable": "3 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target \u2014 let HR and breathing decide.\n\nChristmas Day \u2014 skip or shorten freely; if you skip it, don't make it up.",
               "completed": false
             },
             {
@@ -2047,7 +2120,7 @@
           ]
         },
         {
-          "date": "2026-12-19",
+          "date": "2026-12-26",
           "dayOfWeek": "Saturday",
           "workouts": [
             {
@@ -2061,7 +2134,7 @@
           ]
         },
         {
-          "date": "2026-12-20",
+          "date": "2026-12-27",
           "dayOfWeek": "Sunday",
           "workouts": [
             {
@@ -2096,15 +2169,15 @@
     },
     {
       "weekNumber": 13,
-      "startDate": "2026-12-21",
-      "endDate": "2026-12-27",
+      "startDate": "2026-12-28",
+      "endDate": "2027-01-03",
       "phase": "Consolidate",
-      "focus": "Christmas week \u00b7 27 mi",
+      "focus": "New Year week \u00b7 27 mi",
       "targetHours": 5.2,
       "isRecoveryWeek": false,
       "days": [
         {
-          "date": "2026-12-21",
+          "date": "2026-12-28",
           "dayOfWeek": "Monday",
           "workouts": [
             {
@@ -2118,7 +2191,7 @@
           ]
         },
         {
-          "date": "2026-12-22",
+          "date": "2026-12-29",
           "dayOfWeek": "Tuesday",
           "workouts": [
             {
@@ -2146,7 +2219,7 @@
           ]
         },
         {
-          "date": "2026-12-23",
+          "date": "2026-12-30",
           "dayOfWeek": "Wednesday",
           "workouts": [
             {
@@ -2160,7 +2233,7 @@
           ]
         },
         {
-          "date": "2026-12-24",
+          "date": "2026-12-31",
           "dayOfWeek": "Thursday",
           "workouts": [
             {
@@ -2172,13 +2245,13 @@
               "durationMinutes": 70,
               "distanceMeters": 11265,
               "primaryZone": "Zone 3",
-              "humanReadable": "Warm-up: 1.5 mi easy\nMain: 25 min STEADY @ ~9:00-9:20/mi (Zone 3, HR ~153-160). Comfortable but purposeful \u2014 you can talk in short sentences. This is NOT tempo.\nCool-down: easy to finish 7 mi total.\n\nIf HR drifts above 160 or the knee complains, back off to easy and call it a normal run.\n\nChristmas Eve. If the day is packed, run it all easy \u2014 fine.",
+              "humanReadable": "Warm-up: 1.5 mi easy\nMain: 25 min STEADY @ ~9:00-9:20/mi (Zone 3, HR ~153-160). Comfortable but purposeful \u2014 you can talk in short sentences. This is NOT tempo.\nCool-down: easy to finish 7 mi total.\n\nIf HR drifts above 160 or the knee complains, back off to easy and call it a normal run.\n\nNew Year's Eve. Go earlier in the day if the evening is busy; if it's packed, run it all easy \u2014 fine.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-12-25",
+          "date": "2027-01-01",
           "dayOfWeek": "Friday",
           "workouts": [
             {
@@ -2186,11 +2259,11 @@
               "sport": "run",
               "type": "endurance",
               "name": "Easy 5 mi",
-              "description": "Christmas Day \u2014 skip or shorten freely; if you skip it, don't make it up.",
+              "description": "New Year's Day \u2014 shorten or skip freely; don't make it up.",
               "durationMinutes": 50,
               "distanceMeters": 8047,
               "primaryZone": "Zone 2",
-              "humanReadable": "5 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target \u2014 let HR and breathing decide.\n\nChristmas Day \u2014 skip or shorten freely; if you skip it, don't make it up.",
+              "humanReadable": "5 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target \u2014 let HR and breathing decide.\n\nNew Year's Day \u2014 shorten or skip freely; don't make it up.",
               "completed": false
             },
             {
@@ -2206,7 +2279,7 @@
           ]
         },
         {
-          "date": "2026-12-26",
+          "date": "2027-01-02",
           "dayOfWeek": "Saturday",
           "workouts": [
             {
@@ -2220,7 +2293,7 @@
           ]
         },
         {
-          "date": "2026-12-27",
+          "date": "2027-01-03",
           "dayOfWeek": "Sunday",
           "workouts": [
             {
@@ -2255,15 +2328,15 @@
     },
     {
       "weekNumber": 14,
-      "startDate": "2026-12-28",
-      "endDate": "2027-01-03",
+      "startDate": "2027-01-04",
+      "endDate": "2027-01-10",
       "phase": "Consolidate",
-      "focus": "New Year week \u2014 first 10-miler \u00b7 28 mi",
+      "focus": "First 10-miler \u00b7 28 mi",
       "targetHours": 5.4,
       "isRecoveryWeek": false,
       "days": [
         {
-          "date": "2026-12-28",
+          "date": "2027-01-04",
           "dayOfWeek": "Monday",
           "workouts": [
             {
@@ -2277,7 +2350,7 @@
           ]
         },
         {
-          "date": "2026-12-29",
+          "date": "2027-01-05",
           "dayOfWeek": "Tuesday",
           "workouts": [
             {
@@ -2305,7 +2378,7 @@
           ]
         },
         {
-          "date": "2026-12-30",
+          "date": "2027-01-06",
           "dayOfWeek": "Wednesday",
           "workouts": [
             {
@@ -2319,7 +2392,7 @@
           ]
         },
         {
-          "date": "2026-12-31",
+          "date": "2027-01-07",
           "dayOfWeek": "Thursday",
           "workouts": [
             {
@@ -2331,13 +2404,13 @@
               "durationMinutes": 70,
               "distanceMeters": 11265,
               "primaryZone": "Zone 3",
-              "humanReadable": "Warm-up: 1.5 mi easy\nMain: 30 min STEADY @ ~9:00-9:20/mi (Zone 3, HR ~153-160). Comfortable but purposeful \u2014 you can talk in short sentences. This is NOT tempo.\nCool-down: easy to finish 7 mi total.\n\nIf HR drifts above 160 or the knee complains, back off to easy and call it a normal run.\n\nNew Year's Eve. Go earlier in the day if the evening is busy.",
+              "humanReadable": "Warm-up: 1.5 mi easy\nMain: 30 min STEADY @ ~9:00-9:20/mi (Zone 3, HR ~153-160). Comfortable but purposeful \u2014 you can talk in short sentences. This is NOT tempo.\nCool-down: easy to finish 7 mi total.\n\nIf HR drifts above 160 or the knee complains, back off to easy and call it a normal run.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2027-01-01",
+          "date": "2027-01-08",
           "dayOfWeek": "Friday",
           "workouts": [
             {
@@ -2345,11 +2418,11 @@
               "sport": "run",
               "type": "endurance",
               "name": "Easy 5 mi",
-              "description": "New Year's Day \u2014 shorten or skip freely; don't make it up.",
+              "description": "Aerobic base run.",
               "durationMinutes": 50,
               "distanceMeters": 8047,
               "primaryZone": "Zone 2",
-              "humanReadable": "5 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target \u2014 let HR and breathing decide.\n\nNew Year's Day \u2014 shorten or skip freely; don't make it up.",
+              "humanReadable": "5 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target \u2014 let HR and breathing decide.",
               "completed": false
             },
             {
@@ -2365,7 +2438,7 @@
           ]
         },
         {
-          "date": "2027-01-02",
+          "date": "2027-01-09",
           "dayOfWeek": "Saturday",
           "workouts": [
             {
@@ -2379,7 +2452,7 @@
           ]
         },
         {
-          "date": "2027-01-03",
+          "date": "2027-01-10",
           "dayOfWeek": "Sunday",
           "workouts": [
             {
@@ -2414,15 +2487,15 @@
     },
     {
       "weekNumber": 15,
-      "startDate": "2027-01-04",
-      "endDate": "2027-01-10",
+      "startDate": "2027-01-11",
+      "endDate": "2027-01-17",
       "phase": "Consolidate",
       "focus": "Peak week (~30 mi) \u00b7 30 mi",
       "targetHours": 5.9,
       "isRecoveryWeek": false,
       "days": [
         {
-          "date": "2027-01-04",
+          "date": "2027-01-11",
           "dayOfWeek": "Monday",
           "workouts": [
             {
@@ -2436,7 +2509,7 @@
           ]
         },
         {
-          "date": "2027-01-05",
+          "date": "2027-01-12",
           "dayOfWeek": "Tuesday",
           "workouts": [
             {
@@ -2464,7 +2537,7 @@
           ]
         },
         {
-          "date": "2027-01-06",
+          "date": "2027-01-13",
           "dayOfWeek": "Wednesday",
           "workouts": [
             {
@@ -2478,7 +2551,7 @@
           ]
         },
         {
-          "date": "2027-01-07",
+          "date": "2027-01-14",
           "dayOfWeek": "Thursday",
           "workouts": [
             {
@@ -2496,7 +2569,7 @@
           ]
         },
         {
-          "date": "2027-01-08",
+          "date": "2027-01-15",
           "dayOfWeek": "Friday",
           "workouts": [
             {
@@ -2524,7 +2597,7 @@
           ]
         },
         {
-          "date": "2027-01-09",
+          "date": "2027-01-16",
           "dayOfWeek": "Saturday",
           "workouts": [
             {
@@ -2538,7 +2611,7 @@
           ]
         },
         {
-          "date": "2027-01-10",
+          "date": "2027-01-17",
           "dayOfWeek": "Sunday",
           "workouts": [
             {
@@ -2573,15 +2646,15 @@
     },
     {
       "weekNumber": 16,
-      "startDate": "2027-01-11",
-      "endDate": "2027-01-17",
+      "startDate": "2027-01-18",
+      "endDate": "2027-01-24",
       "phase": "Consolidate",
       "focus": "FLEX WEEK + 5K time trial \u00b7 20 mi",
       "targetHours": 3.4,
       "isRecoveryWeek": true,
       "days": [
         {
-          "date": "2027-01-11",
+          "date": "2027-01-18",
           "dayOfWeek": "Monday",
           "workouts": [
             {
@@ -2595,7 +2668,7 @@
           ]
         },
         {
-          "date": "2027-01-12",
+          "date": "2027-01-19",
           "dayOfWeek": "Tuesday",
           "workouts": [
             {
@@ -2623,7 +2696,7 @@
           ]
         },
         {
-          "date": "2027-01-13",
+          "date": "2027-01-20",
           "dayOfWeek": "Wednesday",
           "workouts": [
             {
@@ -2637,7 +2710,7 @@
           ]
         },
         {
-          "date": "2027-01-14",
+          "date": "2027-01-21",
           "dayOfWeek": "Thursday",
           "workouts": [
             {
@@ -2655,7 +2728,7 @@
           ]
         },
         {
-          "date": "2027-01-15",
+          "date": "2027-01-22",
           "dayOfWeek": "Friday",
           "workouts": [
             {
@@ -2669,7 +2742,7 @@
           ]
         },
         {
-          "date": "2027-01-16",
+          "date": "2027-01-23",
           "dayOfWeek": "Saturday",
           "workouts": [
             {
@@ -2687,7 +2760,7 @@
           ]
         },
         {
-          "date": "2027-01-17",
+          "date": "2027-01-24",
           "dayOfWeek": "Sunday",
           "workouts": [
             {
@@ -2724,7 +2797,7 @@
   "raceStrategy": {
     "event": {
       "name": "5K Time Trial (benchmark)",
-      "date": "2027-01-16",
+      "date": "2027-01-23",
       "type": "5k",
       "distances": {
         "run": 5
@@ -2746,7 +2819,7 @@
       "notes": "Nothing special for a 5K."
     },
     "taper": {
-      "startDate": "2027-01-11",
+      "startDate": "2027-01-18",
       "volumeReduction": 33,
       "notes": "Week 16 is a flex week \u2014 you'll arrive fresh."
     }
