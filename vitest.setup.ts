@@ -12,8 +12,10 @@ expect.extend(matchers);
 // prefers-reduced-motion (CompletionCelebration) needs *some* implementation
 // present. Stubbed here as `matches: true` (reduced motion) rather than
 // `false`, purely so tests settle on the shorter SETTLE_MS path by default
-// and don't need to wait out the full animated duration; nothing in this
-// codebase's actual behavior differs based on which stub value is used.
+// and don't need to wait out the full animated duration. App.svelte's
+// re-tap-to-reset scroll (Story 4.2) also reads it -- 'auto' under this
+// default, 'smooth' when a test overrides it -- and `App.test.ts` relies on
+// this default being `true`, so don't flip it without updating that file.
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
   configurable: true,

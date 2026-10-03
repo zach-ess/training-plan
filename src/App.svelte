@@ -199,10 +199,30 @@
     node.querySelector('[data-today="true"]')?.scrollIntoView({ block: 'center' });
   }
 
+  // Story 4.2 -- re-tap-to-reset (EXPERIENCE.md's `tab-bar` pattern, Story
+  // 1.3's never-delivered AC): tapping the already-active tab sends Home back
+  // to today (same lookup and centering as `scrollToToday`'s first-open
+  // scroll) or History back to its top -- both the page and History's own
+  // independently scrolling `.history-list`, so the trend chart is visible
+  // again. Smooth unless `prefers-reduced-motion` is set (read at tap time,
+  // same check as `CompletionCelebration`), in which case it jumps.
+  function resetTabView(tab: Tab) {
+    const reducedMotion =
+      typeof window.matchMedia === 'function' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const behavior: ScrollBehavior = reducedMotion ? 'auto' : 'smooth';
+    if (tab === 'home') {
+      document
+        .querySelector('#panel-home [data-today="true"]')
+        ?.scrollIntoView({ block: 'center', behavior });
+      return;
+    }
+    document.querySelector('#panel-history .history-list')?.scrollTo({ top: 0, behavior });
+    window.scrollTo({ top: 0, behavior });
+  }
+
   function handleSelect(tab: Tab) {
-    // Re-tap-to-reset (EXPERIENCE.md) is intentionally not implemented here
-    // -- there is no real Home/History content yet for "reset" to act on.
-    // A later story can add that behavior on top of this handler.
+    const isReselect = tab === activeTab;
     activeTab = tab;
     // The WorkoutDetail scrim deliberately stops short of covering the tab
     // bar (EXPERIENCE.md: it "persists across both tabs; never hidden or
@@ -251,8 +271,15 @@
       // lands focus in the newly-visible panel instead of leaving it
       // wherever the native click-to-focus behavior happened to put it.
       tick().then(() => {
-        document.getElementById(`panel-${tab}`)?.focus();
+        // On a re-tap the reset below owns the scroll position, so don't let
+        // focusing the panel jump it first.
+        document.getElementById(`panel-${tab}`)?.focus({ preventScroll: isReselect });
       });
+    }
+    if (isReselect) {
+      // After `tick()` for the same reason as the focus restore above: any
+      // dialog that just closed has to flush out of the DOM first.
+      tick().then(() => resetTabView(tab));
     }
   }
 
