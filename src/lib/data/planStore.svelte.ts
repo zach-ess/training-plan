@@ -95,10 +95,12 @@ async function loadPlanUnguarded(): Promise<void> {
         planStore.status = 'loaded';
         cacheHit = true;
       }
-    } catch {
+    } catch (error) {
       // Cache Storage unsupported/unavailable, or the cached entry was
       // corrupt/unreadable -- fall through to the network fetch below. A
       // missing or bad cache entry is not itself a failure condition.
+      // Story 4.1 -- console only, never UI (epic-1-retro-item-9).
+      console.warn('planStore: cached plan.json could not be read; fetching from network', error);
     }
   }
 
@@ -137,15 +139,20 @@ async function loadPlanUnguarded(): Promise<void> {
       // Keyed by the un-busted URL, not `bustedUrl`, so the next cold
       // cache-read (above) finds it.
       await cache.put(PLAN_URL, response);
-    } catch {
+    } catch (error) {
       // Non-fatal: the in-memory Plan is already updated; persisting it for
       // the next cold start/offline reopen is best-effort only.
+      // Story 4.1 -- console only, never UI (epic-1-retro-item-9).
+      console.warn('planStore: fetched plan.json could not be cached for offline use', error);
     }
-  } catch {
-    // AD-5: a background refetch failure is swallowed silently, leaving an
+  } catch (error) {
+    // AD-5: a background refetch failure (network error, non-2xx status, or
+    // an unparseable body) never shows an on-screen error, leaving an
     // already-`'loaded'` Plan/state exactly as-is -- no error banner. Only a
     // cold start with nothing ever cached (still `'loading'` here) surfaces
     // the failure state.
+    // Story 4.1 -- console only, never UI (epic-1-retro-item-9).
+    console.warn('planStore: plan.json fetch or parse failed', error);
     if (planStore.status === 'loading') {
       planStore.status = 'error';
     }

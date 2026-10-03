@@ -122,6 +122,7 @@ function loadInitialReviews(): Record<string, WeekEndReview> {
     }
     const parsed: unknown = JSON.parse(raw);
     if (!isRecord(parsed)) {
+      console.warn('weekEndReviewStore: stored reviews are not an object; starting with none', parsed);
       return {};
     }
     const reviews: Record<string, WeekEndReview> = {};
@@ -131,15 +132,20 @@ function loadInitialReviews(): Record<string, WeekEndReview> {
       // (or `constructor`/`prototype`) must never reach `reviews`' inherited
       // `Object.prototype` setter via this bracket assignment.
       if (weekStartIso === '__proto__' || weekStartIso === 'constructor' || weekStartIso === 'prototype') {
+        console.warn('weekEndReviewStore: skipping reserved stored key', weekStartIso);
         continue;
       }
       const review = toWeekEndReview(weekStartIso, value);
       if (review) {
         reviews[weekStartIso] = review;
+      } else {
+        console.warn('weekEndReviewStore: dropping malformed stored review', weekStartIso, value);
       }
     }
     return reviews;
-  } catch {
+  } catch (error) {
+    // Story 4.1 -- console only, never UI (epic-1-retro-item-9).
+    console.warn('weekEndReviewStore: stored reviews could not be read; starting with none', error);
     return {};
   }
 }

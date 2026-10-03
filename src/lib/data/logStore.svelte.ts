@@ -106,6 +106,7 @@ function loadInitialEntries(): Record<string, LogEntry> {
     }
     const parsed: unknown = JSON.parse(raw);
     if (!isRecord(parsed)) {
+      console.warn('logStore: stored log entries are not an object; starting with none', parsed);
       return {};
     }
     const entries: Record<string, LogEntry> = {};
@@ -117,15 +118,20 @@ function loadInitialEntries(): Record<string, LogEntry> {
       // property. Skipping these three keys outright means a hand-edited or
       // maliciously-crafted `localStorage` value can never do that.
       if (date === '__proto__' || date === 'constructor' || date === 'prototype') {
+        console.warn('logStore: skipping reserved stored key', date);
         continue;
       }
       const entry = toLogEntry(date, value);
       if (entry) {
         entries[date] = entry;
+      } else {
+        console.warn('logStore: dropping malformed stored log entry', date, value);
       }
     }
     return entries;
-  } catch {
+  } catch (error) {
+    // Story 4.1 -- console only, never UI (epic-1-retro-item-9).
+    console.warn('logStore: stored log entries could not be read; starting with none', error);
     return {};
   }
 }

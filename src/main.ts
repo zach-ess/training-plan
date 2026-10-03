@@ -14,7 +14,10 @@ if ('storage' in navigator && 'persist' in navigator.storage) {
   // restricted/sandboxed embedding context) would otherwise be this file's
   // one unhandled-rejection exception. Still fire-and-forget -- the outcome
   // never blocks or branches app behavior either way.
-  navigator.storage.persist().catch(() => {});
+  navigator.storage.persist().catch((error) => {
+    // Story 4.1 -- console only, never UI (epic-1-retro-item-9).
+    console.warn('main: persistent storage request failed', error);
+  });
 }
 
 const target = document.getElementById('app');
