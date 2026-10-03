@@ -1,10 +1,2762 @@
 {
-  "planName": "Placeholder Plan",
-  "workouts": [
-    {
-      "date": "2026-09-18",
-      "type": "Run",
-      "duration": "30 min"
+  "version": "1.0",
+  "meta": {
+    "id": "base-block-2026-fall",
+    "athlete": "Zach Essler",
+    "event": "Fall Base Block",
+    "eventDate": "2027-01-24",
+    "planStartDate": "2026-10-05",
+    "planEndDate": "2027-01-24",
+    "createdAt": "2026-09-21T00:00:00Z",
+    "updatedAt": "2026-10-03T00:00:00Z",
+    "totalWeeks": 16,
+    "generatedBy": "Claude Coach",
+    "note": "Open-ended base block after the Sept 12 BurliMOT half (1:54:00). Week 1 starts Mon Oct 5 2026 (first run Tue Oct 6). Four 4-week blocks; every 4th week is a flex week, with Thanksgiving and Christmas landing in flex weeks. Ends with a 5K time trial Jan 23 and a check-in on what comes next."
+  },
+  "preferences": {
+    "run": "miles",
+    "firstDayOfWeek": "monday"
+  },
+  "assessment": {
+    "foundation": {
+      "raceHistory": [
+        "NCAA collegiate runner 2004-2008",
+        "5K PR 17:30",
+        "Half PR 1:13",
+        "Marathon PR 3:18",
+        "2026: 5K 26:33 (May)",
+        "2026: Scheels BurliMOT Half 1:54:00 (Sept 12)"
+      ],
+      "peakTrainingLoad": "~50-60 mi/week in college; ~25 mi/week peak in 2026",
+      "foundationLevel": "advanced",
+      "yearsInSport": 4
+    },
+    "currentForm": {
+      "weeklyVolume": {
+        "total": 0,
+        "run": 0
+      },
+      "longestSessions": {
+        "run": 13.1
+      },
+      "consistency": 16
+    },
+    "strengths": [
+      {
+        "sport": "run",
+        "evidence": "Deep collegiate aerobic foundation; fitness returned quickly in 2026 and the half landed on predicted pace."
+      }
+    ],
+    "limiters": [
+      {
+        "sport": "run",
+        "evidence": "Knee soreness history tied to doing too much too soon; training was interrupted several times this year."
+      }
+    ],
+    "constraints": [
+      "Knee: conservative volume progression, flex week every 4th week",
+      "Holidays: Thanksgiving (Week 8 flex), Christmas (Week 12 flex), New Year's (Week 13)",
+      "Strength folded into Tue/Fri easy-run days"
+    ]
+  },
+  "zones": {
+    "run": {
+      "hr": {
+        "lthr": 171,
+        "note": "LTHR 171 from June field test — primary guide for easy runs.",
+        "zones": [
+          {
+            "zone": 1,
+            "name": "Recovery",
+            "percentLow": 0,
+            "percentHigh": 81,
+            "hrLow": 0,
+            "hrHigh": 139
+          },
+          {
+            "zone": 2,
+            "name": "Aerobic",
+            "percentLow": 81,
+            "percentHigh": 89,
+            "hrLow": 139,
+            "hrHigh": 152
+          },
+          {
+            "zone": 3,
+            "name": "Tempo / Steady",
+            "percentLow": 90,
+            "percentHigh": 93,
+            "hrLow": 154,
+            "hrHigh": 159
+          },
+          {
+            "zone": 4,
+            "name": "Sub-threshold",
+            "percentLow": 94,
+            "percentHigh": 99,
+            "hrLow": 161,
+            "hrHigh": 169
+          },
+          {
+            "zone": "5a",
+            "name": "Threshold",
+            "percentLow": 100,
+            "percentHigh": 102,
+            "hrLow": 171,
+            "hrHigh": 174
+          },
+          {
+            "zone": "5b",
+            "name": "VO2max",
+            "percentLow": 103,
+            "percentHigh": 106,
+            "hrLow": 176,
+            "hrHigh": 181
+          }
+        ]
+      },
+      "pace": {
+        "note": "From 1:54:00 half (≈VDOT 39). Recalibrate after the Week 16 time trial.",
+        "thresholdPace": "8:30/mile",
+        "vdot": 39,
+        "zones": [
+          {
+            "zone": "E",
+            "name": "Easy",
+            "paceRange": "10:00-11:00/mile",
+            "description": "Fully conversational. Zone 2 HR. ~85% of all running."
+          },
+          {
+            "zone": "S",
+            "name": "Steady",
+            "paceRange": "9:00-9:20/mile",
+            "description": "Block 3-4 steady runs. Comfortable but purposeful, short sentences. Zone 3."
+          },
+          {
+            "zone": "T",
+            "name": "Threshold",
+            "paceRange": "8:25-8:40/mile",
+            "description": "Not used this block — reference only."
+          },
+          {
+            "zone": "R",
+            "name": "Strides",
+            "paceRange": "Quick & relaxed",
+            "description": "20s accelerations, full recovery. Form, not speed."
+          }
+        ]
+      }
     }
-  ]
+  },
+  "phases": [
+    {
+      "name": "Return",
+      "startWeek": 1,
+      "endWeek": 4,
+      "focus": "Post-race return; easy only; strength begins",
+      "weeklyMilesRange": {
+        "low": 8,
+        "high": 15
+      },
+      "keyWorkouts": [
+        "3→4 easy runs/week",
+        "Glute/hip strength 2x/week"
+      ],
+      "physiologicalGoals": [
+        "Full post-race recovery",
+        "Re-establish routine",
+        "Pain-free knees"
+      ]
+    },
+    {
+      "name": "Aerobic Base",
+      "startWeek": 5,
+      "endWeek": 8,
+      "focus": "Build the aerobic engine; strides return",
+      "weeklyMilesRange": {
+        "low": 16,
+        "high": 22
+      },
+      "keyWorkouts": [
+        "Long run 6-7 mi",
+        "Strides 1-2x/week"
+      ],
+      "physiologicalGoals": [
+        "Capillary & mitochondrial development",
+        "Tendon/joint loading tolerance"
+      ]
+    },
+    {
+      "name": "Base + Quality",
+      "startWeek": 9,
+      "endWeek": 12,
+      "focus": "Hold volume, add one steady run",
+      "weeklyMilesRange": {
+        "low": 19,
+        "high": 26
+      },
+      "keyWorkouts": [
+        "Steady 20-25 min",
+        "Long run 8-9 mi",
+        "General strength"
+      ],
+      "physiologicalGoals": [
+        "Keep some sharpness",
+        "Raise aerobic ceiling"
+      ]
+    },
+    {
+      "name": "Consolidate",
+      "startWeek": 13,
+      "endWeek": 16,
+      "focus": "Peak at ~30 mi/week, then benchmark",
+      "weeklyMilesRange": {
+        "low": 20,
+        "high": 30
+      },
+      "keyWorkouts": [
+        "Steady 25-30 min",
+        "Long run 10 mi",
+        "5K time trial Jan 23"
+      ],
+      "physiologicalGoals": [
+        "Consolidate base",
+        "Real data for next block"
+      ]
+    }
+  ],
+  "weeks": [
+    {
+      "weekNumber": 1,
+      "startDate": "2026-10-05",
+      "endDate": "2026-10-11",
+      "phase": "Return",
+      "focus": "Ease back in — short, easy, run/walk OK · 8 mi",
+      "targetHours": 1.3,
+      "isRecoveryWeek": false,
+      "days": [
+        {
+          "date": "2026-10-05",
+          "dayOfWeek": "Monday",
+          "workouts": [
+            {
+              "id": "w1-mon-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Full rest. Walking is fine.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-10-06",
+          "dayOfWeek": "Tuesday",
+          "workouts": [
+            {
+              "id": "w1-tue-run",
+              "sport": "run",
+              "type": "endurance",
+              "name": "Easy 2 mi",
+              "description": "FIRST RUN of the block. Run/walk is completely fine (4 min run / 1 min walk). Only goal: finish feeling like you could do it again tomorrow.\nKnee check: soreness that changes your stride or lingers into the next morning = take the next day off.",
+              "durationMinutes": 20,
+              "distanceMeters": 3219,
+              "primaryZone": "Zone 2",
+              "humanReadable": "2 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.\n\nFIRST RUN of the block. Run/walk is completely fine (4 min run / 1 min walk). Only goal: finish feeling like you could do it again tomorrow.\nKnee check: soreness that changes your stride or lingers into the next morning = take the next day off.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-10-07",
+          "dayOfWeek": "Wednesday",
+          "workouts": [
+            {
+              "id": "w1-wed-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Rest. Walking is fine.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-10-08",
+          "dayOfWeek": "Thursday",
+          "workouts": [
+            {
+              "id": "w1-thu-run",
+              "sport": "run",
+              "type": "endurance",
+              "name": "Easy 3 mi",
+              "description": "Knee check: soreness that changes your stride or lingers into the next morning = take the next day off.",
+              "durationMinutes": 30,
+              "distanceMeters": 4828,
+              "primaryZone": "Zone 2",
+              "humanReadable": "3 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.\n\nKnee check: soreness that changes your stride or lingers into the next morning = take the next day off.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-10-09",
+          "dayOfWeek": "Friday",
+          "workouts": [
+            {
+              "id": "w1-fri-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Full rest. Walking is fine.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-10-10",
+          "dayOfWeek": "Saturday",
+          "workouts": [
+            {
+              "id": "w1-sat-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Rest before tomorrow's long run.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-10-11",
+          "dayOfWeek": "Sunday",
+          "workouts": [
+            {
+              "id": "w1-sun-run",
+              "sport": "run",
+              "type": "long",
+              "name": "Long Run — 3 mi",
+              "description": "The weekly aerobic anchor. Time on feet, not pace.",
+              "durationMinutes": 30,
+              "distanceMeters": 4828,
+              "primaryZone": "Zone 2",
+              "humanReadable": "3 miles, all easy. Last mile can drift toward the top of Zone 2 if you feel great — never beyond.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.\n\nNormal Tue/Thu/Fri/Sun rhythm (with strength) starts next week.",
+              "completed": false
+            }
+          ]
+        }
+      ],
+      "summary": {
+        "totalHours": 1.3,
+        "bySport": {
+          "run": {
+            "sessions": 3,
+            "hours": 1.33,
+            "km": 12.9
+          }
+        }
+      }
+    },
+    {
+      "weekNumber": 2,
+      "startDate": "2026-10-12",
+      "endDate": "2026-10-18",
+      "phase": "Return",
+      "focus": "Rebuild the routine + strength begins · 12 mi",
+      "targetHours": 2.7,
+      "isRecoveryWeek": false,
+      "days": [
+        {
+          "date": "2026-10-12",
+          "dayOfWeek": "Monday",
+          "workouts": [
+            {
+              "id": "w2-mon-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Full rest. Walking is fine.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-10-13",
+          "dayOfWeek": "Tuesday",
+          "workouts": [
+            {
+              "id": "w2-tue-run",
+              "sport": "run",
+              "type": "endurance",
+              "name": "Easy 4 mi",
+              "description": "Knee check: soreness that changes your stride or lingers into the next morning = take the next day off.",
+              "durationMinutes": 40,
+              "distanceMeters": 6437,
+              "primaryZone": "Zone 2",
+              "humanReadable": "4 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.\n\nKnee check: soreness that changes your stride or lingers into the next morning = take the next day off.",
+              "completed": false
+            },
+            {
+              "id": "w2-tue-str",
+              "sport": "strength",
+              "type": "endurance",
+              "name": "Strength (after run)",
+              "description": "Folded into today's run — do it right after while warm.",
+              "durationMinutes": 20,
+              "humanReadable": "Knee-insurance strength (15-20 min, right after the run)\n2 rounds:\n  • Glute bridge x 15\n  • Side-lying leg raise x 12 each\n  • Clamshell (band) x 15 each\n  • Lateral band walk x 12 steps each way\n  • Slow step-down (4-6\" step) x 8 each leg — knee tracks over 2nd toe\n  • Calf raise x 15 (straight knee) + x 15 (bent knee)\n  • Plank 30-45s + side plank 20-30s each side",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-10-14",
+          "dayOfWeek": "Wednesday",
+          "workouts": [
+            {
+              "id": "w2-wed-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Rest. Walking is fine.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-10-15",
+          "dayOfWeek": "Thursday",
+          "workouts": [
+            {
+              "id": "w2-thu-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Full rest. Walking is fine.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-10-16",
+          "dayOfWeek": "Friday",
+          "workouts": [
+            {
+              "id": "w2-fri-run",
+              "sport": "run",
+              "type": "endurance",
+              "name": "Easy 4 mi",
+              "description": "Aerobic base run.",
+              "durationMinutes": 40,
+              "distanceMeters": 6437,
+              "primaryZone": "Zone 2",
+              "humanReadable": "4 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.",
+              "completed": false
+            },
+            {
+              "id": "w2-fri-str",
+              "sport": "strength",
+              "type": "endurance",
+              "name": "Strength (after run)",
+              "description": "Folded into today's run — do it right after while warm.",
+              "durationMinutes": 20,
+              "humanReadable": "Knee-insurance strength (15-20 min, right after the run)\n2 rounds:\n  • Glute bridge x 15\n  • Side-lying leg raise x 12 each\n  • Clamshell (band) x 15 each\n  • Lateral band walk x 12 steps each way\n  • Slow step-down (4-6\" step) x 8 each leg — knee tracks over 2nd toe\n  • Calf raise x 15 (straight knee) + x 15 (bent knee)\n  • Plank 30-45s + side plank 20-30s each side",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-10-17",
+          "dayOfWeek": "Saturday",
+          "workouts": [
+            {
+              "id": "w2-sat-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Rest before tomorrow's long run.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-10-18",
+          "dayOfWeek": "Sunday",
+          "workouts": [
+            {
+              "id": "w2-sun-run",
+              "sport": "run",
+              "type": "long",
+              "name": "Long Run — 4 mi",
+              "description": "The weekly aerobic anchor. Time on feet, not pace.",
+              "durationMinutes": 40,
+              "distanceMeters": 6437,
+              "primaryZone": "Zone 2",
+              "humanReadable": "4 miles, all easy. Last mile can drift toward the top of Zone 2 if you feel great — never beyond.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.",
+              "completed": false
+            }
+          ]
+        }
+      ],
+      "summary": {
+        "totalHours": 2.7,
+        "bySport": {
+          "run": {
+            "sessions": 3,
+            "hours": 2,
+            "km": 19.3
+          },
+          "strength": {
+            "sessions": 2,
+            "hours": 0.67
+          }
+        }
+      }
+    },
+    {
+      "weekNumber": 3,
+      "startDate": "2026-10-19",
+      "endDate": "2026-10-25",
+      "phase": "Return",
+      "focus": "Move to 4 runs/week · 15 mi",
+      "targetHours": 3.2,
+      "isRecoveryWeek": false,
+      "days": [
+        {
+          "date": "2026-10-19",
+          "dayOfWeek": "Monday",
+          "workouts": [
+            {
+              "id": "w3-mon-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Full rest. Walking is fine.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-10-20",
+          "dayOfWeek": "Tuesday",
+          "workouts": [
+            {
+              "id": "w3-tue-run",
+              "sport": "run",
+              "type": "endurance",
+              "name": "Easy 3 mi",
+              "description": "Aerobic base run.",
+              "durationMinutes": 30,
+              "distanceMeters": 4828,
+              "primaryZone": "Zone 2",
+              "humanReadable": "3 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.",
+              "completed": false
+            },
+            {
+              "id": "w3-tue-str",
+              "sport": "strength",
+              "type": "endurance",
+              "name": "Strength (after run)",
+              "description": "Folded into today's run — do it right after while warm.",
+              "durationMinutes": 20,
+              "humanReadable": "Knee-insurance strength (15-20 min, right after the run)\n2 rounds:\n  • Glute bridge x 15\n  • Side-lying leg raise x 12 each\n  • Clamshell (band) x 15 each\n  • Lateral band walk x 12 steps each way\n  • Slow step-down (4-6\" step) x 8 each leg — knee tracks over 2nd toe\n  • Calf raise x 15 (straight knee) + x 15 (bent knee)\n  • Plank 30-45s + side plank 20-30s each side",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-10-21",
+          "dayOfWeek": "Wednesday",
+          "workouts": [
+            {
+              "id": "w3-wed-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Rest. Walking is fine.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-10-22",
+          "dayOfWeek": "Thursday",
+          "workouts": [
+            {
+              "id": "w3-thu-run",
+              "sport": "run",
+              "type": "endurance",
+              "name": "Easy 3 mi",
+              "description": "Aerobic base run.",
+              "durationMinutes": 30,
+              "distanceMeters": 4828,
+              "primaryZone": "Zone 2",
+              "humanReadable": "3 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-10-23",
+          "dayOfWeek": "Friday",
+          "workouts": [
+            {
+              "id": "w3-fri-run",
+              "sport": "run",
+              "type": "endurance",
+              "name": "Easy 4 mi",
+              "description": "Aerobic base run.",
+              "durationMinutes": 40,
+              "distanceMeters": 6437,
+              "primaryZone": "Zone 2",
+              "humanReadable": "4 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.",
+              "completed": false
+            },
+            {
+              "id": "w3-fri-str",
+              "sport": "strength",
+              "type": "endurance",
+              "name": "Strength (after run)",
+              "description": "Folded into today's run — do it right after while warm.",
+              "durationMinutes": 20,
+              "humanReadable": "Knee-insurance strength (15-20 min, right after the run)\n2 rounds:\n  • Glute bridge x 15\n  • Side-lying leg raise x 12 each\n  • Clamshell (band) x 15 each\n  • Lateral band walk x 12 steps each way\n  • Slow step-down (4-6\" step) x 8 each leg — knee tracks over 2nd toe\n  • Calf raise x 15 (straight knee) + x 15 (bent knee)\n  • Plank 30-45s + side plank 20-30s each side",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-10-24",
+          "dayOfWeek": "Saturday",
+          "workouts": [
+            {
+              "id": "w3-sat-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Rest before tomorrow's long run.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-10-25",
+          "dayOfWeek": "Sunday",
+          "workouts": [
+            {
+              "id": "w3-sun-run",
+              "sport": "run",
+              "type": "long",
+              "name": "Long Run — 5 mi",
+              "description": "The weekly aerobic anchor. Time on feet, not pace.",
+              "durationMinutes": 50,
+              "distanceMeters": 8047,
+              "primaryZone": "Zone 2",
+              "humanReadable": "5 miles, all easy. Last mile can drift toward the top of Zone 2 if you feel great — never beyond.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.",
+              "completed": false
+            }
+          ]
+        }
+      ],
+      "summary": {
+        "totalHours": 3.2,
+        "bySport": {
+          "run": {
+            "sessions": 4,
+            "hours": 2.5,
+            "km": 24.1
+          },
+          "strength": {
+            "sessions": 2,
+            "hours": 0.67
+          }
+        }
+      }
+    },
+    {
+      "weekNumber": 4,
+      "startDate": "2026-10-26",
+      "endDate": "2026-11-01",
+      "phase": "Return",
+      "focus": "FLEX WEEK — absorb life, consolidate · 12 mi",
+      "targetHours": 2.5,
+      "isRecoveryWeek": true,
+      "days": [
+        {
+          "date": "2026-10-26",
+          "dayOfWeek": "Monday",
+          "workouts": [
+            {
+              "id": "w4-mon-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Full rest. Walking is fine.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-10-27",
+          "dayOfWeek": "Tuesday",
+          "workouts": [
+            {
+              "id": "w4-tue-run",
+              "sport": "run",
+              "type": "endurance",
+              "name": "Easy 3 mi",
+              "description": "Flex week: any one run this week can be dropped with zero guilt.",
+              "durationMinutes": 30,
+              "distanceMeters": 4828,
+              "primaryZone": "Zone 2",
+              "humanReadable": "3 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.\n\nFlex week: any one run this week can be dropped with zero guilt.",
+              "completed": false
+            },
+            {
+              "id": "w4-tue-str",
+              "sport": "strength",
+              "type": "endurance",
+              "name": "Strength (after run)",
+              "description": "Folded into today's run — do it right after while warm.",
+              "durationMinutes": 15,
+              "humanReadable": "Flex-week strength (10-15 min): one round of the usual routine at lighter effort. Skip entirely if life is busy — this is the week that absorbs it.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-10-28",
+          "dayOfWeek": "Wednesday",
+          "workouts": [
+            {
+              "id": "w4-wed-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Rest. Walking is fine.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-10-29",
+          "dayOfWeek": "Thursday",
+          "workouts": [
+            {
+              "id": "w4-thu-run",
+              "sport": "run",
+              "type": "endurance",
+              "name": "Easy 3 mi",
+              "description": "Aerobic base run.",
+              "durationMinutes": 30,
+              "distanceMeters": 4828,
+              "primaryZone": "Zone 2",
+              "humanReadable": "3 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-10-30",
+          "dayOfWeek": "Friday",
+          "workouts": [
+            {
+              "id": "w4-fri-run",
+              "sport": "run",
+              "type": "endurance",
+              "name": "Easy 2 mi",
+              "description": "Aerobic base run.",
+              "durationMinutes": 20,
+              "distanceMeters": 3219,
+              "primaryZone": "Zone 2",
+              "humanReadable": "2 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.",
+              "completed": false
+            },
+            {
+              "id": "w4-fri-str",
+              "sport": "strength",
+              "type": "endurance",
+              "name": "Strength (after run)",
+              "description": "Folded into today's run — do it right after while warm.",
+              "durationMinutes": 15,
+              "humanReadable": "Flex-week strength (10-15 min): one round of the usual routine at lighter effort. Skip entirely if life is busy — this is the week that absorbs it.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-10-31",
+          "dayOfWeek": "Saturday",
+          "workouts": [
+            {
+              "id": "w4-sat-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Rest before tomorrow's long run.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-11-01",
+          "dayOfWeek": "Sunday",
+          "workouts": [
+            {
+              "id": "w4-sun-run",
+              "sport": "run",
+              "type": "long",
+              "name": "Long Run — 4 mi",
+              "description": "The weekly aerobic anchor. Time on feet, not pace.",
+              "durationMinutes": 40,
+              "distanceMeters": 6437,
+              "primaryZone": "Zone 2",
+              "humanReadable": "4 miles, all easy. Last mile can drift toward the top of Zone 2 if you feel great — never beyond.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.",
+              "completed": false
+            }
+          ]
+        }
+      ],
+      "summary": {
+        "totalHours": 2.5,
+        "bySport": {
+          "run": {
+            "sessions": 4,
+            "hours": 2,
+            "km": 19.3
+          },
+          "strength": {
+            "sessions": 2,
+            "hours": 0.5
+          }
+        }
+      }
+    },
+    {
+      "weekNumber": 5,
+      "startDate": "2026-11-02",
+      "endDate": "2026-11-08",
+      "phase": "Aerobic Base",
+      "focus": "Build the engine — strides return · 18 mi",
+      "targetHours": 3.8,
+      "isRecoveryWeek": false,
+      "days": [
+        {
+          "date": "2026-11-02",
+          "dayOfWeek": "Monday",
+          "workouts": [
+            {
+              "id": "w5-mon-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Full rest. Walking is fine.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-11-03",
+          "dayOfWeek": "Tuesday",
+          "workouts": [
+            {
+              "id": "w5-tue-run",
+              "sport": "run",
+              "type": "endurance",
+              "name": "Easy 4 mi",
+              "description": "Aerobic base run.",
+              "durationMinutes": 40,
+              "distanceMeters": 6437,
+              "primaryZone": "Zone 2",
+              "humanReadable": "4 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.",
+              "completed": false
+            },
+            {
+              "id": "w5-tue-str",
+              "sport": "strength",
+              "type": "endurance",
+              "name": "Strength (after run)",
+              "description": "Folded into today's run — do it right after while warm.",
+              "durationMinutes": 20,
+              "humanReadable": "Knee-insurance strength (15-20 min, right after the run)\n2 rounds:\n  • Glute bridge x 15\n  • Side-lying leg raise x 12 each\n  • Clamshell (band) x 15 each\n  • Lateral band walk x 12 steps each way\n  • Slow step-down (4-6\" step) x 8 each leg — knee tracks over 2nd toe\n  • Calf raise x 15 (straight knee) + x 15 (bent knee)\n  • Plank 30-45s + side plank 20-30s each side",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-11-04",
+          "dayOfWeek": "Wednesday",
+          "workouts": [
+            {
+              "id": "w5-wed-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Rest. Walking is fine.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-11-05",
+          "dayOfWeek": "Thursday",
+          "workouts": [
+            {
+              "id": "w5-thu-run",
+              "sport": "run",
+              "type": "endurance",
+              "name": "Easy 4 mi + 4 strides",
+              "description": "Aerobic base run.",
+              "durationMinutes": 40,
+              "distanceMeters": 6437,
+              "primaryZone": "Zone 2",
+              "humanReadable": "4 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.\nAfter the run: 4 x 20s strides — quick and relaxed, not sprints. Full walk-back recovery.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-11-06",
+          "dayOfWeek": "Friday",
+          "workouts": [
+            {
+              "id": "w5-fri-run",
+              "sport": "run",
+              "type": "endurance",
+              "name": "Easy 4 mi",
+              "description": "Aerobic base run.",
+              "durationMinutes": 40,
+              "distanceMeters": 6437,
+              "primaryZone": "Zone 2",
+              "humanReadable": "4 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.",
+              "completed": false
+            },
+            {
+              "id": "w5-fri-str",
+              "sport": "strength",
+              "type": "endurance",
+              "name": "Strength (after run)",
+              "description": "Folded into today's run — do it right after while warm.",
+              "durationMinutes": 20,
+              "humanReadable": "Knee-insurance strength (15-20 min, right after the run)\n2 rounds:\n  • Glute bridge x 15\n  • Side-lying leg raise x 12 each\n  • Clamshell (band) x 15 each\n  • Lateral band walk x 12 steps each way\n  • Slow step-down (4-6\" step) x 8 each leg — knee tracks over 2nd toe\n  • Calf raise x 15 (straight knee) + x 15 (bent knee)\n  • Plank 30-45s + side plank 20-30s each side",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-11-07",
+          "dayOfWeek": "Saturday",
+          "workouts": [
+            {
+              "id": "w5-sat-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Rest before tomorrow's long run.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-11-08",
+          "dayOfWeek": "Sunday",
+          "workouts": [
+            {
+              "id": "w5-sun-run",
+              "sport": "run",
+              "type": "long",
+              "name": "Long Run — 6 mi",
+              "description": "The weekly aerobic anchor. Time on feet, not pace.",
+              "durationMinutes": 65,
+              "distanceMeters": 9656,
+              "primaryZone": "Zone 2",
+              "humanReadable": "6 miles, all easy. Last mile can drift toward the top of Zone 2 if you feel great — never beyond.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.",
+              "completed": false
+            }
+          ]
+        }
+      ],
+      "summary": {
+        "totalHours": 3.8,
+        "bySport": {
+          "run": {
+            "sessions": 4,
+            "hours": 3.08,
+            "km": 29
+          },
+          "strength": {
+            "sessions": 2,
+            "hours": 0.67
+          }
+        }
+      }
+    },
+    {
+      "weekNumber": 6,
+      "startDate": "2026-11-09",
+      "endDate": "2026-11-15",
+      "phase": "Aerobic Base",
+      "focus": "Volume climbing — all easy · 20 mi",
+      "targetHours": 4.1,
+      "isRecoveryWeek": false,
+      "days": [
+        {
+          "date": "2026-11-09",
+          "dayOfWeek": "Monday",
+          "workouts": [
+            {
+              "id": "w6-mon-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Full rest. Walking is fine.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-11-10",
+          "dayOfWeek": "Tuesday",
+          "workouts": [
+            {
+              "id": "w6-tue-run",
+              "sport": "run",
+              "type": "endurance",
+              "name": "Easy 4 mi",
+              "description": "Aerobic base run.",
+              "durationMinutes": 40,
+              "distanceMeters": 6437,
+              "primaryZone": "Zone 2",
+              "humanReadable": "4 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.",
+              "completed": false
+            },
+            {
+              "id": "w6-tue-str",
+              "sport": "strength",
+              "type": "endurance",
+              "name": "Strength (after run)",
+              "description": "Folded into today's run — do it right after while warm.",
+              "durationMinutes": 20,
+              "humanReadable": "Knee-insurance strength (15-20 min, right after the run)\n2 rounds:\n  • Glute bridge x 15\n  • Side-lying leg raise x 12 each\n  • Clamshell (band) x 15 each\n  • Lateral band walk x 12 steps each way\n  • Slow step-down (4-6\" step) x 8 each leg — knee tracks over 2nd toe\n  • Calf raise x 15 (straight knee) + x 15 (bent knee)\n  • Plank 30-45s + side plank 20-30s each side",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-11-11",
+          "dayOfWeek": "Wednesday",
+          "workouts": [
+            {
+              "id": "w6-wed-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Rest. Walking is fine.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-11-12",
+          "dayOfWeek": "Thursday",
+          "workouts": [
+            {
+              "id": "w6-thu-run",
+              "sport": "run",
+              "type": "endurance",
+              "name": "Easy 5 mi + 6 strides",
+              "description": "Aerobic base run.",
+              "durationMinutes": 50,
+              "distanceMeters": 8047,
+              "primaryZone": "Zone 2",
+              "humanReadable": "5 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.\nAfter the run: 6 x 20s strides — quick and relaxed, not sprints. Full walk-back recovery.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-11-13",
+          "dayOfWeek": "Friday",
+          "workouts": [
+            {
+              "id": "w6-fri-run",
+              "sport": "run",
+              "type": "endurance",
+              "name": "Easy 4 mi",
+              "description": "Aerobic base run.",
+              "durationMinutes": 40,
+              "distanceMeters": 6437,
+              "primaryZone": "Zone 2",
+              "humanReadable": "4 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.",
+              "completed": false
+            },
+            {
+              "id": "w6-fri-str",
+              "sport": "strength",
+              "type": "endurance",
+              "name": "Strength (after run)",
+              "description": "Folded into today's run — do it right after while warm.",
+              "durationMinutes": 20,
+              "humanReadable": "Knee-insurance strength (15-20 min, right after the run)\n2 rounds:\n  • Glute bridge x 15\n  • Side-lying leg raise x 12 each\n  • Clamshell (band) x 15 each\n  • Lateral band walk x 12 steps each way\n  • Slow step-down (4-6\" step) x 8 each leg — knee tracks over 2nd toe\n  • Calf raise x 15 (straight knee) + x 15 (bent knee)\n  • Plank 30-45s + side plank 20-30s each side",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-11-14",
+          "dayOfWeek": "Saturday",
+          "workouts": [
+            {
+              "id": "w6-sat-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Rest before tomorrow's long run.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-11-15",
+          "dayOfWeek": "Sunday",
+          "workouts": [
+            {
+              "id": "w6-sun-run",
+              "sport": "run",
+              "type": "long",
+              "name": "Long Run — 7 mi",
+              "description": "The weekly aerobic anchor. Time on feet, not pace.",
+              "durationMinutes": 75,
+              "distanceMeters": 11265,
+              "primaryZone": "Zone 2",
+              "humanReadable": "7 miles, all easy. Last mile can drift toward the top of Zone 2 if you feel great — never beyond.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.",
+              "completed": false
+            }
+          ]
+        }
+      ],
+      "summary": {
+        "totalHours": 4.1,
+        "bySport": {
+          "run": {
+            "sessions": 4,
+            "hours": 3.42,
+            "km": 32.2
+          },
+          "strength": {
+            "sessions": 2,
+            "hours": 0.67
+          }
+        }
+      }
+    },
+    {
+      "weekNumber": 7,
+      "startDate": "2026-11-16",
+      "endDate": "2026-11-22",
+      "phase": "Aerobic Base",
+      "focus": "Strides twice a week · 22 mi",
+      "targetHours": 4.4,
+      "isRecoveryWeek": false,
+      "days": [
+        {
+          "date": "2026-11-16",
+          "dayOfWeek": "Monday",
+          "workouts": [
+            {
+              "id": "w7-mon-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Full rest. Walking is fine.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-11-17",
+          "dayOfWeek": "Tuesday",
+          "workouts": [
+            {
+              "id": "w7-tue-run",
+              "sport": "run",
+              "type": "endurance",
+              "name": "Easy 5 mi + 4 strides",
+              "description": "Aerobic base run.",
+              "durationMinutes": 50,
+              "distanceMeters": 8047,
+              "primaryZone": "Zone 2",
+              "humanReadable": "5 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.\nAfter the run: 4 x 20s strides — quick and relaxed, not sprints. Full walk-back recovery.",
+              "completed": false
+            },
+            {
+              "id": "w7-tue-str",
+              "sport": "strength",
+              "type": "endurance",
+              "name": "Strength (after run)",
+              "description": "Folded into today's run — do it right after while warm.",
+              "durationMinutes": 20,
+              "humanReadable": "Knee-insurance strength (15-20 min, right after the run)\n2 rounds:\n  • Glute bridge x 15\n  • Side-lying leg raise x 12 each\n  • Clamshell (band) x 15 each\n  • Lateral band walk x 12 steps each way\n  • Slow step-down (4-6\" step) x 8 each leg — knee tracks over 2nd toe\n  • Calf raise x 15 (straight knee) + x 15 (bent knee)\n  • Plank 30-45s + side plank 20-30s each side",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-11-18",
+          "dayOfWeek": "Wednesday",
+          "workouts": [
+            {
+              "id": "w7-wed-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Rest. Walking is fine.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-11-19",
+          "dayOfWeek": "Thursday",
+          "workouts": [
+            {
+              "id": "w7-thu-run",
+              "sport": "run",
+              "type": "endurance",
+              "name": "Easy 5 mi + 6 strides",
+              "description": "Aerobic base run.",
+              "durationMinutes": 50,
+              "distanceMeters": 8047,
+              "primaryZone": "Zone 2",
+              "humanReadable": "5 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.\nAfter the run: 6 x 20s strides — quick and relaxed, not sprints. Full walk-back recovery.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-11-20",
+          "dayOfWeek": "Friday",
+          "workouts": [
+            {
+              "id": "w7-fri-run",
+              "sport": "run",
+              "type": "endurance",
+              "name": "Easy 5 mi",
+              "description": "Aerobic base run.",
+              "durationMinutes": 50,
+              "distanceMeters": 8047,
+              "primaryZone": "Zone 2",
+              "humanReadable": "5 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.",
+              "completed": false
+            },
+            {
+              "id": "w7-fri-str",
+              "sport": "strength",
+              "type": "endurance",
+              "name": "Strength (after run)",
+              "description": "Folded into today's run — do it right after while warm.",
+              "durationMinutes": 20,
+              "humanReadable": "Knee-insurance strength (15-20 min, right after the run)\n2 rounds:\n  • Glute bridge x 15\n  • Side-lying leg raise x 12 each\n  • Clamshell (band) x 15 each\n  • Lateral band walk x 12 steps each way\n  • Slow step-down (4-6\" step) x 8 each leg — knee tracks over 2nd toe\n  • Calf raise x 15 (straight knee) + x 15 (bent knee)\n  • Plank 30-45s + side plank 20-30s each side",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-11-21",
+          "dayOfWeek": "Saturday",
+          "workouts": [
+            {
+              "id": "w7-sat-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Rest before tomorrow's long run.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-11-22",
+          "dayOfWeek": "Sunday",
+          "workouts": [
+            {
+              "id": "w7-sun-run",
+              "sport": "run",
+              "type": "long",
+              "name": "Long Run — 7 mi",
+              "description": "The weekly aerobic anchor. Time on feet, not pace.",
+              "durationMinutes": 75,
+              "distanceMeters": 11265,
+              "primaryZone": "Zone 2",
+              "humanReadable": "7 miles, all easy. Last mile can drift toward the top of Zone 2 if you feel great — never beyond.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.",
+              "completed": false
+            }
+          ]
+        }
+      ],
+      "summary": {
+        "totalHours": 4.4,
+        "bySport": {
+          "run": {
+            "sessions": 4,
+            "hours": 3.75,
+            "km": 35.4
+          },
+          "strength": {
+            "sessions": 2,
+            "hours": 0.67
+          }
+        }
+      }
+    },
+    {
+      "weekNumber": 8,
+      "startDate": "2026-11-23",
+      "endDate": "2026-11-29",
+      "phase": "Aerobic Base",
+      "focus": "FLEX WEEK — Thanksgiving · 16 mi",
+      "targetHours": 3.2,
+      "isRecoveryWeek": true,
+      "days": [
+        {
+          "date": "2026-11-23",
+          "dayOfWeek": "Monday",
+          "workouts": [
+            {
+              "id": "w8-mon-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Full rest. Walking is fine.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-11-24",
+          "dayOfWeek": "Tuesday",
+          "workouts": [
+            {
+              "id": "w8-tue-run",
+              "sport": "run",
+              "type": "endurance",
+              "name": "Easy 4 mi",
+              "description": "Flex week: any one run can be dropped.",
+              "durationMinutes": 40,
+              "distanceMeters": 6437,
+              "primaryZone": "Zone 2",
+              "humanReadable": "4 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.\n\nFlex week: any one run can be dropped.",
+              "completed": false
+            },
+            {
+              "id": "w8-tue-str",
+              "sport": "strength",
+              "type": "endurance",
+              "name": "Strength (after run)",
+              "description": "Folded into today's run — do it right after while warm.",
+              "durationMinutes": 15,
+              "humanReadable": "Flex-week strength (10-15 min): one round of the usual routine at lighter effort. Skip entirely if life is busy — this is the week that absorbs it.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-11-25",
+          "dayOfWeek": "Wednesday",
+          "workouts": [
+            {
+              "id": "w8-wed-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Rest. Walking is fine.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-11-26",
+          "dayOfWeek": "Thursday",
+          "workouts": [
+            {
+              "id": "w8-thu-run",
+              "sport": "run",
+              "type": "endurance",
+              "name": "Easy 4 mi + 4 strides",
+              "description": "Thanksgiving. A Turkey Trot is a great way to get this in — run it easy, not as a race (skip the strides if you do).",
+              "durationMinutes": 40,
+              "distanceMeters": 6437,
+              "primaryZone": "Zone 2",
+              "humanReadable": "4 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.\nAfter the run: 4 x 20s strides — quick and relaxed, not sprints. Full walk-back recovery.\n\nThanksgiving. A Turkey Trot is a great way to get this in — run it easy, not as a race (skip the strides if you do).",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-11-27",
+          "dayOfWeek": "Friday",
+          "workouts": [
+            {
+              "id": "w8-fri-run",
+              "sport": "run",
+              "type": "endurance",
+              "name": "Easy 2 mi",
+              "description": "Aerobic base run.",
+              "durationMinutes": 20,
+              "distanceMeters": 3219,
+              "primaryZone": "Zone 2",
+              "humanReadable": "2 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.",
+              "completed": false
+            },
+            {
+              "id": "w8-fri-str",
+              "sport": "strength",
+              "type": "endurance",
+              "name": "Strength (after run)",
+              "description": "Folded into today's run — do it right after while warm.",
+              "durationMinutes": 15,
+              "humanReadable": "Flex-week strength (10-15 min): one round of the usual routine at lighter effort. Skip entirely if life is busy — this is the week that absorbs it.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-11-28",
+          "dayOfWeek": "Saturday",
+          "workouts": [
+            {
+              "id": "w8-sat-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Rest before tomorrow's long run.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-11-29",
+          "dayOfWeek": "Sunday",
+          "workouts": [
+            {
+              "id": "w8-sun-run",
+              "sport": "run",
+              "type": "long",
+              "name": "Long Run — 6 mi",
+              "description": "The weekly aerobic anchor. Time on feet, not pace.",
+              "durationMinutes": 65,
+              "distanceMeters": 9656,
+              "primaryZone": "Zone 2",
+              "humanReadable": "6 miles, all easy. Last mile can drift toward the top of Zone 2 if you feel great — never beyond.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.",
+              "completed": false
+            }
+          ]
+        }
+      ],
+      "summary": {
+        "totalHours": 3.2,
+        "bySport": {
+          "run": {
+            "sessions": 4,
+            "hours": 2.75,
+            "km": 25.7
+          },
+          "strength": {
+            "sessions": 2,
+            "hours": 0.5
+          }
+        }
+      }
+    },
+    {
+      "weekNumber": 9,
+      "startDate": "2026-11-30",
+      "endDate": "2026-12-06",
+      "phase": "Base + Quality",
+      "focus": "Steady run introduced; general strength · 23 mi",
+      "targetHours": 4.6,
+      "isRecoveryWeek": false,
+      "days": [
+        {
+          "date": "2026-11-30",
+          "dayOfWeek": "Monday",
+          "workouts": [
+            {
+              "id": "w9-mon-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Full rest. Walking is fine.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-12-01",
+          "dayOfWeek": "Tuesday",
+          "workouts": [
+            {
+              "id": "w9-tue-run",
+              "sport": "run",
+              "type": "endurance",
+              "name": "Easy 5 mi",
+              "description": "Aerobic base run.",
+              "durationMinutes": 50,
+              "distanceMeters": 8047,
+              "primaryZone": "Zone 2",
+              "humanReadable": "5 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.",
+              "completed": false
+            },
+            {
+              "id": "w9-tue-str",
+              "sport": "strength",
+              "type": "endurance",
+              "name": "Strength (after run)",
+              "description": "Folded into today's run — do it right after while warm.",
+              "durationMinutes": 20,
+              "humanReadable": "Strength (20 min, right after the run)\nGlute/hip warm-up: bridges x 12, lateral band walk x 10 each way\n2-3 rounds:\n  • Goblet squat x 10\n  • Single-leg Romanian deadlift x 8 each\n  • Rear-foot-elevated split squat x 8 each\n  • Step-up x 10 each\n  • Single-leg calf raise x 12 each\n  • Push-up x 10-15\n  • Dead bug x 10 each + side plank 30s each\nModerate load — finish feeling like you had 2-3 reps left.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-12-02",
+          "dayOfWeek": "Wednesday",
+          "workouts": [
+            {
+              "id": "w9-wed-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Rest. In Blocks 3-4, an optional 2-3 mi very easy shakeout can replace this rest day if everything feels great — never add it the week after a missed run.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-12-03",
+          "dayOfWeek": "Thursday",
+          "workouts": [
+            {
+              "id": "w9-thu-run",
+              "sport": "run",
+              "type": "tempo",
+              "name": "Steady Run — 20 min steady",
+              "description": "One controlled, moderate effort to keep some sharpness while volume builds.",
+              "durationMinutes": 60,
+              "distanceMeters": 9656,
+              "primaryZone": "Zone 3",
+              "humanReadable": "Warm-up: 1.5 mi easy\nMain: 20 min STEADY @ ~9:00-9:20/mi (Zone 3, HR ~153-160). Comfortable but purposeful — you can talk in short sentences. This is NOT tempo.\nCool-down: easy to finish 6 mi total.\n\nIf HR drifts above 160 or the knee complains, back off to easy and call it a normal run.\n\nFirst steady run of the block.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-12-04",
+          "dayOfWeek": "Friday",
+          "workouts": [
+            {
+              "id": "w9-fri-run",
+              "sport": "run",
+              "type": "endurance",
+              "name": "Easy 4 mi",
+              "description": "Aerobic base run.",
+              "durationMinutes": 40,
+              "distanceMeters": 6437,
+              "primaryZone": "Zone 2",
+              "humanReadable": "4 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.",
+              "completed": false
+            },
+            {
+              "id": "w9-fri-str",
+              "sport": "strength",
+              "type": "endurance",
+              "name": "Strength (after run)",
+              "description": "Folded into today's run — do it right after while warm.",
+              "durationMinutes": 20,
+              "humanReadable": "Knee-insurance strength (15-20 min, right after the run)\n2 rounds:\n  • Glute bridge x 15\n  • Side-lying leg raise x 12 each\n  • Clamshell (band) x 15 each\n  • Lateral band walk x 12 steps each way\n  • Slow step-down (4-6\" step) x 8 each leg — knee tracks over 2nd toe\n  • Calf raise x 15 (straight knee) + x 15 (bent knee)\n  • Plank 30-45s + side plank 20-30s each side",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-12-05",
+          "dayOfWeek": "Saturday",
+          "workouts": [
+            {
+              "id": "w9-sat-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Rest before tomorrow's long run.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-12-06",
+          "dayOfWeek": "Sunday",
+          "workouts": [
+            {
+              "id": "w9-sun-run",
+              "sport": "run",
+              "type": "long",
+              "name": "Long Run — 8 mi",
+              "description": "The weekly aerobic anchor. Time on feet, not pace.",
+              "durationMinutes": 85,
+              "distanceMeters": 12875,
+              "primaryZone": "Zone 2",
+              "humanReadable": "8 miles, all easy. Last mile can drift toward the top of Zone 2 if you feel great — never beyond.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.\nPractice fueling: water, and a gel around mile 5-6 if running 9+.",
+              "completed": false
+            }
+          ]
+        }
+      ],
+      "summary": {
+        "totalHours": 4.6,
+        "bySport": {
+          "run": {
+            "sessions": 4,
+            "hours": 3.92,
+            "km": 37
+          },
+          "strength": {
+            "sessions": 2,
+            "hours": 0.67
+          }
+        }
+      }
+    },
+    {
+      "weekNumber": 10,
+      "startDate": "2026-12-07",
+      "endDate": "2026-12-13",
+      "phase": "Base + Quality",
+      "focus": "Settle into the steady-run rhythm · 24 mi",
+      "targetHours": 4.8,
+      "isRecoveryWeek": false,
+      "days": [
+        {
+          "date": "2026-12-07",
+          "dayOfWeek": "Monday",
+          "workouts": [
+            {
+              "id": "w10-mon-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Full rest. Walking is fine.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-12-08",
+          "dayOfWeek": "Tuesday",
+          "workouts": [
+            {
+              "id": "w10-tue-run",
+              "sport": "run",
+              "type": "endurance",
+              "name": "Easy 5 mi + 4 strides",
+              "description": "Aerobic base run.",
+              "durationMinutes": 50,
+              "distanceMeters": 8047,
+              "primaryZone": "Zone 2",
+              "humanReadable": "5 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.\nAfter the run: 4 x 20s strides — quick and relaxed, not sprints. Full walk-back recovery.",
+              "completed": false
+            },
+            {
+              "id": "w10-tue-str",
+              "sport": "strength",
+              "type": "endurance",
+              "name": "Strength (after run)",
+              "description": "Folded into today's run — do it right after while warm.",
+              "durationMinutes": 20,
+              "humanReadable": "Strength (20 min, right after the run)\nGlute/hip warm-up: bridges x 12, lateral band walk x 10 each way\n2-3 rounds:\n  • Goblet squat x 10\n  • Single-leg Romanian deadlift x 8 each\n  • Rear-foot-elevated split squat x 8 each\n  • Step-up x 10 each\n  • Single-leg calf raise x 12 each\n  • Push-up x 10-15\n  • Dead bug x 10 each + side plank 30s each\nModerate load — finish feeling like you had 2-3 reps left.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-12-09",
+          "dayOfWeek": "Wednesday",
+          "workouts": [
+            {
+              "id": "w10-wed-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Rest. In Blocks 3-4, an optional 2-3 mi very easy shakeout can replace this rest day if everything feels great — never add it the week after a missed run.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-12-10",
+          "dayOfWeek": "Thursday",
+          "workouts": [
+            {
+              "id": "w10-thu-run",
+              "sport": "run",
+              "type": "tempo",
+              "name": "Steady Run — 20 min steady",
+              "description": "One controlled, moderate effort to keep some sharpness while volume builds.",
+              "durationMinutes": 60,
+              "distanceMeters": 9656,
+              "primaryZone": "Zone 3",
+              "humanReadable": "Warm-up: 1.5 mi easy\nMain: 20 min STEADY @ ~9:00-9:20/mi (Zone 3, HR ~153-160). Comfortable but purposeful — you can talk in short sentences. This is NOT tempo.\nCool-down: easy to finish 6 mi total.\n\nIf HR drifts above 160 or the knee complains, back off to easy and call it a normal run.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-12-11",
+          "dayOfWeek": "Friday",
+          "workouts": [
+            {
+              "id": "w10-fri-run",
+              "sport": "run",
+              "type": "endurance",
+              "name": "Easy 5 mi",
+              "description": "Aerobic base run.",
+              "durationMinutes": 50,
+              "distanceMeters": 8047,
+              "primaryZone": "Zone 2",
+              "humanReadable": "5 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.",
+              "completed": false
+            },
+            {
+              "id": "w10-fri-str",
+              "sport": "strength",
+              "type": "endurance",
+              "name": "Strength (after run)",
+              "description": "Folded into today's run — do it right after while warm.",
+              "durationMinutes": 20,
+              "humanReadable": "Knee-insurance strength (15-20 min, right after the run)\n2 rounds:\n  • Glute bridge x 15\n  • Side-lying leg raise x 12 each\n  • Clamshell (band) x 15 each\n  • Lateral band walk x 12 steps each way\n  • Slow step-down (4-6\" step) x 8 each leg — knee tracks over 2nd toe\n  • Calf raise x 15 (straight knee) + x 15 (bent knee)\n  • Plank 30-45s + side plank 20-30s each side",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-12-12",
+          "dayOfWeek": "Saturday",
+          "workouts": [
+            {
+              "id": "w10-sat-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Rest before tomorrow's long run.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-12-13",
+          "dayOfWeek": "Sunday",
+          "workouts": [
+            {
+              "id": "w10-sun-run",
+              "sport": "run",
+              "type": "long",
+              "name": "Long Run — 8 mi",
+              "description": "The weekly aerobic anchor. Time on feet, not pace.",
+              "durationMinutes": 85,
+              "distanceMeters": 12875,
+              "primaryZone": "Zone 2",
+              "humanReadable": "8 miles, all easy. Last mile can drift toward the top of Zone 2 if you feel great — never beyond.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.\nPractice fueling: water, and a gel around mile 5-6 if running 9+.",
+              "completed": false
+            }
+          ]
+        }
+      ],
+      "summary": {
+        "totalHours": 4.8,
+        "bySport": {
+          "run": {
+            "sessions": 4,
+            "hours": 4.08,
+            "km": 38.6
+          },
+          "strength": {
+            "sessions": 2,
+            "hours": 0.67
+          }
+        }
+      }
+    },
+    {
+      "weekNumber": 11,
+      "startDate": "2026-12-14",
+      "endDate": "2026-12-20",
+      "phase": "Base + Quality",
+      "focus": "Steady extends to 25 min · 26 mi",
+      "targetHours": 5.2,
+      "isRecoveryWeek": false,
+      "days": [
+        {
+          "date": "2026-12-14",
+          "dayOfWeek": "Monday",
+          "workouts": [
+            {
+              "id": "w11-mon-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Full rest. Walking is fine.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-12-15",
+          "dayOfWeek": "Tuesday",
+          "workouts": [
+            {
+              "id": "w11-tue-run",
+              "sport": "run",
+              "type": "endurance",
+              "name": "Easy 5 mi + 4 strides",
+              "description": "Aerobic base run.",
+              "durationMinutes": 50,
+              "distanceMeters": 8047,
+              "primaryZone": "Zone 2",
+              "humanReadable": "5 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.\nAfter the run: 4 x 20s strides — quick and relaxed, not sprints. Full walk-back recovery.",
+              "completed": false
+            },
+            {
+              "id": "w11-tue-str",
+              "sport": "strength",
+              "type": "endurance",
+              "name": "Strength (after run)",
+              "description": "Folded into today's run — do it right after while warm.",
+              "durationMinutes": 20,
+              "humanReadable": "Strength (20 min, right after the run)\nGlute/hip warm-up: bridges x 12, lateral band walk x 10 each way\n2-3 rounds:\n  • Goblet squat x 10\n  • Single-leg Romanian deadlift x 8 each\n  • Rear-foot-elevated split squat x 8 each\n  • Step-up x 10 each\n  • Single-leg calf raise x 12 each\n  • Push-up x 10-15\n  • Dead bug x 10 each + side plank 30s each\nModerate load — finish feeling like you had 2-3 reps left.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-12-16",
+          "dayOfWeek": "Wednesday",
+          "workouts": [
+            {
+              "id": "w11-wed-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Rest. In Blocks 3-4, an optional 2-3 mi very easy shakeout can replace this rest day if everything feels great — never add it the week after a missed run.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-12-17",
+          "dayOfWeek": "Thursday",
+          "workouts": [
+            {
+              "id": "w11-thu-run",
+              "sport": "run",
+              "type": "tempo",
+              "name": "Steady Run — 25 min steady",
+              "description": "One controlled, moderate effort to keep some sharpness while volume builds.",
+              "durationMinutes": 60,
+              "distanceMeters": 9656,
+              "primaryZone": "Zone 3",
+              "humanReadable": "Warm-up: 1.5 mi easy\nMain: 25 min STEADY @ ~9:00-9:20/mi (Zone 3, HR ~153-160). Comfortable but purposeful — you can talk in short sentences. This is NOT tempo.\nCool-down: easy to finish 6 mi total.\n\nIf HR drifts above 160 or the knee complains, back off to easy and call it a normal run.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-12-18",
+          "dayOfWeek": "Friday",
+          "workouts": [
+            {
+              "id": "w11-fri-run",
+              "sport": "run",
+              "type": "endurance",
+              "name": "Easy 6 mi",
+              "description": "Aerobic base run.",
+              "durationMinutes": 65,
+              "distanceMeters": 9656,
+              "primaryZone": "Zone 2",
+              "humanReadable": "6 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.",
+              "completed": false
+            },
+            {
+              "id": "w11-fri-str",
+              "sport": "strength",
+              "type": "endurance",
+              "name": "Strength (after run)",
+              "description": "Folded into today's run — do it right after while warm.",
+              "durationMinutes": 20,
+              "humanReadable": "Knee-insurance strength (15-20 min, right after the run)\n2 rounds:\n  • Glute bridge x 15\n  • Side-lying leg raise x 12 each\n  • Clamshell (band) x 15 each\n  • Lateral band walk x 12 steps each way\n  • Slow step-down (4-6\" step) x 8 each leg — knee tracks over 2nd toe\n  • Calf raise x 15 (straight knee) + x 15 (bent knee)\n  • Plank 30-45s + side plank 20-30s each side",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-12-19",
+          "dayOfWeek": "Saturday",
+          "workouts": [
+            {
+              "id": "w11-sat-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Rest before tomorrow's long run.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-12-20",
+          "dayOfWeek": "Sunday",
+          "workouts": [
+            {
+              "id": "w11-sun-run",
+              "sport": "run",
+              "type": "long",
+              "name": "Long Run — 9 mi",
+              "description": "The weekly aerobic anchor. Time on feet, not pace.",
+              "durationMinutes": 95,
+              "distanceMeters": 14484,
+              "primaryZone": "Zone 2",
+              "humanReadable": "9 miles, all easy. Last mile can drift toward the top of Zone 2 if you feel great — never beyond.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.\nPractice fueling: water, and a gel around mile 5-6 if running 9+.",
+              "completed": false
+            }
+          ]
+        }
+      ],
+      "summary": {
+        "totalHours": 5.2,
+        "bySport": {
+          "run": {
+            "sessions": 4,
+            "hours": 4.5,
+            "km": 41.8
+          },
+          "strength": {
+            "sessions": 2,
+            "hours": 0.67
+          }
+        }
+      }
+    },
+    {
+      "weekNumber": 12,
+      "startDate": "2026-12-21",
+      "endDate": "2026-12-27",
+      "phase": "Base + Quality",
+      "focus": "FLEX WEEK — Christmas, no steady run · 19 mi",
+      "targetHours": 3.8,
+      "isRecoveryWeek": true,
+      "days": [
+        {
+          "date": "2026-12-21",
+          "dayOfWeek": "Monday",
+          "workouts": [
+            {
+              "id": "w12-mon-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Full rest. Walking is fine.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-12-22",
+          "dayOfWeek": "Tuesday",
+          "workouts": [
+            {
+              "id": "w12-tue-run",
+              "sport": "run",
+              "type": "endurance",
+              "name": "Easy 4 mi",
+              "description": "Flex week: any one run can be dropped.",
+              "durationMinutes": 40,
+              "distanceMeters": 6437,
+              "primaryZone": "Zone 2",
+              "humanReadable": "4 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.\n\nFlex week: any one run can be dropped.",
+              "completed": false
+            },
+            {
+              "id": "w12-tue-str",
+              "sport": "strength",
+              "type": "endurance",
+              "name": "Strength (after run)",
+              "description": "Folded into today's run — do it right after while warm.",
+              "durationMinutes": 15,
+              "humanReadable": "Flex-week strength (10-15 min): one round of the usual routine at lighter effort. Skip entirely if life is busy — this is the week that absorbs it.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-12-23",
+          "dayOfWeek": "Wednesday",
+          "workouts": [
+            {
+              "id": "w12-wed-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Rest. In Blocks 3-4, an optional 2-3 mi very easy shakeout can replace this rest day if everything feels great — never add it the week after a missed run.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-12-24",
+          "dayOfWeek": "Thursday",
+          "workouts": [
+            {
+              "id": "w12-thu-run",
+              "sport": "run",
+              "type": "endurance",
+              "name": "Easy 5 mi + 4 strides",
+              "description": "Christmas Eve. If the day is packed, shorten it or drop the strides — fine.",
+              "durationMinutes": 50,
+              "distanceMeters": 8047,
+              "primaryZone": "Zone 2",
+              "humanReadable": "5 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.\nAfter the run: 4 x 20s strides — quick and relaxed, not sprints. Full walk-back recovery.\n\nChristmas Eve. If the day is packed, shorten it or drop the strides — fine.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-12-25",
+          "dayOfWeek": "Friday",
+          "workouts": [
+            {
+              "id": "w12-fri-run",
+              "sport": "run",
+              "type": "endurance",
+              "name": "Easy 3 mi",
+              "description": "Christmas Day — skip or shorten freely; if you skip it, don't make it up.",
+              "durationMinutes": 30,
+              "distanceMeters": 4828,
+              "primaryZone": "Zone 2",
+              "humanReadable": "3 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.\n\nChristmas Day — skip or shorten freely; if you skip it, don't make it up.",
+              "completed": false
+            },
+            {
+              "id": "w12-fri-str",
+              "sport": "strength",
+              "type": "endurance",
+              "name": "Strength (after run)",
+              "description": "Folded into today's run — do it right after while warm.",
+              "durationMinutes": 15,
+              "humanReadable": "Flex-week strength (10-15 min): one round of the usual routine at lighter effort. Skip entirely if life is busy — this is the week that absorbs it.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-12-26",
+          "dayOfWeek": "Saturday",
+          "workouts": [
+            {
+              "id": "w12-sat-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Rest before tomorrow's long run.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-12-27",
+          "dayOfWeek": "Sunday",
+          "workouts": [
+            {
+              "id": "w12-sun-run",
+              "sport": "run",
+              "type": "long",
+              "name": "Long Run — 7 mi",
+              "description": "The weekly aerobic anchor. Time on feet, not pace.",
+              "durationMinutes": 75,
+              "distanceMeters": 11265,
+              "primaryZone": "Zone 2",
+              "humanReadable": "7 miles, all easy. Last mile can drift toward the top of Zone 2 if you feel great — never beyond.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.",
+              "completed": false
+            }
+          ]
+        }
+      ],
+      "summary": {
+        "totalHours": 3.8,
+        "bySport": {
+          "run": {
+            "sessions": 4,
+            "hours": 3.25,
+            "km": 30.6
+          },
+          "strength": {
+            "sessions": 2,
+            "hours": 0.5
+          }
+        }
+      }
+    },
+    {
+      "weekNumber": 13,
+      "startDate": "2026-12-28",
+      "endDate": "2027-01-03",
+      "phase": "Consolidate",
+      "focus": "New Year week · 27 mi",
+      "targetHours": 5.2,
+      "isRecoveryWeek": false,
+      "days": [
+        {
+          "date": "2026-12-28",
+          "dayOfWeek": "Monday",
+          "workouts": [
+            {
+              "id": "w13-mon-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Full rest. Walking is fine.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-12-29",
+          "dayOfWeek": "Tuesday",
+          "workouts": [
+            {
+              "id": "w13-tue-run",
+              "sport": "run",
+              "type": "endurance",
+              "name": "Easy 6 mi + 4 strides",
+              "description": "Aerobic base run.",
+              "durationMinutes": 65,
+              "distanceMeters": 9656,
+              "primaryZone": "Zone 2",
+              "humanReadable": "6 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.\nAfter the run: 4 x 20s strides — quick and relaxed, not sprints. Full walk-back recovery.",
+              "completed": false
+            },
+            {
+              "id": "w13-tue-str",
+              "sport": "strength",
+              "type": "endurance",
+              "name": "Strength (after run)",
+              "description": "Folded into today's run — do it right after while warm.",
+              "durationMinutes": 20,
+              "humanReadable": "Strength (20 min, right after the run)\nGlute/hip warm-up: bridges x 12, lateral band walk x 10 each way\n2-3 rounds:\n  • Goblet squat x 10\n  • Single-leg Romanian deadlift x 8 each\n  • Rear-foot-elevated split squat x 8 each\n  • Step-up x 10 each\n  • Single-leg calf raise x 12 each\n  • Push-up x 10-15\n  • Dead bug x 10 each + side plank 30s each\nModerate load — finish feeling like you had 2-3 reps left.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-12-30",
+          "dayOfWeek": "Wednesday",
+          "workouts": [
+            {
+              "id": "w13-wed-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Rest. In Blocks 3-4, an optional 2-3 mi very easy shakeout can replace this rest day if everything feels great — never add it the week after a missed run.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-12-31",
+          "dayOfWeek": "Thursday",
+          "workouts": [
+            {
+              "id": "w13-thu-run",
+              "sport": "run",
+              "type": "tempo",
+              "name": "Steady Run — 25 min steady",
+              "description": "One controlled, moderate effort to keep some sharpness while volume builds.",
+              "durationMinutes": 70,
+              "distanceMeters": 11265,
+              "primaryZone": "Zone 3",
+              "humanReadable": "Warm-up: 1.5 mi easy\nMain: 25 min STEADY @ ~9:00-9:20/mi (Zone 3, HR ~153-160). Comfortable but purposeful — you can talk in short sentences. This is NOT tempo.\nCool-down: easy to finish 7 mi total.\n\nIf HR drifts above 160 or the knee complains, back off to easy and call it a normal run.\n\nNew Year's Eve. Go earlier in the day if the evening is busy; if it's packed, run it all easy — fine.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2027-01-01",
+          "dayOfWeek": "Friday",
+          "workouts": [
+            {
+              "id": "w13-fri-run",
+              "sport": "run",
+              "type": "endurance",
+              "name": "Easy 5 mi",
+              "description": "New Year's Day — shorten or skip freely; don't make it up.",
+              "durationMinutes": 50,
+              "distanceMeters": 8047,
+              "primaryZone": "Zone 2",
+              "humanReadable": "5 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.\n\nNew Year's Day — shorten or skip freely; don't make it up.",
+              "completed": false
+            },
+            {
+              "id": "w13-fri-str",
+              "sport": "strength",
+              "type": "endurance",
+              "name": "Strength (after run)",
+              "description": "Folded into today's run — do it right after while warm.",
+              "durationMinutes": 15,
+              "humanReadable": "Flex-week strength (10-15 min): one round of the usual routine at lighter effort. Skip entirely if life is busy — this is the week that absorbs it.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2027-01-02",
+          "dayOfWeek": "Saturday",
+          "workouts": [
+            {
+              "id": "w13-sat-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Rest before tomorrow's long run.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2027-01-03",
+          "dayOfWeek": "Sunday",
+          "workouts": [
+            {
+              "id": "w13-sun-run",
+              "sport": "run",
+              "type": "long",
+              "name": "Long Run — 9 mi",
+              "description": "The weekly aerobic anchor. Time on feet, not pace.",
+              "durationMinutes": 95,
+              "distanceMeters": 14484,
+              "primaryZone": "Zone 2",
+              "humanReadable": "9 miles, all easy. Last mile can drift toward the top of Zone 2 if you feel great — never beyond.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.\nPractice fueling: water, and a gel around mile 5-6 if running 9+.",
+              "completed": false
+            }
+          ]
+        }
+      ],
+      "summary": {
+        "totalHours": 5.2,
+        "bySport": {
+          "run": {
+            "sessions": 4,
+            "hours": 4.67,
+            "km": 43.4
+          },
+          "strength": {
+            "sessions": 2,
+            "hours": 0.58
+          }
+        }
+      }
+    },
+    {
+      "weekNumber": 14,
+      "startDate": "2027-01-04",
+      "endDate": "2027-01-10",
+      "phase": "Consolidate",
+      "focus": "First 10-miler · 28 mi",
+      "targetHours": 5.4,
+      "isRecoveryWeek": false,
+      "days": [
+        {
+          "date": "2027-01-04",
+          "dayOfWeek": "Monday",
+          "workouts": [
+            {
+              "id": "w14-mon-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Full rest. Walking is fine.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2027-01-05",
+          "dayOfWeek": "Tuesday",
+          "workouts": [
+            {
+              "id": "w14-tue-run",
+              "sport": "run",
+              "type": "endurance",
+              "name": "Easy 6 mi + 4 strides",
+              "description": "Aerobic base run.",
+              "durationMinutes": 65,
+              "distanceMeters": 9656,
+              "primaryZone": "Zone 2",
+              "humanReadable": "6 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.\nAfter the run: 4 x 20s strides — quick and relaxed, not sprints. Full walk-back recovery.",
+              "completed": false
+            },
+            {
+              "id": "w14-tue-str",
+              "sport": "strength",
+              "type": "endurance",
+              "name": "Strength (after run)",
+              "description": "Folded into today's run — do it right after while warm.",
+              "durationMinutes": 20,
+              "humanReadable": "Strength (20 min, right after the run)\nGlute/hip warm-up: bridges x 12, lateral band walk x 10 each way\n2-3 rounds:\n  • Goblet squat x 10\n  • Single-leg Romanian deadlift x 8 each\n  • Rear-foot-elevated split squat x 8 each\n  • Step-up x 10 each\n  • Single-leg calf raise x 12 each\n  • Push-up x 10-15\n  • Dead bug x 10 each + side plank 30s each\nModerate load — finish feeling like you had 2-3 reps left.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2027-01-06",
+          "dayOfWeek": "Wednesday",
+          "workouts": [
+            {
+              "id": "w14-wed-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Rest. In Blocks 3-4, an optional 2-3 mi very easy shakeout can replace this rest day if everything feels great — never add it the week after a missed run.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2027-01-07",
+          "dayOfWeek": "Thursday",
+          "workouts": [
+            {
+              "id": "w14-thu-run",
+              "sport": "run",
+              "type": "tempo",
+              "name": "Steady Run — 30 min steady",
+              "description": "One controlled, moderate effort to keep some sharpness while volume builds.",
+              "durationMinutes": 70,
+              "distanceMeters": 11265,
+              "primaryZone": "Zone 3",
+              "humanReadable": "Warm-up: 1.5 mi easy\nMain: 30 min STEADY @ ~9:00-9:20/mi (Zone 3, HR ~153-160). Comfortable but purposeful — you can talk in short sentences. This is NOT tempo.\nCool-down: easy to finish 7 mi total.\n\nIf HR drifts above 160 or the knee complains, back off to easy and call it a normal run.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2027-01-08",
+          "dayOfWeek": "Friday",
+          "workouts": [
+            {
+              "id": "w14-fri-run",
+              "sport": "run",
+              "type": "endurance",
+              "name": "Easy 5 mi",
+              "description": "Aerobic base run.",
+              "durationMinutes": 50,
+              "distanceMeters": 8047,
+              "primaryZone": "Zone 2",
+              "humanReadable": "5 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.",
+              "completed": false
+            },
+            {
+              "id": "w14-fri-str",
+              "sport": "strength",
+              "type": "endurance",
+              "name": "Strength (after run)",
+              "description": "Folded into today's run — do it right after while warm.",
+              "durationMinutes": 15,
+              "humanReadable": "Flex-week strength (10-15 min): one round of the usual routine at lighter effort. Skip entirely if life is busy — this is the week that absorbs it.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2027-01-09",
+          "dayOfWeek": "Saturday",
+          "workouts": [
+            {
+              "id": "w14-sat-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Rest before tomorrow's long run.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2027-01-10",
+          "dayOfWeek": "Sunday",
+          "workouts": [
+            {
+              "id": "w14-sun-run",
+              "sport": "run",
+              "type": "long",
+              "name": "Long Run — 10 mi",
+              "description": "The weekly aerobic anchor. Time on feet, not pace.",
+              "durationMinutes": 105,
+              "distanceMeters": 16093,
+              "primaryZone": "Zone 2",
+              "humanReadable": "10 miles, all easy. Last mile can drift toward the top of Zone 2 if you feel great — never beyond.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.\nPractice fueling: water, and a gel around mile 5-6 if running 9+.",
+              "completed": false
+            }
+          ]
+        }
+      ],
+      "summary": {
+        "totalHours": 5.4,
+        "bySport": {
+          "run": {
+            "sessions": 4,
+            "hours": 4.83,
+            "km": 45.1
+          },
+          "strength": {
+            "sessions": 2,
+            "hours": 0.58
+          }
+        }
+      }
+    },
+    {
+      "weekNumber": 15,
+      "startDate": "2027-01-11",
+      "endDate": "2027-01-17",
+      "phase": "Consolidate",
+      "focus": "Peak week (~30 mi) · 30 mi",
+      "targetHours": 5.9,
+      "isRecoveryWeek": false,
+      "days": [
+        {
+          "date": "2027-01-11",
+          "dayOfWeek": "Monday",
+          "workouts": [
+            {
+              "id": "w15-mon-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Full rest. Walking is fine.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2027-01-12",
+          "dayOfWeek": "Tuesday",
+          "workouts": [
+            {
+              "id": "w15-tue-run",
+              "sport": "run",
+              "type": "endurance",
+              "name": "Easy 7 mi + 4 strides",
+              "description": "Aerobic base run.",
+              "durationMinutes": 75,
+              "distanceMeters": 11265,
+              "primaryZone": "Zone 2",
+              "humanReadable": "7 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.\nAfter the run: 4 x 20s strides — quick and relaxed, not sprints. Full walk-back recovery.",
+              "completed": false
+            },
+            {
+              "id": "w15-tue-str",
+              "sport": "strength",
+              "type": "endurance",
+              "name": "Strength (after run)",
+              "description": "Folded into today's run — do it right after while warm.",
+              "durationMinutes": 20,
+              "humanReadable": "Strength (20 min, right after the run)\nGlute/hip warm-up: bridges x 12, lateral band walk x 10 each way\n2-3 rounds:\n  • Goblet squat x 10\n  • Single-leg Romanian deadlift x 8 each\n  • Rear-foot-elevated split squat x 8 each\n  • Step-up x 10 each\n  • Single-leg calf raise x 12 each\n  • Push-up x 10-15\n  • Dead bug x 10 each + side plank 30s each\nModerate load — finish feeling like you had 2-3 reps left.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2027-01-13",
+          "dayOfWeek": "Wednesday",
+          "workouts": [
+            {
+              "id": "w15-wed-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Rest. In Blocks 3-4, an optional 2-3 mi very easy shakeout can replace this rest day if everything feels great — never add it the week after a missed run.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2027-01-14",
+          "dayOfWeek": "Thursday",
+          "workouts": [
+            {
+              "id": "w15-thu-run",
+              "sport": "run",
+              "type": "tempo",
+              "name": "Steady Run — 30 min steady",
+              "description": "One controlled, moderate effort to keep some sharpness while volume builds.",
+              "durationMinutes": 70,
+              "distanceMeters": 11265,
+              "primaryZone": "Zone 3",
+              "humanReadable": "Warm-up: 1.5 mi easy\nMain: 30 min STEADY @ ~9:00-9:20/mi (Zone 3, HR ~153-160). Comfortable but purposeful — you can talk in short sentences. This is NOT tempo.\nCool-down: easy to finish 7 mi total.\n\nIf HR drifts above 160 or the knee complains, back off to easy and call it a normal run.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2027-01-15",
+          "dayOfWeek": "Friday",
+          "workouts": [
+            {
+              "id": "w15-fri-run",
+              "sport": "run",
+              "type": "endurance",
+              "name": "Easy 6 mi",
+              "description": "Aerobic base run.",
+              "durationMinutes": 65,
+              "distanceMeters": 9656,
+              "primaryZone": "Zone 2",
+              "humanReadable": "6 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.",
+              "completed": false
+            },
+            {
+              "id": "w15-fri-str",
+              "sport": "strength",
+              "type": "endurance",
+              "name": "Strength (after run)",
+              "description": "Folded into today's run — do it right after while warm.",
+              "durationMinutes": 20,
+              "humanReadable": "Knee-insurance strength (15-20 min, right after the run)\n2 rounds:\n  • Glute bridge x 15\n  • Side-lying leg raise x 12 each\n  • Clamshell (band) x 15 each\n  • Lateral band walk x 12 steps each way\n  • Slow step-down (4-6\" step) x 8 each leg — knee tracks over 2nd toe\n  • Calf raise x 15 (straight knee) + x 15 (bent knee)\n  • Plank 30-45s + side plank 20-30s each side",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2027-01-16",
+          "dayOfWeek": "Saturday",
+          "workouts": [
+            {
+              "id": "w15-sat-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Rest before tomorrow's long run.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2027-01-17",
+          "dayOfWeek": "Sunday",
+          "workouts": [
+            {
+              "id": "w15-sun-run",
+              "sport": "run",
+              "type": "long",
+              "name": "Long Run — 10 mi",
+              "description": "The weekly aerobic anchor. Time on feet, not pace.",
+              "durationMinutes": 105,
+              "distanceMeters": 16093,
+              "primaryZone": "Zone 2",
+              "humanReadable": "10 miles, all easy. Last mile can drift toward the top of Zone 2 if you feel great — never beyond.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.\nPractice fueling: water, and a gel around mile 5-6 if running 9+.\n\nPeak long run of the block. If this and the week feel smooth, the knees are ready for mid-30s mileage in the spring.",
+              "completed": false
+            }
+          ]
+        }
+      ],
+      "summary": {
+        "totalHours": 5.9,
+        "bySport": {
+          "run": {
+            "sessions": 4,
+            "hours": 5.25,
+            "km": 48.3
+          },
+          "strength": {
+            "sessions": 2,
+            "hours": 0.67
+          }
+        }
+      }
+    },
+    {
+      "weekNumber": 16,
+      "startDate": "2027-01-18",
+      "endDate": "2027-01-24",
+      "phase": "Consolidate",
+      "focus": "FLEX WEEK + 5K time trial · 20 mi",
+      "targetHours": 3.4,
+      "isRecoveryWeek": true,
+      "days": [
+        {
+          "date": "2027-01-18",
+          "dayOfWeek": "Monday",
+          "workouts": [
+            {
+              "id": "w16-mon-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Full rest. Walking is fine.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2027-01-19",
+          "dayOfWeek": "Tuesday",
+          "workouts": [
+            {
+              "id": "w16-tue-run",
+              "sport": "run",
+              "type": "endurance",
+              "name": "Easy 5 mi + 4 strides",
+              "description": "Aerobic base run.",
+              "durationMinutes": 50,
+              "distanceMeters": 8047,
+              "primaryZone": "Zone 2",
+              "humanReadable": "5 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.\nAfter the run: 4 x 20s strides — quick and relaxed, not sprints. Full walk-back recovery.",
+              "completed": false
+            },
+            {
+              "id": "w16-tue-str",
+              "sport": "strength",
+              "type": "endurance",
+              "name": "Strength (after run)",
+              "description": "Folded into today's run — do it right after while warm.",
+              "durationMinutes": 15,
+              "humanReadable": "Flex-week strength (10-15 min): one round of the usual routine at lighter effort. Skip entirely if life is busy — this is the week that absorbs it.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2027-01-20",
+          "dayOfWeek": "Wednesday",
+          "workouts": [
+            {
+              "id": "w16-wed-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Rest. In Blocks 3-4, an optional 2-3 mi very easy shakeout can replace this rest day if everything feels great — never add it the week after a missed run.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2027-01-21",
+          "dayOfWeek": "Thursday",
+          "workouts": [
+            {
+              "id": "w16-thu-run",
+              "sport": "run",
+              "type": "endurance",
+              "name": "Easy 4 mi + 4 strides",
+              "description": "Keep it short and crisp — time trial Saturday.",
+              "durationMinutes": 40,
+              "distanceMeters": 6437,
+              "primaryZone": "Zone 2",
+              "humanReadable": "4 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.\nAfter the run: 4 x 20s strides — quick and relaxed, not sprints. Full walk-back recovery.\n\nKeep it short and crisp — time trial Saturday.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2027-01-22",
+          "dayOfWeek": "Friday",
+          "workouts": [
+            {
+              "id": "w16-fri-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Rest before the time trial.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2027-01-23",
+          "dayOfWeek": "Saturday",
+          "workouts": [
+            {
+              "id": "w16-sat-run",
+              "sport": "run",
+              "type": "race",
+              "name": "🏁 5K Time Trial — Benchmark",
+              "description": "End-of-block benchmark. Sets your zones for whatever comes next — spring race build or another base block.",
+              "durationMinutes": 50,
+              "distanceMeters": 9656,
+              "primaryZone": "Race",
+              "humanReadable": "Flat route or track. Same route you'd repeat in the future if possible.\n\nWarm-up: 1.5 mi easy + 4 x 20s strides\n5K: even effort. Mile 1 slightly conservative (~8:00-8:15), mile 2 settle, mile 3 go.\nCool-down: 1.5 mi easy walk/jog\n\n📝 Record: finish time, avg HR, max HR, how the knees felt. Share it and we'll recalibrate everything.\nReference: May 2026 5K was 26:33. The 1:54 half predicts roughly 25:00-25:30 today.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2027-01-24",
+          "dayOfWeek": "Sunday",
+          "workouts": [
+            {
+              "id": "w16-sun-run",
+              "sport": "run",
+              "type": "endurance",
+              "name": "Easy 5 mi",
+              "description": "Easy shakeout after the time trial. Then we look at the numbers and decide what's next: spring race build, another base block, or maintenance.",
+              "durationMinutes": 50,
+              "distanceMeters": 8047,
+              "primaryZone": "Zone 2",
+              "humanReadable": "5 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.\n\nEasy shakeout after the time trial. Then we look at the numbers and decide what's next: spring race build, another base block, or maintenance.",
+              "completed": false
+            }
+          ]
+        }
+      ],
+      "summary": {
+        "totalHours": 3.4,
+        "bySport": {
+          "run": {
+            "sessions": 4,
+            "hours": 3.17,
+            "km": 32.2
+          },
+          "strength": {
+            "sessions": 1,
+            "hours": 0.25
+          }
+        }
+      }
+    }
+  ],
+  "raceStrategy": {
+    "event": {
+      "name": "5K Time Trial (benchmark)",
+      "date": "2027-01-23",
+      "type": "5k",
+      "distances": {
+        "run": 5
+      }
+    },
+    "pacing": {
+      "run": {
+        "targetPace": "Even effort; mile 1 ~8:00-8:15",
+        "notes": "Benchmark, not a race. Record time, avg HR, knee feel."
+      }
+    },
+    "nutrition": {
+      "preRace": "Normal breakfast 2-3 hr before",
+      "during": {
+        "carbsPerHour": 0,
+        "fluidPerHour": "none needed",
+        "products": []
+      },
+      "notes": "Nothing special for a 5K."
+    },
+    "taper": {
+      "startDate": "2027-01-18",
+      "volumeReduction": 33,
+      "notes": "Week 16 is a flex week — you'll arrive fresh."
+    }
+  }
 }

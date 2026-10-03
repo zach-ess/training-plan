@@ -88,6 +88,126 @@ function toWorkout(raw: unknown): Workout | null {
   return workout;
 }
 
+// Claude Coach format (2026-10-03) -- the plan generator Zach actually uses
+// emits `weeks[].days[].workouts[]` (one entry per session, with a lowercase
+// `sport`, numeric `durationMinutes`/`distanceMeters`, and `rest` entries for
+// rest days), not this app's flat `workouts[]`. Rather than requiring a
+// hand-converted copy of every new plan, `parsePlan` reads that shape too and
+// folds it down into the same flat `Workout[]` everything downstream already
+// consumes -- so this file stays the only place that knows any raw shape.
+
+/** Coach `sport` values mapped onto this app's type presets (the same five
+ * `WorkoutEditForm`/`computeRollup` use). Anything unmapped is passed through
+ * capitalized, which `computeRollup` then buckets as "Other". */
+const COACH_SPORT_TYPES: Record<string, string> = {
+  run: 'Run',
+  bike: 'Bike',
+  strength: 'Lift',
+  mobility: 'Mobility',
+  stretch: 'Stretch',
+};
+
+const METERS_PER_MILE = 1609.344;
+
+interface CoachSession {
+  sport: string;
+  minutes?: number;
+  meters?: number;
+}
+
+function toCoachSession(raw: unknown): CoachSession | null {
+  if (!isRecord(raw) || typeof raw.sport !== 'string' || raw.sport === 'rest') {
+    return null;
+  }
+  const session: CoachSession = { sport: raw.sport };
+  if (typeof raw.durationMinutes === 'number' && raw.durationMinutes > 0) {
+    session.minutes = raw.durationMinutes;
+  }
+  if (typeof raw.distanceMeters === 'number' && raw.distanceMeters > 0) {
+    session.meters = raw.distanceMeters;
+  }
+  return session;
+}
+
+function formatDistance(meters: number, useMiles: boolean): string {
+  const value = useMiles ? meters / METERS_PER_MILE : meters / 1000;
+  // One decimal at most, trailing ".0" dropped -- "3 mi", "13.1 mi".
+  return `${Math.round(value * 10) / 10} ${useMiles ? 'mi' : 'km'}`;
+}
+
+/** Folds one Coach day's sessions into the single Workout this app keys by
+ * date (AD-1 -- one LogEntry per date, so one Workout per date too). The
+ * first session is the day's primary and supplies `type`; any further
+ * sessions (e.g. strength after a run) are appended to `duration` as
+ * "+ 20 min strength" so they stay visible without a second row. Distance
+ * sums every session that has one. Rest-only days produce no Workout. */
+function toWorkoutFromCoachDay(date: string, rawSessions: unknown, useMiles: boolean): Workout | null {
+  if (!Array.isArray(rawSessions)) {
+    return null;
+  }
+  const sessions = rawSessions.map(toCoachSession).filter((s): s is CoachSession => s !== null);
+  if (sessions.length === 0) {
+    return null;
+  }
+
+  const [primary, ...extras] = sessions;
+  const workout: Workout = {
+    date,
+    type: COACH_SPORT_TYPES[primary.sport] ?? primary.sport.charAt(0).toUpperCase() + primary.sport.slice(1),
+  };
+
+  const durationParts: string[] = [];
+  if (primary.minutes !== undefined) {
+    durationParts.push(`${primary.minutes} min`);
+  }
+  for (const extra of extras) {
+    if (extra.minutes !== undefined) {
+      durationParts.push(`${extra.minutes} min ${extra.sport}`);
+    }
+  }
+  if (durationParts.length > 0) {
+    workout.duration = durationParts.join(' + ');
+  }
+
+  const meters = sessions.reduce((sum, s) => sum + (s.meters ?? 0), 0);
+  if (meters > 0) {
+    workout.distance = formatDistance(meters, useMiles);
+  }
+  return workout;
+}
+
+/** Reads a Claude Coach plan's `weeks[].days[]` into flat Workouts, routing
+ * each day's `date` through the same `toWorkout` validation the flat shape
+ * uses so a malformed date is dropped (with its warning) identically. */
+function parseCoachPlan(raw: Record<string, unknown>, weeks: unknown[]): Plan {
+  const preferences = isRecord(raw.preferences) ? raw.preferences : {};
+  const useMiles = preferences.run !== 'km';
+
+  const workouts: Workout[] = [];
+  for (const week of weeks) {
+    if (!isRecord(week) || !Array.isArray(week.days)) {
+      continue;
+    }
+    for (const day of week.days) {
+      if (!isRecord(day)) {
+        continue;
+      }
+      const folded = toWorkoutFromCoachDay(String(day.date), day.workouts, useMiles);
+      const workout = folded && toWorkout(folded);
+      if (workout) {
+        workouts.push(workout);
+      }
+    }
+  }
+
+  const plan: Plan = { workouts };
+  const meta = isRecord(raw.meta) ? raw.meta : {};
+  if (typeof meta.event === 'string') {
+    plan.planName = meta.event;
+  }
+  return plan;
+}
+
 /**
  * Normalizes `planStore.plan` (opaque per Story 1.4) into a usable `Plan`.
  * Any shape mismatch -- not an object, `workouts` missing/not an array, or
@@ -95,8 +215,15 @@ function toWorkout(raw: unknown): Workout | null {
  * array with the bad entries dropped) rather than throwing, so Home's
  * `'loaded'` panel can never crash on an unexpected Plan shape (Story 1.6's
  * error boundary doesn't exist yet).
+ *
+ * Accepts either this app's own flat `workouts[]` shape or a Claude Coach
+ * plan's `weeks[]` shape (see `parseCoachPlan` above). A file carrying both
+ * uses the flat `workouts[]`, so an explicit hand-written list always wins.
  */
 export function parsePlan(raw: unknown): Plan {
+  if (isRecord(raw) && !Array.isArray(raw.workouts) && Array.isArray(raw.weeks)) {
+    return parseCoachPlan(raw, raw.weeks);
+  }
   if (!isRecord(raw) || !Array.isArray(raw.workouts)) {
     return { workouts: [] };
   }

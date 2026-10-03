@@ -76,55 +76,42 @@ are all rooted at `/training-plan/` -- do not change this to `/` unless the depl
 target itself changes to a root site.
 
 Deploy replaces that repo's tracked contents with the freshly built `dist/` output
-in place (it does not stand up a new repo or a new Pages site):
+in place -- **except `plan.json`**, which is kept as-is. The live `plan.json` is
+the source of truth for the training plan and is updated on its own (no rebuild
+needed, AD-5); a deploy must never overwrite it with `public/plan.json`, which is
+only a local-development copy.
+
+Pushing uses the GitHub CLI's stored login (`gh auth login` once, then
+`gh auth setup-git`), so no token ever goes into a remote URL or shell history.
+Paths below assume this project at `C:\Users\zache\code\training-plan-app\training-plan-app`
+and a clone of the `main` branch at `C:\Users\zache\code\training-plan` (Git Bash):
 
 ```bash
 set -euo pipefail
+APP=/c/Users/zache/code/training-plan-app/training-plan-app
+SITE=/c/Users/zache/code/training-plan
 
-# 1. Build
+# 1. Check and build
+cd "$APP"
+npm run check
 npm run build
 
-# Guard: fail loudly rather than proceed with a deploy if dist/ is missing
-# or empty (e.g. the build step above failed silently). Checked immediately
-# after the build, before the target clone is touched at all -- so a bad
-# build never risks the destructive steps below.
-if [ -z "$(ls -A /path/to/training-plan-app/dist 2>/dev/null)" ]; then
+# Guard: never touch the site clone if the build produced nothing.
+if [ -z "$(ls -A "$APP/dist" 2>/dev/null)" ]; then
   echo "ERROR: dist/ is missing or empty -- aborting deploy" >&2
   exit 1
 fi
 
-# 2. Clone the existing target repo (or, if you already have it checked out
-#    elsewhere, cd into it and skip this step)
-git clone https://github.com/zach-ess/training-plan.git /tmp/training-plan-deploy
-cd /tmp/training-plan-deploy
+# 2. Bring the site clone up to date
+cd "$SITE"
+git pull --ff-only origin main
 
-# 3. Use the PAT for this push only -- set it on the remote, push, then
-#    immediately reset the remote back to the plain HTTPS URL so the token
-#    does not linger in .git/config. Never commit the PAT itself, and never
-#    leave it configured on the remote beyond this one push.
-#    The command below also lands in your shell history and briefly in `ps`
-#    output since the token is a literal argument. Prefix it with a leading
-#    space if your shell has HISTCONTROL/HISTIGNORE set to ignore
-#    space-prefixed commands (bash/zsh default `ignorespace`/`ignoreboth`),
-#    or delete it from your shell history afterward (e.g. `history -d`).
-#    Treat the PAT as burned either way: revoke/rotate it immediately after
-#    this push, even if history is cleared.
-#    The trap below guarantees the remote gets reset back to the plain HTTPS
-#    URL no matter how the script exits from here on -- a successful push, a
-#    failed push, or any other error -- so the PAT never lingers in
-#    .git/config even on a failure path.
-trap 'git remote set-url origin https://github.com/zach-ess/training-plan.git' EXIT
-git remote set-url origin "https://<PAT>@github.com/zach-ess/training-plan.git"
-
-# 4. Replace all tracked files with the new build output and push
-git rm -rf --ignore-unmatch .
-cp -r /path/to/training-plan-app/dist/. .
+# 3. Replace every tracked file except plan.json with the new build, then push
+git ls-files | grep -vx plan.json | xargs git rm -q --
+find "$APP/dist" -mindepth 1 -maxdepth 1 ! -name plan.json -exec cp -r {} . \;
 git add -A
-git commit -m "Deploy: rebuild from training-plan-app"
+git commit -m "Deploy: rebuild from training-plan-app $(git -C "$APP" rev-parse --short HEAD)"
 git push origin main
-
-# 5. Nothing to do here -- the trap set in step 3 already reset the remote
-#    as this script exits, whether or not the push succeeded.
 ```
 
 After pushing, verify on an Android phone in Chrome at
@@ -147,7 +134,7 @@ src/
   main.ts
   vite-env.d.ts    # Vite client type references (import.meta.env, asset imports)
 public/
-  plan.json        # Plan data, fetched separately from app code
+  plan.json        # Local-dev copy of the plan (Claude Coach or flat format) -- never deployed over the live one
   favicon.svg
   pwa-192x192.png  # PWA manifest icon
   pwa-512x512.png  # PWA manifest icon (also used as the maskable icon)
