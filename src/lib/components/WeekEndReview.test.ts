@@ -40,13 +40,18 @@ const WEEK_5 = '2027-04-04';
 const WEEK_6 = '2027-04-11';
 const FIXED_TODAY = '2027-04-20';
 
+// Story 4.3 -- adjustable per test (reset after each) so a review can be
+// rendered on its own Sunday as well as late.
+const today = vi.hoisted(() => ({ iso: '2027-04-20' }));
+
 vi.mock('../domain/date', async (importOriginal) => {
   const actual = await importOriginal<typeof import('../domain/date')>();
-  return { ...actual, getTodayIso: () => FIXED_TODAY };
+  return { ...actual, getTodayIso: () => today.iso };
 });
 
 afterEach(() => {
   cleanup();
+  today.iso = FIXED_TODAY;
 });
 
 function setLoadedPlan(workouts: Workout[]) {
@@ -286,5 +291,88 @@ describe('WeekEndReview -- I/O matrix (read-only, reopening a saved week)', () =
     expect(queryByRole('button', { name: 'Save' })).toBeNull();
     expect(queryByRole('alert')).toBeNull();
     expect(getByRole('button', { name: '← Back' })).toBeTruthy();
+  });
+});
+
+// Story 4.3 -- a late Review (its Sunday already past) evaluates Streak and
+// Days missed as of the end of that Sunday, not today (AD-2, late reviews).
+// Fixture: Sunday 2027-02-28 reviewed on FIXED_TODAY (2027-04-20). A missed
+// workout AFTER that Sunday (Tue 03-02) breaks today's streak to 0, while the
+// streak at the end of that Sunday was 2 (Fri 02-26 + Sun 02-28; Tue 02-23 was
+// missed, which also makes Days missed = 1 for that week).
+describe('WeekEndReview -- late review numbers (Story 4.3)', () => {
+  const SUNDAY = '2027-02-28';
+  const plan: Workout[] = [
+    { date: '2027-02-23', type: 'Run', duration: '30 min' },
+    { date: '2027-02-26', type: 'Run', duration: '30 min' },
+    { date: SUNDAY, type: 'Run', duration: '60 min' },
+    { date: '2027-03-02', type: 'Run', duration: '30 min' },
+  ];
+
+  it('shows the Streak and Days missed as of the end of that Sunday, and saves those numbers', async () => {
+    setLoadedPlan(plan);
+    setCompleted('2027-02-26', true, plan[1]);
+    setCompleted(SUNDAY, true, plan[2]);
+
+    const { container, getByRole } = render(WeekEndReview, {
+      props: { weekStartIso: SUNDAY, readOnly: false, onClose: vi.fn() },
+    });
+
+    expect(cellValue(container, 'Streak')).toBe('2');
+    expect(cellValue(container, 'Days missed')).toBe('1');
+    expect(cellValue(container, 'Workouts completed')).toBe('2');
+
+    await fireEvent.click(getByRole('button', { name: 'Save' }));
+    expect(getReview(SUNDAY)).toMatchObject({ streak: 2, missedCount: 1, workoutsCompleted: 2 });
+  });
+});
+
+describe('WeekEndReview -- Streak/Days missed edges (Story 4.3 review)', () => {
+  it('on the Sunday itself, its not-yet-logged workout neither counts as missed nor breaks the Streak', () => {
+    const sunday = '2027-01-31';
+    today.iso = sunday;
+    const plan: Workout[] = [
+      { date: '2027-01-29', type: 'Run', duration: '30 min' },
+      { date: sunday, type: 'Run', duration: '60 min' },
+    ];
+    setLoadedPlan(plan);
+    setCompleted('2027-01-29', true, plan[0]);
+
+    const { container } = render(WeekEndReview, { props: { weekStartIso: sunday, readOnly: false, onClose: vi.fn() } });
+
+    expect(cellValue(container, 'Days missed')).toBe('0');
+    expect(cellValue(container, 'Streak')).toBe('1');
+  });
+
+  it('a late review of a missed Sunday: Streak 0 and the Sunday counts as missed, even with a Monday workout logged afterward', () => {
+    const sunday = '2027-01-24';
+    const plan: Workout[] = [
+      { date: '2027-01-22', type: 'Run', duration: '30 min' },
+      { date: sunday, type: 'Run', duration: '60 min' },
+      { date: '2027-01-25', type: 'Lift', duration: '40 min' },
+    ];
+    setLoadedPlan(plan);
+    setCompleted('2027-01-22', true, plan[0]);
+    setCompleted('2027-01-25', true, plan[2]); // the Monday after: must not count
+
+    const { container } = render(WeekEndReview, { props: { weekStartIso: sunday, readOnly: false, onClose: vi.fn() } });
+
+    expect(cellValue(container, 'Streak')).toBe('0');
+    expect(cellValue(container, 'Days missed')).toBe('1');
+  });
+
+  it('a late review of a completed Sunday is not raised by a Monday workout logged afterward', () => {
+    const sunday = '2027-01-17';
+    const plan: Workout[] = [
+      { date: sunday, type: 'Run', duration: '60 min' },
+      { date: '2027-01-18', type: 'Lift', duration: '40 min' },
+    ];
+    setLoadedPlan(plan);
+    setCompleted(sunday, true, plan[0]);
+    setCompleted('2027-01-18', true, plan[1]);
+
+    const { container } = render(WeekEndReview, { props: { weekStartIso: sunday, readOnly: false, onClose: vi.fn() } });
+
+    expect(cellValue(container, 'Streak')).toBe('1');
   });
 });

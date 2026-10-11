@@ -31,24 +31,11 @@
   // from `planStore`, so they're unaffected by the loading/error branches
   // above and only ever render in this `{:else}` (loaded) branch.
   //
-  // Story 3.3 -- Week-End Review. Per this story's Decisions, a Sunday whose
-  // week already has a saved Review routes that one row to the read-only
-  // Review dialog instead of `WorkoutDetail` -- everywhere else, `DayRowCard`
-  // is untouched (this story's Never section) and behaves exactly as before.
-  // Epic 3 retro fix (F3, 2026-09-26): `isSavedReviewSunday` used to be
-  // defined locally, right here, as this component's own copy. A whole-epic
-  // review found `App.svelte`'s own Home day-list needed the identical
-  // check and had none -- the same date rendered a row in both places, but
-  // only History's routed correctly. The predicate is now a single shared
-  // export from `weekEndReviewStore.svelte.ts` (it already owns the
-  // `reviews` state the check reads), imported by both call sites instead
-  // of each keeping its own copy.
-  // This component reads that shared predicate (mirroring its
-  // own `logStore.entries` read above) purely to decide, per row, which
-  // callback to hand that one `DayRowCard` as its `onOpen` prop -- `App.svelte`
-  // stays the sole owner of the resulting dialog state (`reviewDialog`), the
-  // same "one owner reads the store, everyone else takes a prop" shape this
-  // story's Boundaries already establish for `selectedDate`.
+  // Story 3.3 routed a saved week's Sunday row straight to the read-only
+  // Review; Story 4.3 (2026-10-11) removed that -- every row, Sundays
+  // included, now opens WorkoutDetail via `onOpen`, which offers that
+  // Sunday's Review from there, so a reviewed Sunday's own Workout stays
+  // loggable.
   import SkeletonDayRow from './SkeletonDayRow.svelte';
   import DayRowCard from './DayRowCard.svelte';
   import WeekHeader from './WeekHeader.svelte';
@@ -56,23 +43,15 @@
   import RollupSummary from './RollupSummary.svelte';
   import { planStore, loadPlan } from '../data/planStore.svelte';
   import { logStore } from '../data/logStore.svelte';
-  import { isSavedReviewSunday } from '../data/weekEndReviewStore.svelte';
   import { parsePlan } from '../domain/parsePlan';
   import { getPlanDayRange } from '../domain/getPlanDayRange';
   import { getWeekHeaderDates } from '../domain/getWeekHeaderDates';
   import { getTodayIso } from '../domain/date';
 
-  // `onOpen` opens WorkoutDetail (forwarded straight through to every
-  // `DayRowCard` mount, same as before Story 3.3); `onOpenReview` opens the
-  // read-only Week-End Review dialog, forwarded instead of `onOpen` only for
-  // a Sunday row whose week already has a saved Review (see
-  // `isSavedReviewSunday` below and its use in the DayRowCard mount markup).
-  // `App.svelte` stays the sole owner of both `selectedDate` and
-  // `reviewDialog` (Boundaries: "no second selected-date variable").
-  let {
-    onOpen,
-    onOpenReview,
-  }: { onOpen: (date: string) => void; onOpenReview: (weekStartIso: string) => void } = $props();
+  // `onOpen` opens WorkoutDetail, forwarded straight through to every
+  // `DayRowCard` mount. `App.svelte` stays the sole owner of `selectedDate`
+  // and `reviewDialog` (Boundaries: "no second selected-date variable").
+  let { onOpen }: { onOpen: (date: string) => void } = $props();
 
   // Computed once, not re-derived reactively -- mirrors App.svelte's/
   // DayRowCard's own `todayIso` (the Never section is explicit that "today"
@@ -131,7 +110,7 @@
           {date}
           workout={workoutsByDate.get(date)}
           isToday={date === todayIso}
-          onOpen={isSavedReviewSunday(date) ? onOpenReview : onOpen}
+          onOpen={onOpen}
         />
       {/each}
     </div>

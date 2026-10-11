@@ -221,3 +221,104 @@ describe('App -- week headers on Home (Story 4.4)', () => {
     expect(container.querySelector(`#panel-home [data-date="${FIXED_TODAY}"] .weekday`)?.textContent).toBe('TUE · Oct 6');
   });
 });
+
+// Story 4.3 -- a Sunday row opens WorkoutDetail (never the Review directly),
+// and the Sunday's Review is reached from Detail: Detail closes, the Review
+// opens (editable while unsaved, read-only once saved), and closing the
+// Review returns focus to that Sunday's row.
+describe('App -- Week-End Review from a Sunday (Story 4.3)', () => {
+  afterEach(async () => {
+    const { weekEndReviewStore } = await import('./lib/data/weekEndReviewStore.svelte');
+    delete weekEndReviewStore.reviews['2026-10-04'];
+  });
+
+  /** Records, for every `focus()` call, whether the target sat inside an
+   * inert subtree at that moment -- a real browser silently refuses such
+   * a focus, but jsdom doesn't enforce `inert`, so asserting
+   * `document.activeElement` alone can't catch focusing too early. */
+  function trackFocusInert() {
+    const calls: { el: HTMLElement; inert: boolean }[] = [];
+    const original = HTMLElement.prototype.focus;
+    vi.spyOn(HTMLElement.prototype, 'focus').mockImplementation(function (this: HTMLElement, options?: FocusOptions) {
+      // jsdom has no native `inert`, so Svelte sets it as a plain property
+      // rather than an attribute -- walk the ancestors and read that.
+      let node: HTMLElement | null = this;
+      let inert = false;
+      while (node) {
+        if ((node as HTMLElement & { inert?: boolean }).inert === true) {
+          inert = true;
+          break;
+        }
+        node = node.parentElement;
+      }
+      calls.push({ el: this, inert });
+      return original.call(this, options);
+    });
+    return calls;
+  }
+
+  it('past unsaved Sunday: row -> Detail -> "Review this week" -> editable Review; closing returns focus to the row', async () => {
+    const { container } = await renderApp();
+    const sundayRow = container.querySelector<HTMLElement>('#panel-home [data-date="2026-10-04"]')!;
+    const focusCalls = trackFocusInert();
+
+    await fireEvent.click(sundayRow);
+    await tick();
+    await fireEvent.click(screen.getByRole('button', { name: 'Review this week' }));
+    await tick();
+
+    expect(screen.getAllByRole('dialog')).toHaveLength(1);
+    expect(screen.getByRole('button', { name: 'Save' })).toBeInTheDocument();
+
+    await fireEvent.keyDown(window, { key: 'Escape' });
+    await tick();
+    await tick();
+    expect(screen.queryByRole('dialog')).toBeNull();
+    expect(document.activeElement).toBe(sundayRow);
+    // Focus was applied after the panels stopped being inert.
+    expect(focusCalls.filter((c) => c.el === sundayRow).map((c) => c.inert)).toEqual([false]);
+  });
+
+  it('from the History tab: Sunday row -> Detail -> Review; closing returns focus to the History row, not Home\x27s copy', async () => {
+    const { container } = await renderApp();
+    await tapTab(/history/i);
+    const historyRow = container.querySelector<HTMLElement>('#panel-history [data-date="2026-10-04"]')!;
+
+    await fireEvent.click(historyRow);
+    await tick();
+    await fireEvent.click(screen.getByRole('button', { name: 'Review this week' }));
+    await tick();
+    expect(screen.getByRole('button', { name: 'Save' })).toBeInTheDocument();
+
+    await fireEvent.keyDown(window, { key: 'Escape' });
+    await tick();
+    await tick();
+    expect(document.activeElement).toBe(historyRow);
+  });
+
+  it('a saved Sunday row opens Detail (so its run stays loggable), which opens the read-only Review', async () => {
+    const { weekEndReviewStore } = await import('./lib/data/weekEndReviewStore.svelte');
+    weekEndReviewStore.reviews['2026-10-04'] = {
+      weekStartIso: '2026-10-04',
+      workoutsCompleted: 1,
+      byType: { Run: 1, Bike: 0, Lift: 0, Mobility: 0, Stretch: 0, Other: 0, Unspecified: 0 },
+      streak: 1,
+      missedCount: 0,
+      reflection: 'Fine week.',
+      schemaVersion: 1,
+    };
+    const { container } = await renderApp();
+
+    await fireEvent.click(container.querySelector<HTMLElement>('#panel-home [data-date="2026-10-04"]')!);
+    await tick();
+    // Workout Detail opened (its Back button and title), not the Review.
+    expect(screen.getByRole('button', { name: '← Back' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Rest Day' })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Save' })).toBeNull();
+
+    await fireEvent.click(screen.getByRole('button', { name: "View this week's review" }));
+    await tick();
+    expect(screen.queryByRole('button', { name: 'Save' })).toBeNull();
+    expect(screen.getByRole('dialog')).toHaveTextContent('Fine week.');
+  });
+});

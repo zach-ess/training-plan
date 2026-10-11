@@ -35,13 +35,38 @@
   import { getDayView } from '../domain/getDayView';
   import type { Workout } from '../domain/parsePlan';
   import { getLogEntry, setCompleted } from '../data/logStore.svelte';
+  import { weekEndReviewStore } from '../data/weekEndReviewStore.svelte';
+  import { getTodayIso, parseLocalDate } from '../domain/date';
   import WorkoutDetailStat from './WorkoutDetailStat.svelte';
   import ButtonPrimary from './ButtonPrimary.svelte';
   import CompletionCelebration from './CompletionCelebration.svelte';
   import WorkoutEditForm from './WorkoutEditForm.svelte';
 
-  let { date, workout, onClose }: { date: string; workout: Workout | undefined; onClose: () => void } =
-    $props();
+  let {
+    date,
+    workout,
+    onClose,
+    onOpenReview,
+  }: {
+    date: string;
+    workout: Workout | undefined;
+    onClose: () => void;
+    // Story 4.3 -- opens this Sunday's Week-End Review (App.svelte decides
+    // editable vs read-only from whether it's saved).
+    onOpenReview?: (sundayIso: string) => void;
+  } = $props();
+
+  // Story 4.3 -- the review action's label, or undefined when there is none:
+  // only for a Sunday on or before today. `todayIso` is read once, like
+  // App.svelte's own (the dialog never outlives a day boundary in practice).
+  const todayIso = getTodayIso();
+  const reviewAction = $derived(
+    parseLocalDate(date).getDay() !== 0 || date > todayIso
+      ? undefined
+      : weekEndReviewStore.reviews[date] !== undefined
+        ? "View this week's review"
+        : 'Review this week',
+  );
 
   const logEntry = $derived(getLogEntry(date));
   const dayView = $derived(getDayView(workout, logEntry));
@@ -385,6 +410,21 @@
             </p>
           {/if}
         {/if}
+        <!-- Story 4.3 -- a Sunday on or before today reaches its week's
+             Review from here: editable while unsaved (including a late
+             review of a missed Sunday), read-only once saved. Never on a
+             future Sunday or another day; hidden while editing (this whole
+             `.actions` row is view-mode only). -->
+        {#if reviewAction && onOpenReview}
+          <button
+            type="button"
+            class="review-action"
+            disabled={celebrating}
+            onclick={() => onOpenReview?.(date)}
+          >
+            {reviewAction}
+          </button>
+        {/if}
       </div>
     {/if}
     <!-- Epic 2 retro finding F3 (2026-09-24): this used to be a sibling of
@@ -595,5 +635,32 @@
   .retry-button:focus-visible {
     outline: 2px solid var(--accent-primary);
     outline-offset: 2px;
+  }
+
+  /* Story 4.3 -- secondary action: outlined, never the solid primary fill,
+     48dp-equivalent target like every other control here. */
+  .review-action {
+    all: unset;
+    box-sizing: border-box;
+    min-height: 3rem;
+    padding: var(--space-4) var(--space-6);
+    border: 1px solid var(--accent-primary);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    text-align: center;
+    color: var(--accent-primary);
+    font-family: var(--type-body-font-family);
+    font-size: var(--type-body-size);
+    font-weight: 600;
+  }
+
+  .review-action:focus-visible {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: 2px;
+  }
+
+  .review-action:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 </style>

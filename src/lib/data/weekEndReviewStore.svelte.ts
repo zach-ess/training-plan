@@ -14,7 +14,6 @@
 
 import type { Rollup } from '../domain/computeRollup';
 import { ROLLUP_TYPE_ORDER } from '../domain/computeRollup';
-import { parseLocalDate } from '../domain/date';
 import { isRecord } from '../domain/guards';
 
 // Canonical WeekEndReview field shape (this story's Always section):
@@ -177,25 +176,11 @@ function persist(reviews: Record<string, WeekEndReview>): WriteResult {
 
 /** Reads the saved WeekEndReview for one week, if any -- the only read this
  * store exposes. Called from a `$derived`/reactive context
- * (`WeekEndReview.svelte`, and `App.svelte`/`HistoryView.svelte` for the
- * banner/saved-row gating), so a later successful `saveReview` write (which
+ * (`WeekEndReview.svelte`, `App.svelte`'s banner gating, and WorkoutDetail's
+ * Story 4.3 review action), so a later successful `saveReview` write (which
  * reassigns `weekEndReviewStore.reviews`) re-renders any reader in place. */
 export function getReview(weekStartIso: string): WeekEndReview | undefined {
   return weekEndReviewStore.reviews[weekStartIso];
-}
-
-/** Epic 3 retro fix (F3, 2026-09-26): true when `date` is a Sunday whose week
- * already has a saved Review -- the one predicate that decides whether a
- * day-row's tap opens the read-only Week-End Review instead of the ordinary
- * WorkoutDetail dialog (this story's Decisions). Originally written only
- * inside `HistoryView.svelte`; extracted here once a whole-epic review found
- * `App.svelte`'s own Home day-list needed the identical check -- the same
- * date rendered a row in both places, but only History's routed correctly,
- * so the identical date opened two different dialogs depending on which tab
- * was active. Both call sites now import this one function rather than each
- * keeping (or silently drifting from) their own copy. */
-export function isSavedReviewSunday(date: string): boolean {
-  return parseLocalDate(date).getDay() === 0 && weekEndReviewStore.reviews[date] !== undefined;
 }
 
 // The shape `saveReview` accepts -- every field this story's rollup-grid

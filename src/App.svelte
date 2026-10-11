@@ -26,7 +26,7 @@
   import WeekHeader from './lib/components/WeekHeader.svelte';
   import { planStore, loadPlan } from './lib/data/planStore.svelte';
   import { logStore } from './lib/data/logStore.svelte';
-  import { weekEndReviewStore, isSavedReviewSunday } from './lib/data/weekEndReviewStore.svelte';
+  import { weekEndReviewStore } from './lib/data/weekEndReviewStore.svelte';
   import { parsePlan } from './lib/domain/parsePlan';
   import { getPlanDayRange } from './lib/domain/getPlanDayRange';
   import { getWeekHeaderDates } from './lib/domain/getWeekHeaderDates';
@@ -162,37 +162,50 @@
     reviewDialog = { weekStartIso: todayWeekStartIso, readOnly: false };
   }
 
-  // Passed to HistoryView as `onOpenReview` -- called only for a Sunday row
-  // whose week already has a saved Review (this story's Decisions), so
-  // `readOnly` is always `true` here; the live/editable dialog is only ever
-  // reachable via the banner above.
-  function handleOpenReview(weekStartIso: string) {
-    reviewDialog = { weekStartIso, readOnly: true };
+  // Story 4.3 -- passed to WorkoutDetail as `onOpenReview`: a Sunday's Detail
+  // opens that week's Review, editable while unsaved (including a late
+  // review of a missed Sunday) and read-only once saved. One dialog at a
+  // time: Detail closes first without restoring focus, because the Review's
+  // own close (`handleCloseReview`) returns focus to this same Sunday's row.
+  function handleOpenReviewFromDetail(sundayIso: string) {
+    handleCloseDetail({ skipFocusRestore: true });
+    reviewDialog = { weekStartIso: sundayIso, readOnly: weekEndReviewStore.reviews[sundayIso] !== undefined };
   }
 
-  function handleCloseReview() {
+  async function handleCloseReview() {
     const closedWeekStartIso = reviewDialog?.weekStartIso;
     reviewDialog = null;
-    if (closedWeekStartIso) {
-      // Mirrors `handleCloseDetail`'s own query-selector convention (and its
-      // review-fix scoping, above): refocus the row/banner that opened this,
-      // falling back to whichever tab panel is actually active right now if
-      // it's no longer there to refocus (e.g. a successful Save just dropped
-      // the banner it was opened from). Scoped to `#panel-${activeTab}`, not
-      // a bare document-wide selector -- a saved week's Sunday date exists
-      // as a row in *both* Home's and History's day lists (both span the
-      // full Plan day range), and Home's markup is always declared first in
-      // the DOM, so an unscoped selector would match Home's hidden row first
-      // when this dialog was opened from a History row, silently dropping
-      // focus instead of returning it to the tapped row.
-      const row = document.querySelector<HTMLElement>(
-        `#panel-${activeTab} [data-date="${closedWeekStartIso}"]`,
-      );
-      if (row) {
-        row.focus();
-      } else {
-        document.getElementById(`panel-${activeTab}`)?.focus();
-      }
+    // Story 4.3 (found live): `tick()` first -- both tab panels stay `inert`
+    // until `reviewDialog = null` flushes, and a real browser silently
+    // refuses `.focus()` on an element inside an inert subtree (jsdom does
+    // not enforce `inert`, so tests alone never showed it), dropping focus to
+    // <body> instead of the row the Review was opened from.
+    if (!closedWeekStartIso) {
+      return;
+    }
+    await tick();
+    // If another dialog opened during that tick, it owns focus now.
+    if (reviewDialog !== null || selectedDate !== null) {
+      return;
+    }
+    // Mirrors `handleCloseDetail`'s own query-selector convention (and its
+    // review-fix scoping, above): refocus the row/banner that opened this,
+    // falling back to whichever tab panel is actually active right now if
+    // it's no longer there to refocus (e.g. a successful Save just dropped
+    // the banner it was opened from). Scoped to `#panel-${activeTab}`, not
+    // a bare document-wide selector -- a saved week's Sunday date exists
+    // as a row in *both* Home's and History's day lists (both span the
+    // full Plan day range), and Home's markup is always declared first in
+    // the DOM, so an unscoped selector would match Home's hidden row first
+    // when this dialog was opened from a History row, silently dropping
+    // focus instead of returning it to the tapped row.
+    const row = document.querySelector<HTMLElement>(
+      `#panel-${activeTab} [data-date="${closedWeekStartIso}"]`,
+    );
+    if (row) {
+      row.focus();
+    } else {
+      document.getElementById(`panel-${activeTab}`)?.focus();
     }
   }
 
@@ -388,15 +401,10 @@
           Review your week
         </button>
       {/if}
-      <!-- Epic 3 retro fix (F3, 2026-09-26): Home's own day list never had
-           this routing -- only `HistoryView.svelte`'s row list checked
-           `isSavedReviewSunday` and forwarded to the read-only Review
-           dialog. The same date can render a row in both places (a saved
-           Sunday within Home's own visible range), so it must route
-           identically regardless of which tab is active. Now both call
-           sites import the one shared predicate from
-           `weekEndReviewStore.svelte.ts` rather than each keeping (or
-           silently drifting from) their own copy. -->
+      <!-- Story 4.3 (2026-10-11): every row, Sundays included, opens
+           WorkoutDetail -- a saved week's Sunday no longer routes straight to
+           its Review, so that Sunday's own Workout stays loggable. The Review
+           is reached from the Sunday's Detail instead (and the banner). -->
       <div class="day-list" use:scrollToToday>
         {#each dayRange as date (date)}
           {@const week = weekStarts.get(date)}
@@ -407,7 +415,7 @@
             {date}
             workout={workoutsByDate.get(date)}
             isToday={date === todayIso}
-            onOpen={isSavedReviewSunday(date) ? handleOpenReview : handleOpenDetail}
+            onOpen={handleOpenDetail}
           />
         {/each}
       </div>
@@ -428,12 +436,9 @@
          passed. This `#panel-history`'s own `id`/`hidden`/`inert`/
          `aria-hidden` wiring above is untouched -- only this child markup
          changed.
-         Story 3.3 -- `onOpenReview` is the second prop: HistoryView itself
-         decides, per row, whether a Sunday's saved Review routes there
-         instead of `onOpen`/WorkoutDetail (this story's Decisions) -- App.svelte
-         stays the sole owner of the resulting `reviewDialog` state, same as
-         `selectedDate` above. -->
-    <HistoryView onOpen={handleOpenDetail} onOpenReview={handleOpenReview} />
+         Story 4.3 removed Story 3.3's second `onOpenReview` prop: History's
+         Sunday rows open WorkoutDetail like every other row. -->
+    <HistoryView onOpen={handleOpenDetail} />
   </div>
   {#key selectedDate}
     {#if selectedDate}
@@ -441,6 +446,7 @@
         date={selectedDate}
         workout={workoutsByDate.get(selectedDate)}
         onClose={handleCloseDetail}
+        onOpenReview={handleOpenReviewFromDetail}
       />
     {/if}
   {/key}

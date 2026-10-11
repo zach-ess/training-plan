@@ -1988,14 +1988,24 @@ function checkAppSvelteWeekEndReviewWiring(failures) {
     failures.push('src/App.svelte: no <WeekEndReview mount found');
   }
 
-  const historyMountMatch = masked.match(/<HistoryView(?![\w-])[\s\S]*?\/>/);
+  // Story 4.3 (2026-10-11): a Sunday row never routes straight to its Review
+  // any more -- every row opens WorkoutDetail, and the Review is reached from
+  // the Sunday's Detail. So the old saved-Sunday routing must be gone from
+  // Home, and WorkoutDetail must be wired to open the Review.
+  if (/isSavedReviewSunday/.test(masked)) {
+    failures.push(
+      'src/App.svelte: isSavedReviewSunday found -- Home rows must all open WorkoutDetail; a Sunday\'s ' +
+        'Review is reached from its Detail (Story 4.3), never by routing the row itself',
+    );
+  }
+  const detailMountMatch = masked.match(/<WorkoutDetail(?![\w-])[\s\S]*?\/>/);
   if (
-    !historyMountMatch ||
-    !/(?<![\w-])onOpenReview(?![\w-])\s*=\s*\{\s*handleOpenReview\s*\}/.test(historyMountMatch[0])
+    !detailMountMatch ||
+    !/(?<![\w-])onOpenReview(?![\w-])\s*=\s*\{\s*handleOpenReviewFromDetail\s*\}/.test(detailMountMatch[0])
   ) {
     failures.push(
-      'src/App.svelte: <HistoryView is not wired with onOpenReview={handleOpenReview} -- a saved ' +
-        "week's Sunday row must be able to open the read-only Review (this story's Decisions)",
+      'src/App.svelte: <WorkoutDetail is not wired with onOpenReview={handleOpenReviewFromDetail} -- a ' +
+        "Sunday's Detail must be able to open that week's Review (Story 4.3)",
     );
   }
 
@@ -2007,65 +2017,55 @@ function checkAppSvelteWeekEndReviewWiring(failures) {
   }
 }
 
-/** Story 3.3 -- mirrors `checkHistoryViewAppWiring`'s own "check the wiring,
- * not just the component" precedent: asserts `HistoryView.svelte` actually
- * detects a saved week's Sunday and accepts/uses an `onOpenReview` prop, so a
- * regression silently dropping the Decisions-mandated Sunday-row routing
- * doesn't pass every other check in this file. Scanned against
- * `maskAllComments(source)` for the same reason every other wiring check
- * here is.
- *
- * Epic 3 retro fix (F3, 2026-09-26): the Sunday-detection check used to look
- * for a direct `weekEndReviewStore.reviews[` read in this file -- true until
- * this same retro's F3 extracted that check into a single shared
- * `isSavedReviewSunday` export (`weekEndReviewStore.svelte.ts`), imported
- * here instead of hand-duplicated. Detection now looks for that import/use
- * instead of the read it wraps.
- *
- * Epic 3 retro fix (F7, 2026-09-26): the `<DayRowCard` mount check used to
- * only confirm the substring `onOpenReview` appeared anywhere inside the
- * mount -- a regression that changed the ternary to unconditionally route
- * every row to `onOpenReview` (breaking `WorkoutDetail` access entirely)
- * would still have passed. It now asserts the actual conditional-routing
- * shape: `onOpen`'s value is a ternary with `onOpenReview` and `onOpen` both
- * present as *distinct* branches, not just as substrings anywhere in the
- * mount. */
+/** Story 3.3 added this check to require HistoryView's saved-Sunday routing
+ * (a saved week's Sunday row opening the read-only Review via an
+ * `isSavedReviewSunday` ternary). Story 4.3 (2026-10-11) reversed that
+ * design, so the check is now inverted: it fails if any routing to the Review
+ * remains and requires every row to forward plain `onOpen` (WorkoutDetail),
+ * which offers the Sunday's Review from there. Scanned against
+ * `maskAllComments(source)` like every other wiring check here. */
 function checkHistoryViewWeekEndReviewWiring(failures) {
   const source = readFileSync(historyViewSveltePath, 'utf8');
   const masked = maskAllComments(source);
 
-  if (!/isSavedReviewSunday/.test(masked)) {
+  // Story 4.3 (2026-10-11) reversed Story 3.3's saved-Sunday routing: every
+  // History row, Sundays included, must forward plain `onOpen` (WorkoutDetail),
+  // so a reviewed Sunday's own Workout stays loggable.
+  if (/isSavedReviewSunday|(?<![\w-])onOpenReview(?![\w-])/.test(masked)) {
     failures.push(
-      'src/lib/components/HistoryView.svelte: no isSavedReviewSunday found -- a saved week\'s Sunday ' +
-        "row must be detected via this story's shared Data Store predicate",
-    );
-  }
-
-  if (!/(?<![\w-])onOpenReview(?![\w-])/.test(masked)) {
-    failures.push(
-      'src/lib/components/HistoryView.svelte: no onOpenReview found -- this component must accept and ' +
-        'use an onOpenReview prop to route a saved week\'s Sunday row to the read-only Review ' +
-        "(this story's Decisions)",
+      'src/lib/components/HistoryView.svelte: isSavedReviewSunday/onOpenReview found -- every row must ' +
+        "open WorkoutDetail via plain onOpen; a Sunday's Review is reached from its Detail (Story 4.3)",
     );
   }
 
   const mountMatch = masked.match(/<DayRowCard(?![\w-])[\s\S]*?\/>/);
   if (!mountMatch) {
     failures.push('src/lib/components/HistoryView.svelte: no <DayRowCard mount found');
-  } else {
-    const onOpenPropMatch = mountMatch[0].match(/(?<![\w-])onOpen(?![\w-])\s*=\s*\{([^}]*)\}/);
-    const ternaryBody = onOpenPropMatch ? onOpenPropMatch[1] : '';
-    const hasBothBranches =
-      /\?/.test(ternaryBody) &&
-      /(?<![\w-])onOpenReview(?![\w-])/.test(ternaryBody) &&
-      /(?<![\w-])onOpen(?![\w-])/.test(ternaryBody.replace(/onOpenReview/g, ''));
-    if (!hasBothBranches) {
-      failures.push(
-        'src/lib/components/HistoryView.svelte: the <DayRowCard mount\'s onOpen is not a ternary with ' +
-          'distinct onOpenReview and onOpen branches -- a saved week\'s Sunday row must route to ' +
-          'onOpenReview while every other row still routes to plain onOpen/WorkoutDetail (this story\'s ' +
-          'Decisions); a regression that routes every row to onOpenReview must fail this check',
-      );
+  } else if (!/(?<![\w-])onOpen(?![\w-])\s*=\s*\{\s*onOpen\s*\}/.test(mountMatch[0])) {
+    failures.push(
+      "src/lib/components/HistoryView.svelte: the <DayRowCard mount's onOpen is not plain {onOpen} -- " +
+        'no row may be routed anywhere but WorkoutDetail (Story 4.3)',
+    );
+  }
+}
+
+/** Story 4.3 -- WorkoutDetail's Week-End Review action: Sunday-only (a
+ * `getDay() !== 0` guard), never for a future date, with both labels and an
+ * `onOpenReview(date)` call, so a regression that drops the only in-list
+ * path to a missed or saved week's Review fails the check. */
+function checkWorkoutDetailReviewActionWiring(failures) {
+  const source = readFileSync(workoutDetailSveltePath, 'utf8');
+  const masked = maskAllComments(source);
+  const required = [
+    [/getDay\(\)\s*!==\s*0/, 'a Sunday-only guard (getDay() !== 0)'],
+    [/date\s*>\s*todayIso/, 'a not-in-the-future guard (date > todayIso)'],
+    [/Review this week/, 'the "Review this week" label'],
+    [/View this week's review/, 'the "View this week\'s review" label'],
+    [/onOpenReview\??\.?\(\s*date\s*\)/, 'an onOpenReview(date) call'],
+  ];
+  for (const [pattern, what] of required) {
+    if (!pattern.test(masked)) {
+      failures.push(`src/lib/components/WorkoutDetail.svelte: no ${what} found for the Week-End Review action (Story 4.3)`);
     }
   }
 }
@@ -2111,6 +2111,7 @@ function main() {
   checkWeekEndReviewWiring(failures);
   checkAppSvelteWeekEndReviewWiring(failures);
   checkHistoryViewWeekEndReviewWiring(failures);
+  checkWorkoutDetailReviewActionWiring(failures);
   checkRootWiring(failures);
 
   if (failures.length > 0) {
@@ -2169,10 +2170,11 @@ function main() {
       `writes through saveReview(, and renders role="alert"/.retry-button on a failed Save plus a real ` +
       `reflection-input/reflection-readout split between editable and read-only mode; and src/App.svelte gates ` +
       `the week-end-review-banner on isSundayToday/planStore.status/weekEndReviewStore.reviews, drives ` +
-      `<WeekEndReview off a reviewDialog state, wires <HistoryView with onOpenReview={handleOpenReview}, and ` +
-      `folds reviewDialog into both tab panels' inert; and HistoryView.svelte detects a saved week's Sunday ` +
-      `via the shared isSavedReviewSunday predicate and routes that row to onOpenReview via a real onOpen ` +
-      `ternary, distinct from every other row's plain onOpen/WorkoutDetail path; and WeekHeader.svelte ` +
+      `<WeekEndReview off a reviewDialog state, wires <WorkoutDetail with ` +
+      `onOpenReview={handleOpenReviewFromDetail}, and folds reviewDialog into both tab panels' inert; and ` +
+      `neither Home nor History routes any row (Sundays included) anywhere but WorkoutDetail; and ` +
+      `WorkoutDetail.svelte offers a Sunday-only, not-future "Review this week"/"View this week's review" ` +
+      `action calling onOpenReview(date); and WeekHeader.svelte ` +
       `routes its color declarations through tokens, carries a level-2 heading, has no background fill, and ` +
       `no interactive element or attribute in its template.`,
   );

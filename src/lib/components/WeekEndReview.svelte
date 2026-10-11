@@ -60,7 +60,7 @@
 
   // Epic 3 retro fix (F1, 2026-09-26): despite its name, `weekStartIso` is
   // the Sunday this review is filed under -- App.svelte's banner and
-  // HistoryView's saved-Sunday lookup both depend on that value staying the
+  // WorkoutDetail's review action (Story 4.3) both depend on that value staying the
   // Sunday's own date, so it isn't renamed here. But Zach's own convention
   // is Sunday as the LAST day of his workout week (Monday-Sunday), not the
   // first -- confirmed directly with him during this retro, after the
@@ -86,6 +86,19 @@
   const weekDates = $derived(getWeekDates(windowStartIso));
   const weekEndIso = $derived(weekStartIso);
 
+  // Story 4.3 -- a late Review (its Sunday already past) is evaluated "as of"
+  // the end of that Sunday (ARCHITECTURE-SPINE AD-2, late reviews): Streak and
+  // Days missed get the following Monday as their `todayIso`, so the week
+  // counts as fully elapsed and the Streak is the one Zach had that Sunday,
+  // not today's. On the day itself this is just `todayIso`, unchanged.
+  const asOfIso = $derived.by(() => {
+    if (weekStartIso >= todayIso) {
+      return todayIso;
+    }
+    const sunday = parseLocalDate(weekStartIso);
+    return toLocalIsoDate(new Date(sunday.getFullYear(), sunday.getMonth(), sunday.getDate() + 1));
+  });
+
   const weekRangeLabel = $derived.by(() => {
     const fmt = (iso: string) =>
       parseLocalDate(iso).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
@@ -102,9 +115,20 @@
   );
   // Full Plan day range, same call Home's own Streak uses (this story's
   // Always section) -- never a week-scoped range.
-  const liveStreak = $derived(computeStreak(dayRange, workoutsByDate, logStore.entries, todayIso));
+  // `computeStreak` counts its `todayIso` day when that day is logged, so for
+  // a late review the following Monday's LogEntry is left out: the Streak
+  // must end with the reviewed Sunday (a Monday workout logged afterward
+  // must not raise it), while a missed Sunday still breaks it as elapsed.
+  const streakEntries = $derived.by(() => {
+    if (asOfIso === todayIso || !(asOfIso in logStore.entries)) {
+      return logStore.entries;
+    }
+    const { [asOfIso]: _afterSunday, ...throughSunday } = logStore.entries;
+    return throughSunday;
+  });
+  const liveStreak = $derived(computeStreak(dayRange, workoutsByDate, streakEntries, asOfIso));
   const liveMissedCount = $derived(
-    computeMissedCount(weekDates, workoutsByDate, logStore.entries, todayIso),
+    computeMissedCount(weekDates, workoutsByDate, logStore.entries, asOfIso),
   );
 
   // Read-only mode's frozen snapshot -- the one and only place this file
