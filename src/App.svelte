@@ -23,11 +23,13 @@
   import StreakIndicator from './lib/components/StreakIndicator.svelte';
   import HistoryView from './lib/components/HistoryView.svelte';
   import WeekEndReview from './lib/components/WeekEndReview.svelte';
+  import WeekHeader from './lib/components/WeekHeader.svelte';
   import { planStore, loadPlan } from './lib/data/planStore.svelte';
   import { logStore } from './lib/data/logStore.svelte';
   import { weekEndReviewStore, isSavedReviewSunday } from './lib/data/weekEndReviewStore.svelte';
   import { parsePlan } from './lib/domain/parsePlan';
   import { getPlanDayRange } from './lib/domain/getPlanDayRange';
+  import { getWeekHeaderDates } from './lib/domain/getWeekHeaderDates';
   import { computeStreak } from './lib/domain/computeStreak';
   import { getTodayIso, getWeekStartIso } from './lib/domain/date';
 
@@ -106,6 +108,10 @@
   // the same date overwrites an earlier one in the map -- "the later array
   // entry wins for that date" (I/O matrix).
   const workoutsByDate = $derived(new Map(plan.workouts.map((workout) => [workout.date, workout])));
+  // Story 4.4 -- which rendered row each plan week's header sits above (the
+  // week's first *shown* day; see getWeekHeaderDates). Empty for a Plan
+  // without weeks (the flat format), so no headers render.
+  const weekStarts = $derived(getWeekHeaderDates(dayRange, plan.weeks));
 
   // Story 2.4 -- the running Streak (FR-8), recomputed from `logStore.entries`
   // directly (not a snapshot/callback) -- `$derived` picks up a later
@@ -393,6 +399,10 @@
            silently drifting from) their own copy. -->
       <div class="day-list" use:scrollToToday>
         {#each dayRange as date (date)}
+          {@const week = weekStarts.get(date)}
+          {#if week}
+            <WeekHeader {week} />
+          {/if}
           <DayRowCard
             {date}
             workout={workoutsByDate.get(date)}

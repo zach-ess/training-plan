@@ -230,6 +230,7 @@ const streakIndicatorSveltePath = path.join(
   'components',
   'StreakIndicator.svelte',
 );
+const weekHeaderSveltePath = path.join(__dirname, '..', 'src', 'lib', 'components', 'WeekHeader.svelte');
 const rootSveltePath = path.join(__dirname, '..', 'src', 'Root.svelte');
 const mainTsPath = path.join(__dirname, '..', 'src', 'main.ts');
 const historyViewSveltePath = path.join(
@@ -1277,6 +1278,51 @@ function checkStreakIndicatorWiring(failures) {
   scanColorWiring(source, 'src/lib/components/StreakIndicator.svelte', SAFE_NON_TOKEN_VALUES, failures);
 }
 
+/** Story 4.4 -- `week-header`: routes its color declarations through tokens
+ * (no new tokens, per DESIGN.md), exposes itself as a heading, and stays a
+ * label -- never a button, link, or tab stop (EXPERIENCE.md: "not a tap
+ * target, never focusable"). */
+function checkWeekHeaderWiring(failures) {
+  const source = readFileSync(weekHeaderSveltePath, 'utf8');
+  const markupOnly = maskAllComments(source);
+
+  // Template markup only: `<script>`/`<style>` blocks removed, so an ordinary
+  // script identifier (e.g. `const onlyFirst =`) can't trip the checks below.
+  const templateOnly = markupOnly.replace(/<script\b[\s\S]*?<\/script>/g, '').replace(/<style\b[\s\S]*?<\/style>/g, '');
+
+  // A native <h2>, or role="heading" + aria-level="2" on one element.
+  if (
+    !/<h2\b/.test(templateOnly) &&
+    !/<[a-z]+\b[^>]*(role=["']heading["'][^>]*aria-level=["']2["']|aria-level=["']2["'][^>]*role=["']heading["'])/.test(
+      templateOnly,
+    )
+  ) {
+    failures.push(
+      'src/lib/components/WeekHeader.svelte: no level-2 heading (<h2>, or role="heading" aria-level="2" on one ' +
+        'element) -- the week header must be exposed to assistive tech as a heading (Story 4.4)',
+    );
+  }
+  if (
+    /<(button|a|input|select|textarea|summary|details)\b|\bhref\s*=|role=["'](button|link)["']|\btab[iI]ndex\s*=|\bon:?[a-z]+\s*=|\b(use|bind):|\{\s*\.\.\.|contenteditable/.test(
+      templateOnly,
+    )
+  ) {
+    failures.push(
+      'src/lib/components/WeekHeader.svelte: found an interactive element or attribute (button/link/input/' +
+        'details, href, role="button"/"link", tabindex, an event handler, use:/bind:, a {...spread}, or ' +
+        'contenteditable) -- the week header is a label, never a tap target or tab stop (Story 4.4)',
+    );
+  }
+  if (/\bbackground(-[a-z]+)?\s*:/.test(markupOnly)) {
+    failures.push(
+      'src/lib/components/WeekHeader.svelte: found a background declaration -- the week header has no fill ' +
+        '(DESIGN.md week-header: flat, hairline register, no filled card) (Story 4.4)',
+    );
+  }
+
+  scanColorWiring(source, 'src/lib/components/WeekHeader.svelte', SAFE_NON_TOKEN_VALUES, failures);
+}
+
 /** Blanks `<!-- -->`, `/* *\/`, and `//` line comments out of a JS/Svelte
  * source, keeping everything else (including quoted-string contents and any
  * markup text) at its original offsets -- the same "check a comment-stripped
@@ -2055,6 +2101,7 @@ function main() {
   checkCompletionCelebrationWiring(failures);
   checkWorkoutEditFormWiring(failures);
   checkStreakIndicatorWiring(failures);
+  checkWeekHeaderWiring(failures);
   checkAppSvelteStreakWiring(failures);
   checkHistoryViewWiring(failures);
   checkHistoryViewAppWiring(failures);
@@ -2125,7 +2172,9 @@ function main() {
       `<WeekEndReview off a reviewDialog state, wires <HistoryView with onOpenReview={handleOpenReview}, and ` +
       `folds reviewDialog into both tab panels' inert; and HistoryView.svelte detects a saved week's Sunday ` +
       `via the shared isSavedReviewSunday predicate and routes that row to onOpenReview via a real onOpen ` +
-      `ternary, distinct from every other row's plain onOpen/WorkoutDetail path.`,
+      `ternary, distinct from every other row's plain onOpen/WorkoutDetail path; and WeekHeader.svelte ` +
+      `routes its color declarations through tokens, carries a level-2 heading, has no background fill, and ` +
+      `no interactive element or attribute in its template.`,
   );
 }
 

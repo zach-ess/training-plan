@@ -96,7 +96,8 @@ describe('parsePlan -- Claude Coach weeks[] shape', () => {
       ]),
     );
     expect(plan.workouts.map((w) => w.date)).toEqual(['2026-10-06']);
-    expect(warn).toHaveBeenCalledTimes(2);
+    const workoutDrops = warn.mock.calls.filter((call) => String(call[0]).includes('dropping workout entry'));
+    expect(workoutDrops).toHaveLength(2);
   });
 
   it('skips malformed weeks, days, and sessions without throwing', () => {
@@ -118,5 +119,101 @@ describe('parsePlan -- Claude Coach weeks[] shape', () => {
       workouts: [{ date: '2026-10-06', type: 'Bike', duration: '60 min' }],
     });
     expect(plan.workouts).toEqual([{ date: '2026-10-06', type: 'Bike', duration: '60 min' }]);
+  });
+});
+
+// Story 4.4 -- week header data, read from `weeks[]` whenever present.
+describe('parsePlan -- plan weeks (Story 4.4)', () => {
+  const day = { date: '2026-10-13', workouts: [RUN_4MI] };
+
+  it('reads a full week: number, dates, phase, and focus', () => {
+    const plan = parsePlan({
+      weeks: [
+        {
+          weekNumber: 1,
+          startDate: '2026-10-12',
+          endDate: '2026-10-18',
+          phase: 'Return',
+          focus: 'Ease back in · 8 mi',
+          days: [day],
+        },
+      ],
+    });
+    expect(plan.weeks).toEqual([
+      { weekNumber: 1, startDate: '2026-10-12', endDate: '2026-10-18', phase: 'Return', focus: 'Ease back in · 8 mi' },
+    ]);
+  });
+
+  it('falls back to startDate + 6 days for a missing or invalid endDate, across a year boundary', () => {
+    const plan = parsePlan({
+      weeks: [
+        { weekNumber: 12, startDate: '2026-12-28', days: [] },
+        { weekNumber: 13, startDate: '2027-01-04', endDate: 'soon', days: [] },
+      ],
+    });
+    expect(plan.weeks?.map((w) => w.endDate)).toEqual(['2027-01-03', '2027-01-10']);
+  });
+
+  it('omits missing weekNumber, phase, and focus rather than inventing them', () => {
+    const plan = parsePlan({ weeks: [{ startDate: '2026-10-12', phase: '  ', days: [] }] });
+    expect(plan.weeks).toEqual([{ startDate: '2026-10-12', endDate: '2026-10-18' }]);
+  });
+
+  it('drops a week with an invalid or missing startDate, with a warning', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const plan = parsePlan({
+      weeks: [
+        { weekNumber: 1, startDate: '2026-13-01', days: [] },
+        { weekNumber: 2, days: [] },
+        { weekNumber: 3, startDate: '2026-10-26', days: [] },
+      ],
+    });
+    expect(plan.weeks?.map((w) => w.weekNumber)).toEqual([3]);
+    const weekDrops = warn.mock.calls.filter((call) => String(call[0]).includes('dropping week'));
+    expect(weekDrops).toHaveLength(2);
+  });
+
+  it('a flat-only plan has no weeks property', () => {
+    expect(parsePlan({ workouts: [{ date: '2026-10-13', type: 'Run' }] })).not.toHaveProperty('weeks');
+  });
+
+  it('a file with both shapes keeps its flat workouts and still exposes weeks', () => {
+    const plan = parsePlan({
+      workouts: [{ date: '2026-10-13', type: 'Bike' }],
+      weeks: [{ weekNumber: 1, startDate: '2026-10-12', days: [day] }],
+    });
+    expect(plan.workouts).toEqual([{ date: '2026-10-13', type: 'Bike' }]);
+    expect(plan.weeks?.[0].startDate).toBe('2026-10-12');
+  });
+});
+
+describe('parsePlan -- plan week validation (Story 4.4 review loop 1)', () => {
+  it('replaces an endDate earlier than startDate with the +6 fallback', () => {
+    const plan = parsePlan({ weeks: [{ startDate: '2026-10-12', endDate: '2026-10-05', days: [] }] });
+    expect(plan.weeks?.[0].endDate).toBe('2026-10-18');
+  });
+
+  it('keeps weekNumber only when it is a positive integer', () => {
+    const plan = parsePlan({
+      weeks: [
+        { weekNumber: 0, startDate: '2026-10-12', days: [] },
+        { weekNumber: -1, startDate: '2026-10-19', days: [] },
+        { weekNumber: 1.5, startDate: '2026-10-26', days: [] },
+        { weekNumber: 4, startDate: '2026-11-02', days: [] },
+      ],
+    });
+    expect(plan.weeks?.map((w) => w.weekNumber)).toEqual([undefined, undefined, undefined, 4]);
+  });
+
+  it('stores phase and focus trimmed', () => {
+    const plan = parsePlan({ weeks: [{ startDate: '2026-10-12', phase: ' Return ', focus: '  Ease back in \n', days: [] }] });
+    expect(plan.weeks?.[0]).toMatchObject({ phase: 'Return', focus: 'Ease back in' });
+  });
+
+  it('drops a non-object week entry with a warning', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const plan = parsePlan({ weeks: [null, 'week', { startDate: '2026-10-12', days: [] }] });
+    expect(plan.weeks).toHaveLength(1);
+    expect(warn.mock.calls.filter((call) => String(call[0]).includes('week that is not an object'))).toHaveLength(2);
   });
 });

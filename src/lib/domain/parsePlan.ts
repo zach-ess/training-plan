@@ -5,6 +5,7 @@
 // this returns.
 
 import { isRecord } from './guards';
+import { parseLocalDate, toLocalIsoDate } from './date';
 
 export interface Workout {
   date: string;
@@ -13,9 +14,21 @@ export interface Workout {
   distance?: string;
 }
 
+/** Story 4.4 -- one plan week, as a Claude Coach plan defines it (Zach's own
+ * Monday-start blocks, not the app's Sunday-ending review week). Only used to
+ * label the day lists; never to decide what a day is or how it's logged. */
+export interface PlanWeek {
+  weekNumber?: number;
+  startDate: string;
+  endDate: string;
+  phase?: string;
+  focus?: string;
+}
+
 export interface Plan {
   planName?: string;
   workouts: Workout[];
+  weeks?: PlanWeek[];
 }
 
 // Architecture's Consistency Conventions: "Dates are ISO 8601 strings
@@ -219,8 +232,66 @@ function parseCoachPlan(raw: Record<string, unknown>, weeks: unknown[]): Plan {
  * Accepts either this app's own flat `workouts[]` shape or a Claude Coach
  * plan's `weeks[]` shape (see `parseCoachPlan` above). A file carrying both
  * uses the flat `workouts[]`, so an explicit hand-written list always wins.
+ * Either way, a `weeks[]` array also yields `plan.weeks` for the day lists'
+ * week headers (Story 4.4), omitted when no week is usable.
  */
 export function parsePlan(raw: unknown): Plan {
+  const plan = parsePlanWorkouts(raw);
+  if (isRecord(raw) && Array.isArray(raw.weeks)) {
+    const weeks = parsePlanWeeks(raw.weeks);
+    if (weeks.length > 0) {
+      plan.weeks = weeks;
+    }
+  }
+  return plan;
+}
+
+/** Story 4.4 -- reads `weeks[]` header data (number, date range, phase,
+ * focus) whenever a Plan carries it, independent of which shape supplied the
+ * workouts. A week without a real ISO `startDate` can't be placed in the day
+ * list, so it's dropped with a warning (Story 4.1's convention); a missing or
+ * invalid `endDate` falls back to `startDate` + 6 days. */
+function parsePlanWeeks(rawWeeks: unknown[]): PlanWeek[] {
+  const weeks: PlanWeek[] = [];
+  for (const raw of rawWeeks) {
+    if (!isRecord(raw)) {
+      console.warn('parsePlan: dropping week that is not an object', raw);
+      continue;
+    }
+    if (typeof raw.startDate !== 'string' || !ISO_DATE_RE.test(raw.startDate) || !isRealCalendarDate(raw.startDate)) {
+      console.warn('parsePlan: dropping week with invalid or missing startDate', raw.weekNumber, raw.startDate);
+      continue;
+    }
+    const fallbackEnd = parseLocalDate(raw.startDate);
+    fallbackEnd.setDate(fallbackEnd.getDate() + 6);
+    // An `endDate` before `startDate` (a hand-edit typo) would render an
+    // inverted range, so it gets the same +6 fallback as a missing one.
+    const endDate =
+      typeof raw.endDate === 'string' &&
+      ISO_DATE_RE.test(raw.endDate) &&
+      isRealCalendarDate(raw.endDate) &&
+      raw.endDate >= raw.startDate
+        ? raw.endDate
+        : toLocalIsoDate(fallbackEnd);
+
+    const week: PlanWeek = { startDate: raw.startDate, endDate };
+    if (typeof raw.weekNumber === 'number' && Number.isInteger(raw.weekNumber) && raw.weekNumber > 0) {
+      week.weekNumber = raw.weekNumber;
+    }
+    const phase = typeof raw.phase === 'string' ? raw.phase.trim() : '';
+    if (phase !== '') {
+      week.phase = phase;
+    }
+    const focus = typeof raw.focus === 'string' ? raw.focus.trim() : '';
+    if (focus !== '') {
+      week.focus = focus;
+    }
+    weeks.push(week);
+  }
+  return weeks;
+}
+
+function parsePlanWorkouts(raw: unknown): Plan {
   if (isRecord(raw) && !Array.isArray(raw.workouts) && Array.isArray(raw.weeks)) {
     return parseCoachPlan(raw, raw.weeks);
   }

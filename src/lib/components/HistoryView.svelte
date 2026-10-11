@@ -51,6 +51,7 @@
   // story's Boundaries already establish for `selectedDate`.
   import SkeletonDayRow from './SkeletonDayRow.svelte';
   import DayRowCard from './DayRowCard.svelte';
+  import WeekHeader from './WeekHeader.svelte';
   import TrendChart from './TrendChart.svelte';
   import RollupSummary from './RollupSummary.svelte';
   import { planStore, loadPlan } from '../data/planStore.svelte';
@@ -58,6 +59,7 @@
   import { isSavedReviewSunday } from '../data/weekEndReviewStore.svelte';
   import { parsePlan } from '../domain/parsePlan';
   import { getPlanDayRange } from '../domain/getPlanDayRange';
+  import { getWeekHeaderDates } from '../domain/getWeekHeaderDates';
   import { getTodayIso } from '../domain/date';
 
   // `onOpen` opens WorkoutDetail (forwarded straight through to every
@@ -90,6 +92,8 @@
   // the same date overwrites an earlier one in the map, mirroring
   // App.svelte's own "the later array entry wins for that date" rule.
   const workoutsByDate = $derived(new Map(plan.workouts.map((workout) => [workout.date, workout])));
+  // Story 4.4 -- same header placement as App.svelte's Home list.
+  const weekStarts = $derived(getWeekHeaderDates(dayRange, plan.weeks));
 </script>
 
 <div class="history-view">
@@ -119,6 +123,10 @@
          document -- see this rule's `overflow-y`/`max-height` below. -->
     <div class="history-list">
       {#each dayRange as date (date)}
+        {@const week = weekStarts.get(date)}
+        {#if week}
+          <WeekHeader {week} />
+        {/if}
         <DayRowCard
           {date}
           workout={workoutsByDate.get(date)}

@@ -176,3 +176,48 @@ describe('App -- tap the active tab to reset its view', () => {
     expect(elementScrollTo).toHaveBeenCalledTimes(1);
   });
 });
+
+// Story 4.4 -- week headers on Home: before each plan week's first day only,
+// never before a day outside every plan week, and not at all for a flat plan.
+describe('App -- week headers on Home (Story 4.4)', () => {
+  function nextRowDate(header: Element): string | null {
+    return header.nextElementSibling?.getAttribute('data-date') ?? null;
+  }
+
+  it("places each header before its week's first rendered day, even when the week starts on an unrendered rest Monday", async () => {
+    // Coach weeks start on a rest-only Monday. Week 1 starts Sep 28, before
+    // both the first workout (Oct 1) and today (Oct 6), so Sep 28 is not in
+    // the day list -- its header must move to Oct 1, the first rendered day.
+    planStore.plan = {
+      workouts: WORKOUTS,
+      weeks: [
+        { weekNumber: 1, startDate: '2026-09-28', endDate: '2026-10-04', phase: 'Return', days: [] },
+        { weekNumber: 2, startDate: '2026-10-05', endDate: '2026-10-11', phase: 'Return', days: [] },
+      ],
+    };
+    const { container } = await renderApp();
+    const list = container.querySelector('#panel-home .day-list')!;
+    const headers = Array.from(list.querySelectorAll('.week-header'));
+
+    expect(headers.map((h) => nextRowDate(h))).toEqual(['2026-10-01', '2026-10-05']);
+    expect(headers[0]).toHaveTextContent('Week 1 · Sep 28–Oct 4 · Return');
+    expect(list.firstElementChild).toBe(headers[0]);
+  });
+
+  it('days before the first plan week carry no header', async () => {
+    planStore.plan = {
+      workouts: WORKOUTS,
+      weeks: [{ weekNumber: 1, startDate: '2026-10-05', endDate: '2026-10-11', phase: 'Return', days: [] }],
+    };
+    const { container } = await renderApp();
+    const list = container.querySelector('#panel-home .day-list')!;
+    expect(list.firstElementChild?.getAttribute('data-date')).toBe('2026-10-01');
+    expect(nextRowDate(list.querySelector('.week-header')!)).toBe('2026-10-05');
+  });
+
+  it('a flat plan renders dated rows and no headers', async () => {
+    const { container } = await renderApp();
+    expect(container.querySelectorAll('#panel-home .week-header')).toHaveLength(0);
+    expect(container.querySelector(`#panel-home [data-date="${FIXED_TODAY}"] .weekday`)?.textContent).toBe('TUE · Oct 6');
+  });
+});

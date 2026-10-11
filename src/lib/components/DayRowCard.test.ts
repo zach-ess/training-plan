@@ -235,3 +235,13 @@ describe('DayRowCard Missed state (Story 2.4)', () => {
     expect(queryByText('Missed')).toBeNull();
   });
 });
+
+describe('DayRowCard date label (Story 4.4)', () => {
+  it('shows the date beside the weekday, and the aria-label still carries the full date', () => {
+    const { container } = render(DayRowCard, {
+      props: { date: '2026-10-13', workout: undefined, isToday: false, onOpen: vi.fn() },
+    });
+    expect(container.querySelector('.weekday')?.textContent).toBe('TUE · Oct 13');
+    expect(container.querySelector('.day-row')?.getAttribute('aria-label')).toContain('October 13');
+  });
+});

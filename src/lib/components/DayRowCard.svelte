@@ -42,6 +42,10 @@
   const weekdayShort = $derived(
     dateObj.toLocaleDateString(undefined, { weekday: 'short' }).toUpperCase(),
   );
+  // Story 4.4 -- the visible date beside the weekday ("TUE · Oct 13"), so a
+  // long plan is readable at a glance. The aria-label below already carried
+  // the full date; this is the sighted-user half.
+  const dateShort = $derived(dateObj.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }));
 
   // Computed once, not re-derived reactively -- mirrors App.svelte's own
   // `todayIso` (the Never section is explicit that "today" never
@@ -148,7 +152,7 @@
        aria-label already announced on the button itself. -->
   <span class="day-main" aria-hidden="true">
     <span class="day-heading">
-      <span class="weekday">{weekdayShort}</span>
+      <span class="weekday">{weekdayShort} · {dateShort}</span>
       {#if isToday}
         <span class="today-label">Today</span>
       {:else if isMissed}

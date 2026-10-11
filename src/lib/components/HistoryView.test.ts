@@ -363,3 +363,46 @@ describe('HistoryView -- Rollups & Trend Chart wiring (Story 3.2)', () => {
     ).toBeTruthy();
   });
 });
+
+// Story 4.4 -- History renders the same week headers as Home, inside
+// `.history-list`, directly before each plan week's first day.
+describe('HistoryView -- week headers (Story 4.4)', () => {
+  it('places a header before each plan week\'s first day', () => {
+    planStore.plan = {
+      workouts: [{ date: '2026-09-20', type: 'Run', duration: '30 min' }],
+      weeks: [{ weekNumber: 1, startDate: '2026-09-21', endDate: '2026-09-27', phase: 'Base', focus: 'Easy week', days: [] }],
+    };
+    planStore.status = 'loaded';
+
+    const { container } = render(HistoryView, { props: { onOpen: vi.fn(), onOpenReview: vi.fn() } });
+    const headers = container.querySelectorAll('.history-list .week-header');
+
+    expect(headers).toHaveLength(1);
+    expect(headers[0].querySelector('h2')?.textContent).toBe('Week 1 · Sep 21–27 · Base');
+    expect(headers[0].querySelector('.week-focus')?.textContent).toBe('Easy week');
+    expect(headers[0].nextElementSibling?.getAttribute('data-date')).toBe('2026-09-21');
+    expect(container.querySelector('.history-list')?.firstElementChild?.getAttribute('data-date')).toBe('2026-09-20');
+  });
+
+  it("moves a week's header to its first rendered day when the week starts on an unrendered rest Monday", () => {
+    // Week starts Mon Sep 21, before both the first workout (Wed Sep 23) and
+    // today (Sep 25), so Sep 21 isn't in the list.
+    planStore.plan = {
+      workouts: [{ date: '2026-09-23', type: 'Run', duration: '30 min' }],
+      weeks: [{ weekNumber: 1, startDate: '2026-09-21', endDate: '2026-09-27', phase: 'Base', days: [] }],
+    };
+    planStore.status = 'loaded';
+
+    const { container } = render(HistoryView, { props: { onOpen: vi.fn(), onOpenReview: vi.fn() } });
+    const list = container.querySelector('.history-list')!;
+
+    expect(list.firstElementChild).toHaveClass('week-header');
+    expect(list.firstElementChild?.nextElementSibling?.getAttribute('data-date')).toBe('2026-09-23');
+  });
+
+  it('a flat plan renders no week headers', () => {
+    setLoadedPlan([{ date: '2026-09-20', type: 'Run', duration: '30 min' }]);
+    const { container } = render(HistoryView, { props: { onOpen: vi.fn(), onOpenReview: vi.fn() } });
+    expect(container.querySelectorAll('.history-list .week-header')).toHaveLength(0);
+  });
+});
