@@ -53,11 +53,26 @@
   // either no-op against an already-hidden element or leave focus somewhere
   // the user just navigated away from. `handleSelect` restores focus into
   // the tab actually being switched to instead.
-  function handleCloseDetail(options?: { skipFocusRestore?: boolean }) {
+  //
+  // Async since the 2026-10-11 focus fix: the dialog closes synchronously,
+  // but the refocus waits a tick. Callers (WorkoutDetail's `onClose`,
+  // `handleSelect`, `handleOpenReviewFromDetail`) don't await it, same as
+  // `handleCloseReview` -- don't rely on focus being restored synchronously.
+  async function handleCloseDetail(options?: { skipFocusRestore?: boolean }) {
     // Read before clearing -- the row to refocus is the one that was open.
     const closedDate = selectedDate;
     selectedDate = null;
-    if (options?.skipFocusRestore) {
+    if (options?.skipFocusRestore || !closedDate) {
+      return;
+    }
+    // Fix (2026-10-11, deferred from Story 4.3): `tick()` first -- both tab
+    // panels stay `inert` until `selectedDate = null` flushes, and a real
+    // browser silently refuses `.focus()` inside an inert subtree (jsdom
+    // doesn't enforce `inert`), which dropped focus to <body>. Same fix as
+    // `handleCloseReview`, including bailing out if another dialog opened
+    // during that tick.
+    await tick();
+    if (selectedDate !== null || reviewDialog !== null) {
       return;
     }
     // Mirrors `scrollToToday`'s existing query-selector convention. The day
@@ -79,15 +94,13 @@
     // hazard `skipFocusRestore`/Epic 2 retro finding F1 already guards
     // against elsewhere in this file) -- dropping focus to `<body>` instead
     // of back into the row the user actually tapped.
-    if (closedDate) {
-      const row = document.querySelector<HTMLElement>(
-        `#panel-${activeTab} [data-date="${closedDate}"]`,
-      );
-      if (row) {
-        row.focus();
-      } else {
-        document.getElementById(`panel-${activeTab}`)?.focus();
-      }
+    const row = document.querySelector<HTMLElement>(
+      `#panel-${activeTab} [data-date="${closedDate}"]`,
+    );
+    if (row) {
+      row.focus();
+    } else {
+      document.getElementById(`panel-${activeTab}`)?.focus();
     }
   }
 

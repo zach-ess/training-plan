@@ -222,6 +222,31 @@ describe('App -- week headers on Home (Story 4.4)', () => {
   });
 });
 
+/** Records, for every `focus()` call, whether the target sat inside an
+ * inert subtree at that moment -- a real browser silently refuses such
+ * a focus, but jsdom doesn't enforce `inert`, so asserting
+ * `document.activeElement` alone can't catch focusing too early. */
+function trackFocusInert() {
+  const calls: { el: HTMLElement; inert: boolean }[] = [];
+  const original = HTMLElement.prototype.focus;
+  vi.spyOn(HTMLElement.prototype, 'focus').mockImplementation(function (this: HTMLElement, options?: FocusOptions) {
+    // jsdom has no native `inert`, so Svelte sets it as a plain property
+    // rather than an attribute -- walk the ancestors and read that.
+    let node: HTMLElement | null = this;
+    let inert = false;
+    while (node) {
+      if ((node as HTMLElement & { inert?: boolean }).inert === true) {
+        inert = true;
+        break;
+      }
+      node = node.parentElement;
+    }
+    calls.push({ el: this, inert });
+    return original.call(this, options);
+  });
+  return calls;
+}
+
 // Story 4.3 -- a Sunday row opens WorkoutDetail (never the Review directly),
 // and the Sunday's Review is reached from Detail: Detail closes, the Review
 // opens (editable while unsaved, read-only once saved), and closing the
@@ -231,31 +256,6 @@ describe('App -- Week-End Review from a Sunday (Story 4.3)', () => {
     const { weekEndReviewStore } = await import('./lib/data/weekEndReviewStore.svelte');
     delete weekEndReviewStore.reviews['2026-10-04'];
   });
-
-  /** Records, for every `focus()` call, whether the target sat inside an
-   * inert subtree at that moment -- a real browser silently refuses such
-   * a focus, but jsdom doesn't enforce `inert`, so asserting
-   * `document.activeElement` alone can't catch focusing too early. */
-  function trackFocusInert() {
-    const calls: { el: HTMLElement; inert: boolean }[] = [];
-    const original = HTMLElement.prototype.focus;
-    vi.spyOn(HTMLElement.prototype, 'focus').mockImplementation(function (this: HTMLElement, options?: FocusOptions) {
-      // jsdom has no native `inert`, so Svelte sets it as a plain property
-      // rather than an attribute -- walk the ancestors and read that.
-      let node: HTMLElement | null = this;
-      let inert = false;
-      while (node) {
-        if ((node as HTMLElement & { inert?: boolean }).inert === true) {
-          inert = true;
-          break;
-        }
-        node = node.parentElement;
-      }
-      calls.push({ el: this, inert });
-      return original.call(this, options);
-    });
-    return calls;
-  }
 
   it('past unsaved Sunday: row -> Detail -> "Review this week" -> editable Review; closing returns focus to the row', async () => {
     const { container } = await renderApp();
@@ -320,5 +320,51 @@ describe('App -- Week-End Review from a Sunday (Story 4.3)', () => {
     await tick();
     expect(screen.queryByRole('button', { name: 'Save' })).toBeNull();
     expect(screen.getByRole('dialog')).toHaveTextContent('Fine week.');
+  });
+});
+
+// Fix (2026-10-11, deferred from Story 4.3): closing Workout Detail returns
+// focus to the tapped row only after the panels stop being inert, so a real
+// browser accepts it (jsdom alone would accept it either way).
+describe('App -- Workout Detail close returns focus to the row', () => {
+  for (const [how, close] of [
+    ['Escape', () => fireEvent.keyDown(window, { key: 'Escape' })],
+    ['Back', () => fireEvent.click(screen.getByRole('button', { name: '← Back' }))],
+    ['scrim tap', () => fireEvent.click(document.querySelector('.scrim') as HTMLElement)],
+  ] as const) {
+    it(`closing by ${how} focuses the tapped row once it is no longer inert`, async () => {
+      const { container } = await renderApp();
+      // A weekday row (Thu Oct 1), so Sunday's review action plays no part.
+      const row = container.querySelector<HTMLElement>('#panel-home [data-date="2026-10-01"]')!;
+      const focusCalls = trackFocusInert();
+
+      await fireEvent.click(row);
+      await tick();
+      expect(screen.getByRole('dialog')).toBeInTheDocument();
+
+      await close();
+      await tick();
+      await tick();
+
+      expect(screen.queryByRole('dialog')).toBeNull();
+      expect(document.activeElement).toBe(row);
+      expect(focusCalls.filter((c) => c.el === row).map((c) => c.inert)).toEqual([false]);
+    });
+  }
+
+  it('from the History tab, closing returns focus to the History row (not Home\x27s copy)', async () => {
+    const { container } = await renderApp();
+    await tapTab(/history/i);
+    const row = container.querySelector<HTMLElement>('#panel-history [data-date="2026-10-01"]')!;
+    const focusCalls = trackFocusInert();
+
+    await fireEvent.click(row);
+    await tick();
+    await fireEvent.keyDown(window, { key: 'Escape' });
+    await tick();
+    await tick();
+
+    expect(document.activeElement).toBe(row);
+    expect(focusCalls.filter((c) => c.el === row).map((c) => c.inert)).toEqual([false]);
   });
 });
