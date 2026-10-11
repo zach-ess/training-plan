@@ -18,7 +18,7 @@
 // type into the Derived Domain layer. `readLoggedFields` below is the single
 // place that knows LogEntry's field names.
 
-import type { Workout } from './parsePlan';
+import type { Workout, PlanSession } from './parsePlan';
 import { isRecord } from './guards';
 
 export type DayViewKind = 'logged' | 'planned' | 'orphaned-log' | 'empty';
@@ -32,6 +32,10 @@ export interface DayView {
   // off the LogEntry); left `undefined` for `'planned'`/`'empty'`, where
   // there is no LogEntry to read a completion state from at all.
   completed?: boolean;
+  // Story 4.5 -- the Plan's sessions for this date, by name, whenever a
+  // Workout exists ('planned' and 'logged'): display-only, so a logged day
+  // still shows what was planned while its LogEntry values win above.
+  sessions?: PlanSession[];
 }
 
 
@@ -62,6 +66,11 @@ function readLoggedFields(
   return fields;
 }
 
+/** Story 4.5 -- the Workout's named sessions, when it has any. */
+function plannedSessions(workout: Workout): Pick<DayView, 'sessions'> {
+  return workout.sessions && workout.sessions.length > 0 ? { sessions: workout.sessions } : {};
+}
+
 /**
  * Merges a date's Plan Workout and LogEntry into a single `DayView`, per
  * AD-8's fixed 4-quadrant contract:
@@ -76,7 +85,7 @@ function readLoggedFields(
  */
 export function getDayView(workout: Workout | undefined, logEntry: unknown | undefined): DayView {
   if (workout && logEntry !== undefined) {
-    return { kind: 'logged', ...readLoggedFields(logEntry) };
+    return { kind: 'logged', ...readLoggedFields(logEntry), ...plannedSessions(workout) };
   }
   if (workout && logEntry === undefined) {
     return {
@@ -84,6 +93,7 @@ export function getDayView(workout: Workout | undefined, logEntry: unknown | und
       type: workout.type,
       duration: workout.duration,
       distance: workout.distance,
+      ...plannedSessions(workout),
     };
   }
   if (!workout && logEntry !== undefined) {

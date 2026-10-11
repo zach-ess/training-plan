@@ -51,20 +51,39 @@ describe('parsePlan -- Claude Coach weeks[] shape', () => {
     );
     expect(plan).toEqual({
       planName: 'Fall Base Block',
-      workouts: [{ date: '2026-10-06', type: 'Run', duration: '40 min', distance: '4 mi' }],
+      workouts: [
+        {
+          date: '2026-10-06',
+          type: 'Run',
+          duration: '40 min',
+          distance: '4 mi',
+          sessions: [{ name: 'Run', duration: '40 min', distance: '4 mi' }],
+        },
+      ],
     });
   });
 
   it('folds a run plus strength on one date into a single Workout', () => {
     const plan = parsePlan(coachPlan([{ date: '2026-10-13', workouts: [RUN_4MI, STRENGTH] }]));
     expect(plan.workouts).toEqual([
-      { date: '2026-10-13', type: 'Run', duration: '40 min + 20 min strength', distance: '4 mi' },
+      {
+        date: '2026-10-13',
+        type: 'Run',
+        duration: '40 min + 20 min strength',
+        distance: '4 mi',
+        sessions: [
+          { name: 'Run', duration: '40 min', distance: '4 mi' },
+          { name: 'Lift', duration: '20 min' },
+        ],
+      },
     ]);
   });
 
   it('maps a strength-only day to the Lift preset with no distance', () => {
     const plan = parsePlan(coachPlan([{ date: '2026-11-25', workouts: [STRENGTH] }]));
-    expect(plan.workouts).toEqual([{ date: '2026-11-25', type: 'Lift', duration: '20 min' }]);
+    expect(plan.workouts).toEqual([
+      { date: '2026-11-25', type: 'Lift', duration: '20 min', sessions: [{ name: 'Lift', duration: '20 min' }] },
+    ]);
   });
 
   it('passes an unmapped sport through capitalized', () => {
@@ -109,7 +128,15 @@ describe('parsePlan -- Claude Coach weeks[] shape', () => {
       ],
     });
     expect(plan).toEqual({
-      workouts: [{ date: '2026-10-08', type: 'Run', duration: '40 min', distance: '4 mi' }],
+      workouts: [
+        {
+          date: '2026-10-08',
+          type: 'Run',
+          duration: '40 min',
+          distance: '4 mi',
+          sessions: [{ name: 'Run', duration: '40 min', distance: '4 mi' }],
+        },
+      ],
     });
   });
 
@@ -215,5 +242,71 @@ describe('parsePlan -- plan week validation (Story 4.4 review loop 1)', () => {
     const plan = parsePlan({ weeks: [null, 'week', { startDate: '2026-10-12', days: [] }] });
     expect(plan.weeks).toHaveLength(1);
     expect(warn.mock.calls.filter((call) => String(call[0]).includes('week that is not an object'))).toHaveLength(2);
+  });
+});
+
+// Story 4.5 -- each Coach day keeps its sessions by name, with their own
+// minutes/distance and full instructions; flat plans and rest days carry none.
+describe('parsePlan -- session names (Story 4.5)', () => {
+  const EASY = {
+    sport: 'run',
+    name: 'Easy 2 mi',
+    description: 'Short note.',
+    humanReadable: '2 miles easy.\nZone 2 HR (139-152).',
+    durationMinutes: 20,
+    distanceMeters: 3219,
+  };
+  const LIIFT = {
+    sport: 'strength',
+    name: 'LIIFT4 · Chest/Triceps — LIIFT 50/50',
+    description: 'LIIFT4 Build It, week 1.',
+    durationMinutes: 40,
+  };
+
+  it('a run + lift day keeps both sessions in plan order, with full instructions preferred over the short note', () => {
+    const plan = parsePlan(coachPlan([{ date: '2026-10-13', workouts: [EASY, LIIFT] }]));
+    expect(plan.workouts[0].duration).toBe('20 min + 40 min strength');
+    expect(plan.workouts[0].sessions).toEqual([
+      { name: 'Easy 2 mi', duration: '20 min', distance: '2 mi', instructions: '2 miles easy.\nZone 2 HR (139-152).' },
+      { name: 'LIIFT4 · Chest/Triceps — LIIFT 50/50', duration: '40 min', instructions: 'LIIFT4 Build It, week 1.' },
+    ]);
+  });
+
+  it('a lift-only day has one named session', () => {
+    const plan = parsePlan(coachPlan([{ date: '2026-10-12', workouts: [REST, LIIFT] }]));
+    expect(plan.workouts[0]).toMatchObject({ type: 'Lift', sessions: [{ name: LIIFT.name }] });
+  });
+
+  it('a nameless or blank-named session falls back to its type label', () => {
+    const plan = parsePlan(coachPlan([{ date: '2026-10-13', workouts: [{ sport: 'run', name: '  ', durationMinutes: 30 }] }]));
+    expect(plan.workouts[0].sessions).toEqual([{ name: 'Run', duration: '30 min' }]);
+  });
+
+  it('rest-only days produce no workout, and flat plans carry no sessions', () => {
+    expect(parsePlan(coachPlan([{ date: '2026-10-12', workouts: [REST] }])).workouts).toEqual([]);
+    expect(parsePlan({ workouts: [{ date: '2026-10-13', type: 'Run' }] }).workouts[0]).not.toHaveProperty('sessions');
+  });
+});
+
+describe('parsePlan -- session edge cases (Story 4.5 review)', () => {
+  it('per-session distance follows preferences.run (km)', () => {
+    const plan = parsePlan(
+      coachPlan([{ date: '2026-10-13', workouts: [{ sport: 'run', name: 'Easy', distanceMeters: 6437 }] }], {
+        preferences: { run: 'km' },
+      }),
+    );
+    expect(plan.workouts[0].sessions?.[0].distance).toBe('6.4 km');
+  });
+
+  it('a whitespace-only humanReadable falls back to the short description', () => {
+    const plan = parsePlan(
+      coachPlan([{ date: '2026-10-13', workouts: [{ sport: 'run', name: 'Easy', humanReadable: '   ', description: 'Short.' }] }]),
+    );
+    expect(plan.workouts[0].sessions?.[0].instructions).toBe('Short.');
+  });
+
+  it('a session with a blank sport and no name is named "Workout", never blank', () => {
+    const plan = parsePlan(coachPlan([{ date: '2026-10-13', workouts: [{ sport: '  ', durationMinutes: 20 }] }]));
+    expect(plan.workouts[0].sessions?.[0].name).toBe('Workout');
   });
 });

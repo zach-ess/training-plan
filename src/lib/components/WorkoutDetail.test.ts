@@ -190,3 +190,78 @@ describe('WorkoutDetail focus management', () => {
     expect(document.activeElement).toBe(editButton);
   });
 });
+
+// Story 4.5 -- Workout Detail lists each planned session by name, with its
+// own minutes · distance and the plan's full instructions, above the stats.
+describe('WorkoutDetail -- planned sessions (Story 4.5)', () => {
+  const date = '2026-12-01';
+  const runAndLift: Workout = {
+    date,
+    type: 'Run',
+    duration: '20 min + 40 min strength',
+    distance: '2 mi',
+    sessions: [
+      { name: 'Easy 2 mi', duration: '20 min', distance: '2 mi', instructions: '2 miles easy.\nZone 2 HR (139-152).' },
+      { name: 'LIIFT4 · Chest/Triceps — LIIFT 50/50', duration: '40 min' },
+    ],
+  };
+
+  it('lists each session with its name, own stats, and instructions (line breaks kept)', () => {
+    const { container } = render(WorkoutDetail, { props: { date, workout: runAndLift, onClose: vi.fn() } });
+    const items = Array.from(container.querySelectorAll('.sessions .session'));
+
+    expect(items.map((li) => li.querySelector('.session-name')?.textContent)).toEqual([
+      'Easy 2 mi',
+      'LIIFT4 · Chest/Triceps — LIIFT 50/50',
+    ]);
+    expect(items.map((li) => li.querySelector('.session-meta')?.textContent)).toEqual(['20 min · 2 mi', '40 min']);
+    expect(items[0].querySelector('.session-instructions')?.textContent).toBe('2 miles easy.\nZone 2 HR (139-152).');
+    expect(items[1].querySelector('.session-instructions')).toBeNull();
+    // The day's stats are still shown below the list.
+    expect(container.querySelector('.sessions + .stats')).not.toBeNull();
+  });
+
+  it('shows no session list for a flat-format Workout or a rest day', () => {
+    const flat = render(WorkoutDetail, {
+      props: { date, workout: { date, type: 'Run', duration: '30 min' }, onClose: vi.fn() },
+    });
+    expect(flat.container.querySelector('.sessions')).toBeNull();
+    cleanup();
+    const rest = render(WorkoutDetail, { props: { date: '2026-12-02', workout: undefined, onClose: vi.fn() } });
+    expect(rest.container.querySelector('.sessions')).toBeNull();
+  });
+});
+
+describe('WorkoutDetail -- planned sessions on logged and orphaned days (Story 4.5 review)', () => {
+  it('a logged day keeps the "Planned" session list above stats that show the LogEntry values', async () => {
+    const { replaceLogEntry } = await import('../data/logStore.svelte');
+    const date = '2026-12-03';
+    const workout: Workout = {
+      date,
+      type: 'Run',
+      duration: '20 min + 40 min strength',
+      distance: '2 mi',
+      sessions: [
+        { name: 'Easy 2 mi', duration: '20 min', distance: '2 mi' },
+        { name: 'LIIFT4 · Back/Biceps — Circuit', duration: '40 min' },
+      ],
+    };
+    replaceLogEntry(date, { type: 'Run', duration: '25 min' });
+
+    const { container, getByRole } = render(WorkoutDetail, { props: { date, workout, onClose: vi.fn() } });
+
+    expect(getByRole('list', { name: 'Planned' })).toBeInTheDocument();
+    expect(
+      Array.from(container.querySelectorAll('.sessions h3')).map((h) => h.textContent),
+    ).toEqual(['Easy 2 mi', 'LIIFT4 · Back/Biceps — Circuit']);
+    expect(container.querySelector('.stats')?.textContent).toContain('25 min');
+  });
+
+  it('an orphaned log (no Workout) shows no session list', async () => {
+    const { replaceLogEntry } = await import('../data/logStore.svelte');
+    const date = '2026-12-04';
+    replaceLogEntry(date, { type: 'Bike', duration: '30 min' });
+    const { container } = render(WorkoutDetail, { props: { date, workout: undefined, onClose: vi.fn() } });
+    expect(container.querySelector('.sessions')).toBeNull();
+  });
+});

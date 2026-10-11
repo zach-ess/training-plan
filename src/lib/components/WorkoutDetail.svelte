@@ -289,6 +289,31 @@
       {#if isRestDay}
         <p class="empty-copy">Nothing scheduled to log yet</p>
       {:else}
+        <!-- Story 4.5 -- each planned session by name, with its own minutes ·
+             distance and the plan's full instructions, above the day's stats
+             (which still show LogEntry values once logged, per AD-8). Plain
+             text only, never interactive. -->
+        {#if dayView.sessions}
+          <!-- "Planned" caption: once a day is logged, the stats below show
+               the LogEntry's values, so the list says it's the plan. Each
+               session name is an <h3> under the dialog's <h2> title, so a
+               screen reader reads name and minutes as separate parts. -->
+          <p class="sessions-label" id="planned-sessions-label">Planned</p>
+          <ul class="sessions" aria-labelledby="planned-sessions-label">
+            {#each dayView.sessions as session}
+              {@const sessionMeta = [session.duration, session.distance].filter(Boolean).join(' · ')}
+              <li class="session">
+                <h3 class="session-name">{session.name}</h3>
+                {#if sessionMeta}
+                  <span class="session-meta">{sessionMeta}</span>
+                {/if}
+                {#if session.instructions}
+                  <p class="session-instructions">{session.instructions}</p>
+                {/if}
+              </li>
+            {/each}
+          </ul>
+        {/if}
         {#if dayView.duration || dayView.distance}
           <div class="stats">
             {#if dayView.duration}
@@ -434,6 +459,58 @@
     font-size: var(--type-title-size);
     font-weight: var(--type-title-weight);
     color: var(--text-primary);
+  }
+
+  /* Story 4.5 -- planned sessions list: hairline-separated, flat, tokens only. */
+  .sessions {
+    list-style: none;
+    margin: 0 0 var(--space-7);
+    padding: 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .session {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-5) 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sessions-label {
+    margin: 0 0 var(--space-3);
+    font-family: var(--type-caption-font-family);
+    font-size: var(--type-caption-size);
+    font-weight: 600;
+    color: var(--text-secondary);
+  }
+
+  .session-name {
+    margin: 0;
+    font-family: var(--type-row-label-font-family);
+    font-size: var(--type-row-label-size);
+    font-weight: var(--type-row-label-weight);
+    color: var(--text-primary);
+    overflow-wrap: break-word;
+  }
+
+  .session-meta {
+    font-family: var(--type-meta-font-family);
+    font-size: var(--type-meta-size);
+    font-weight: var(--type-meta-weight);
+    font-variant-numeric: var(--type-meta-font-variant-numeric);
+    color: var(--text-secondary);
+  }
+
+  .session-instructions {
+    margin: var(--space-3) 0 0;
+    font-family: var(--type-body-font-family);
+    font-size: var(--type-body-size);
+    font-weight: var(--type-body-weight);
+    line-height: var(--type-body-line-height);
+    color: var(--text-secondary);
+    white-space: pre-line;
+    overflow-wrap: break-word;
   }
 
   .empty-copy {

@@ -12,6 +12,20 @@ export interface Workout {
   type?: string;
   duration?: string;
   distance?: string;
+  /** Story 4.5 -- the day's planned sessions by name, in plan order (Claude
+   * Coach plans only; absent for the flat format). Display-only: logging,
+   * Streak and Rollups still use the folded type/duration/distance above. */
+  sessions?: PlanSession[];
+}
+
+/** Story 4.5 -- one planned session within a day, as the Plan names it. */
+export interface PlanSession {
+  name: string;
+  duration?: string;
+  distance?: string;
+  /** The plan's full coaching text (`humanReadable`), else its short
+   * `description`; line breaks kept. */
+  instructions?: string;
 }
 
 /** Story 4.4 -- one plan week, as a Claude Coach plan defines it (Zach's own
@@ -126,6 +140,12 @@ interface CoachSession {
   sport: string;
   minutes?: number;
   meters?: number;
+  name?: string;
+  instructions?: string;
+}
+
+function nonEmptyText(value: unknown): string | undefined {
+  return typeof value === 'string' && value.trim() !== '' ? value.trim() : undefined;
 }
 
 function toCoachSession(raw: unknown): CoachSession | null {
@@ -138,6 +158,14 @@ function toCoachSession(raw: unknown): CoachSession | null {
   }
   if (typeof raw.distanceMeters === 'number' && raw.distanceMeters > 0) {
     session.meters = raw.distanceMeters;
+  }
+  const name = nonEmptyText(raw.name);
+  if (name) {
+    session.name = name;
+  }
+  const instructions = nonEmptyText(raw.humanReadable) ?? nonEmptyText(raw.description);
+  if (instructions) {
+    session.instructions = instructions;
   }
   return session;
 }
@@ -153,7 +181,12 @@ function formatDistance(meters: number, useMiles: boolean): string {
  * first session is the day's primary and supplies `type`; any further
  * sessions (e.g. strength after a run) are appended to `duration` as
  * "+ 20 min strength" so they stay visible without a second row. Distance
- * sums every session that has one. Rest-only days produce no Workout. */
+ * sums every session that has one. Rest-only days produce no Workout.
+ *
+ * Story 4.5 -- also builds `workout.sessions` (each session by name, with its
+ * own minutes/distance and instructions). `toWorkout` keeps only the flat
+ * fields, so `parseCoachPlan` must re-attach `sessions` after validating the
+ * date -- change both together. */
 function toWorkoutFromCoachDay(date: string, rawSessions: unknown, useMiles: boolean): Workout | null {
   if (!Array.isArray(rawSessions)) {
     return null;
@@ -164,9 +197,10 @@ function toWorkoutFromCoachDay(date: string, rawSessions: unknown, useMiles: boo
   }
 
   const [primary, ...extras] = sessions;
+  const typeLabel = (sport: string) => COACH_SPORT_TYPES[sport] ?? sport.charAt(0).toUpperCase() + sport.slice(1);
   const workout: Workout = {
     date,
-    type: COACH_SPORT_TYPES[primary.sport] ?? primary.sport.charAt(0).toUpperCase() + primary.sport.slice(1),
+    type: typeLabel(primary.sport),
   };
 
   const durationParts: string[] = [];
@@ -186,6 +220,23 @@ function toWorkoutFromCoachDay(date: string, rawSessions: unknown, useMiles: boo
   if (meters > 0) {
     workout.distance = formatDistance(meters, useMiles);
   }
+
+  // Story 4.5 -- each session by name (falling back to its type label), with
+  // its own minutes/distance and instructions, for the row title and
+  // Workout Detail.
+  workout.sessions = sessions.map((s) => {
+    const session: PlanSession = { name: s.name ?? (typeLabel(s.sport).trim() || 'Workout') };
+    if (s.minutes !== undefined) {
+      session.duration = `${s.minutes} min`;
+    }
+    if (s.meters !== undefined) {
+      session.distance = formatDistance(s.meters, useMiles);
+    }
+    if (s.instructions) {
+      session.instructions = s.instructions;
+    }
+    return session;
+  });
   return workout;
 }
 
@@ -208,6 +259,11 @@ function parseCoachPlan(raw: Record<string, unknown>, weeks: unknown[]): Plan {
       const folded = toWorkoutFromCoachDay(String(day.date), day.workouts, useMiles);
       const workout = folded && toWorkout(folded);
       if (workout) {
+        // `toWorkout` keeps only the flat-format fields; re-attach the
+        // sessions it validated the date for (Story 4.5).
+        if (folded.sessions) {
+          workout.sessions = folded.sessions;
+        }
         workouts.push(workout);
       }
     }

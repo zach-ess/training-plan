@@ -11,7 +11,7 @@
     "updatedAt": "2026-10-11T00:00:00Z",
     "totalWeeks": 16,
     "generatedBy": "Claude Coach",
-    "note": "Open-ended base block after the Sept 12 BurliMOT half (1:54:00). Week 1 starts Mon Oct 12 2026 (first run Tue Oct 13), after a missed first attempt the week of Oct 5. Four 4-week blocks; every 4th week is a flex week. Thanksgiving falls in Week 7, Christmas in Week 11, New Year’s in Week 12 (flex). Ends with a 5K time trial Jan 30 and a check-in on what comes next."
+    "note": "Open-ended base block after the Sept 12 BurliMOT half (1:54:00). Week 1 starts Mon Oct 12 2026 (first run Tue Oct 13), after a missed first attempt the week of Oct 5. Four 4-week blocks; every 4th week is a flex week. Thanksgiving falls in Week 7, Christmas in Week 11, New Year’s in Week 12 (flex). Ends with a 5K time trial Jan 30 and a check-in on what comes next. Weeks 1-8 (Oct 12 - Dec 6) add LIIFT4 on Mon/Tue/Thu/Fri, knee-safe: legs moved to Monday and always LIIFT 50/50, Full Body HIIT done low-impact; LIIFT replaces the after-run knee-strength sessions until Week 9."
   },
   "preferences": {
     "run": "miles",
@@ -56,7 +56,8 @@
     "constraints": [
       "Knee: conservative volume progression, flex week every 4th week",
       "Holidays: Thanksgiving (Week 7), Christmas (Week 11), New Year's (Week 12 flex)",
-      "Strength folded into Tue/Fri easy-run days"
+      "Strength folded into Tue/Fri easy-run days",
+      "LIIFT4 Weeks 1-8: legs Monday (after the long run), no HIIT legs, low-impact Full Body HIIT; LIIFT replaces knee-strength add-ons"
     ]
   },
   "zones": {
@@ -232,7 +233,7 @@
       "endDate": "2026-10-18",
       "phase": "Return",
       "focus": "Ease back in — short, easy, run/walk OK · 8 mi",
-      "targetHours": 1.3,
+      "targetHours": 4,
       "isRecoveryWeek": false,
       "days": [
         {
@@ -240,11 +241,13 @@
           "dayOfWeek": "Monday",
           "workouts": [
             {
-              "id": "w1-mon-rest",
-              "sport": "rest",
-              "type": "rest",
-              "name": "Rest Day",
-              "description": "Full rest. Walking is fine.",
+              "id": "w1-mon-liift4",
+              "sport": "strength",
+              "type": "strength",
+              "name": "LIIFT4 · Legs — LIIFT 50/50",
+              "description": "LIIFT4 Build It, week 1. Moved to Monday so legs land the day after the long run, not before it. Always the LIIFT 50/50 version -- no HIIT/jumping legs while mileage rebuilds. Knee check: any sharp or lingering knee pain = drop the weight or skip the lunge/jump-type moves.",
+              "durationMinutes": 40,
+              "humanReadable": "LIIFT4 Build It · Week 1\nLegs — LIIFT 50/50 (~40 min)\n\nMoved to Monday so legs land the day after the long run, not before it. Always the LIIFT 50/50 version -- no HIIT/jumping legs while mileage rebuilds. Knee check: any sharp or lingering knee pain = drop the weight or skip the lunge/jump-type moves.",
               "completed": false
             }
           ]
@@ -263,6 +266,16 @@
               "distanceMeters": 3219,
               "primaryZone": "Zone 2",
               "humanReadable": "2 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.\n\nFIRST RUN of the block. Run/walk is completely fine (4 min run / 1 min walk). Only goal: finish feeling like you could do it again tomorrow.\nKnee check: soreness that changes your stride or lingers into the next morning = take the next day off.",
+              "completed": false
+            },
+            {
+              "id": "w1-tue-liift4",
+              "sport": "strength",
+              "type": "strength",
+              "name": "LIIFT4 · Chest/Triceps — LIIFT 50/50",
+              "description": "LIIFT4 Build It, week 1. Follow the LIIFT4 video for this day.",
+              "durationMinutes": 40,
+              "humanReadable": "LIIFT4 Build It · Week 1\nChest/Triceps — LIIFT 50/50 (~40 min)\n\nFollow the LIIFT4 video for this day.",
               "completed": false
             }
           ]
@@ -296,6 +309,16 @@
               "primaryZone": "Zone 2",
               "humanReadable": "3 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.\n\nKnee check: soreness that changes your stride or lingers into the next morning = take the next day off.",
               "completed": false
+            },
+            {
+              "id": "w1-thu-liift4",
+              "sport": "strength",
+              "type": "strength",
+              "name": "LIIFT4 · Back/Biceps — Circuit",
+              "description": "LIIFT4 Build It, week 1. Follow the LIIFT4 video for this day.",
+              "durationMinutes": 40,
+              "humanReadable": "LIIFT4 Build It · Week 1\nBack/Biceps — Circuit (~40 min)\n\nFollow the LIIFT4 video for this day.",
+              "completed": false
             }
           ]
         },
@@ -304,11 +327,13 @@
           "dayOfWeek": "Friday",
           "workouts": [
             {
-              "id": "w1-fri-rest",
-              "sport": "rest",
-              "type": "rest",
-              "name": "Rest Day",
-              "description": "Full rest. Walking is fine.",
+              "id": "w1-fri-liift4",
+              "sport": "strength",
+              "type": "strength",
+              "name": "LIIFT4 · Shoulders — LIIFT Intervals",
+              "description": "LIIFT4 Build It, week 1. Follow the LIIFT4 video for this day.",
+              "durationMinutes": 40,
+              "humanReadable": "LIIFT4 Build It · Week 1\nShoulders — LIIFT Intervals (~40 min)\n\nFollow the LIIFT4 video for this day.",
               "completed": false
             }
           ]
@@ -347,12 +372,16 @@
         }
       ],
       "summary": {
-        "totalHours": 1.3,
+        "totalHours": 4,
         "bySport": {
           "run": {
             "sessions": 3,
             "hours": 1.33,
             "km": 12.9
+          },
+          "strength": {
+            "sessions": 4,
+            "hours": 2.67
           }
         }
       }
@@ -363,7 +392,7 @@
       "endDate": "2026-10-25",
       "phase": "Return",
       "focus": "Rebuild the routine + strength begins · 12 mi",
-      "targetHours": 2.7,
+      "targetHours": 4.7,
       "isRecoveryWeek": false,
       "days": [
         {
@@ -371,11 +400,13 @@
           "dayOfWeek": "Monday",
           "workouts": [
             {
-              "id": "w2-mon-rest",
-              "sport": "rest",
-              "type": "rest",
-              "name": "Rest Day",
-              "description": "Full rest. Walking is fine.",
+              "id": "w2-mon-liift4",
+              "sport": "strength",
+              "type": "strength",
+              "name": "LIIFT4 · Legs — LIIFT 50/50",
+              "description": "LIIFT4 Build It, week 2. Moved to Monday so legs land the day after the long run, not before it. Always the LIIFT 50/50 version -- no HIIT/jumping legs while mileage rebuilds. Knee check: any sharp or lingering knee pain = drop the weight or skip the lunge/jump-type moves.",
+              "durationMinutes": 40,
+              "humanReadable": "LIIFT4 Build It · Week 2\nLegs — LIIFT 50/50 (~40 min)\n\nMoved to Monday so legs land the day after the long run, not before it. Always the LIIFT 50/50 version -- no HIIT/jumping legs while mileage rebuilds. Knee check: any sharp or lingering knee pain = drop the weight or skip the lunge/jump-type moves.",
               "completed": false
             }
           ]
@@ -397,13 +428,13 @@
               "completed": false
             },
             {
-              "id": "w2-tue-str",
+              "id": "w2-tue-liift4",
               "sport": "strength",
-              "type": "endurance",
-              "name": "Strength (after run)",
-              "description": "Folded into today's run — do it right after while warm.",
-              "durationMinutes": 20,
-              "humanReadable": "Knee-insurance strength (15-20 min, right after the run)\n2 rounds:\n  • Glute bridge x 15\n  • Side-lying leg raise x 12 each\n  • Clamshell (band) x 15 each\n  • Lateral band walk x 12 steps each way\n  • Slow step-down (4-6\" step) x 8 each leg — knee tracks over 2nd toe\n  • Calf raise x 15 (straight knee) + x 15 (bent knee)\n  • Plank 30-45s + side plank 20-30s each side",
+              "type": "strength",
+              "name": "LIIFT4 · Chest/Triceps — Circuit",
+              "description": "LIIFT4 Build It, week 2. Follow the LIIFT4 video for this day.",
+              "durationMinutes": 40,
+              "humanReadable": "LIIFT4 Build It · Week 2\nChest/Triceps — Circuit (~40 min)\n\nFollow the LIIFT4 video for this day.",
               "completed": false
             }
           ]
@@ -427,11 +458,13 @@
           "dayOfWeek": "Thursday",
           "workouts": [
             {
-              "id": "w2-thu-rest",
-              "sport": "rest",
-              "type": "rest",
-              "name": "Rest Day",
-              "description": "Full rest. Walking is fine.",
+              "id": "w2-thu-liift4",
+              "sport": "strength",
+              "type": "strength",
+              "name": "LIIFT4 · Back/Biceps — LIIFT 50/50",
+              "description": "LIIFT4 Build It, week 2. Follow the LIIFT4 video for this day.",
+              "durationMinutes": 40,
+              "humanReadable": "LIIFT4 Build It · Week 2\nBack/Biceps — LIIFT 50/50 (~40 min)\n\nFollow the LIIFT4 video for this day.",
               "completed": false
             }
           ]
@@ -453,13 +486,13 @@
               "completed": false
             },
             {
-              "id": "w2-fri-str",
+              "id": "w2-fri-liift4",
               "sport": "strength",
-              "type": "endurance",
-              "name": "Strength (after run)",
-              "description": "Folded into today's run — do it right after while warm.",
-              "durationMinutes": 20,
-              "humanReadable": "Knee-insurance strength (15-20 min, right after the run)\n2 rounds:\n  • Glute bridge x 15\n  • Side-lying leg raise x 12 each\n  • Clamshell (band) x 15 each\n  • Lateral band walk x 12 steps each way\n  • Slow step-down (4-6\" step) x 8 each leg — knee tracks over 2nd toe\n  • Calf raise x 15 (straight knee) + x 15 (bent knee)\n  • Plank 30-45s + side plank 20-30s each side",
+              "type": "strength",
+              "name": "LIIFT4 · Shoulders — LIIFT Intervals",
+              "description": "LIIFT4 Build It, week 2. Follow the LIIFT4 video for this day.",
+              "durationMinutes": 40,
+              "humanReadable": "LIIFT4 Build It · Week 2\nShoulders — LIIFT Intervals (~40 min)\n\nFollow the LIIFT4 video for this day.",
               "completed": false
             }
           ]
@@ -498,7 +531,7 @@
         }
       ],
       "summary": {
-        "totalHours": 2.7,
+        "totalHours": 4.7,
         "bySport": {
           "run": {
             "sessions": 3,
@@ -506,8 +539,8 @@
             "km": 19.3
           },
           "strength": {
-            "sessions": 2,
-            "hours": 0.67
+            "sessions": 4,
+            "hours": 2.67
           }
         }
       }
@@ -518,7 +551,7 @@
       "endDate": "2026-11-01",
       "phase": "Return",
       "focus": "Move to 4 runs/week · 15 mi",
-      "targetHours": 3.2,
+      "targetHours": 5.2,
       "isRecoveryWeek": false,
       "days": [
         {
@@ -526,11 +559,13 @@
           "dayOfWeek": "Monday",
           "workouts": [
             {
-              "id": "w3-mon-rest",
-              "sport": "rest",
-              "type": "rest",
-              "name": "Rest Day",
-              "description": "Full rest. Walking is fine.",
+              "id": "w3-mon-liift4",
+              "sport": "strength",
+              "type": "strength",
+              "name": "LIIFT4 · Legs — LIIFT 50/50",
+              "description": "LIIFT4 Build It, week 3. Moved to Monday so legs land the day after the long run, not before it. Always the LIIFT 50/50 version -- no HIIT/jumping legs while mileage rebuilds. Knee check: any sharp or lingering knee pain = drop the weight or skip the lunge/jump-type moves.",
+              "durationMinutes": 40,
+              "humanReadable": "LIIFT4 Build It · Week 3\nLegs — LIIFT 50/50 (~40 min)\n\nMoved to Monday so legs land the day after the long run, not before it. Always the LIIFT 50/50 version -- no HIIT/jumping legs while mileage rebuilds. Knee check: any sharp or lingering knee pain = drop the weight or skip the lunge/jump-type moves.",
               "completed": false
             }
           ]
@@ -552,13 +587,13 @@
               "completed": false
             },
             {
-              "id": "w3-tue-str",
+              "id": "w3-tue-liift4",
               "sport": "strength",
-              "type": "endurance",
-              "name": "Strength (after run)",
-              "description": "Folded into today's run — do it right after while warm.",
-              "durationMinutes": 20,
-              "humanReadable": "Knee-insurance strength (15-20 min, right after the run)\n2 rounds:\n  • Glute bridge x 15\n  • Side-lying leg raise x 12 each\n  • Clamshell (band) x 15 each\n  • Lateral band walk x 12 steps each way\n  • Slow step-down (4-6\" step) x 8 each leg — knee tracks over 2nd toe\n  • Calf raise x 15 (straight knee) + x 15 (bent knee)\n  • Plank 30-45s + side plank 20-30s each side",
+              "type": "strength",
+              "name": "LIIFT4 · Chest/Triceps — LIIFT 50/50",
+              "description": "LIIFT4 Build It, week 3. Follow the LIIFT4 video for this day.",
+              "durationMinutes": 40,
+              "humanReadable": "LIIFT4 Build It · Week 3\nChest/Triceps — LIIFT 50/50 (~40 min)\n\nFollow the LIIFT4 video for this day.",
               "completed": false
             }
           ]
@@ -592,6 +627,16 @@
               "primaryZone": "Zone 2",
               "humanReadable": "3 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.",
               "completed": false
+            },
+            {
+              "id": "w3-thu-liift4",
+              "sport": "strength",
+              "type": "strength",
+              "name": "LIIFT4 · Back/Biceps — Circuit",
+              "description": "LIIFT4 Build It, week 3. Follow the LIIFT4 video for this day.",
+              "durationMinutes": 40,
+              "humanReadable": "LIIFT4 Build It · Week 3\nBack/Biceps — Circuit (~40 min)\n\nFollow the LIIFT4 video for this day.",
+              "completed": false
             }
           ]
         },
@@ -612,13 +657,13 @@
               "completed": false
             },
             {
-              "id": "w3-fri-str",
+              "id": "w3-fri-liift4",
               "sport": "strength",
-              "type": "endurance",
-              "name": "Strength (after run)",
-              "description": "Folded into today's run — do it right after while warm.",
-              "durationMinutes": 20,
-              "humanReadable": "Knee-insurance strength (15-20 min, right after the run)\n2 rounds:\n  • Glute bridge x 15\n  • Side-lying leg raise x 12 each\n  • Clamshell (band) x 15 each\n  • Lateral band walk x 12 steps each way\n  • Slow step-down (4-6\" step) x 8 each leg — knee tracks over 2nd toe\n  • Calf raise x 15 (straight knee) + x 15 (bent knee)\n  • Plank 30-45s + side plank 20-30s each side",
+              "type": "strength",
+              "name": "LIIFT4 · Shoulders — LIIFT Intervals",
+              "description": "LIIFT4 Build It, week 3. Follow the LIIFT4 video for this day.",
+              "durationMinutes": 40,
+              "humanReadable": "LIIFT4 Build It · Week 3\nShoulders — LIIFT Intervals (~40 min)\n\nFollow the LIIFT4 video for this day.",
               "completed": false
             }
           ]
@@ -657,7 +702,7 @@
         }
       ],
       "summary": {
-        "totalHours": 3.2,
+        "totalHours": 5.2,
         "bySport": {
           "run": {
             "sessions": 4,
@@ -665,8 +710,8 @@
             "km": 24.1
           },
           "strength": {
-            "sessions": 2,
-            "hours": 0.67
+            "sessions": 4,
+            "hours": 2.67
           }
         }
       }
@@ -677,7 +722,7 @@
       "endDate": "2026-11-08",
       "phase": "Return",
       "focus": "FLEX WEEK — absorb life, consolidate · 12 mi",
-      "targetHours": 2.5,
+      "targetHours": 4.7,
       "isRecoveryWeek": true,
       "days": [
         {
@@ -685,11 +730,13 @@
           "dayOfWeek": "Monday",
           "workouts": [
             {
-              "id": "w4-mon-rest",
-              "sport": "rest",
-              "type": "rest",
-              "name": "Rest Day",
-              "description": "Full rest. Walking is fine.",
+              "id": "w4-mon-liift4",
+              "sport": "strength",
+              "type": "strength",
+              "name": "LIIFT4 · Legs — LIIFT 50/50",
+              "description": "LIIFT4 Build It, week 4. Moved to Monday so legs land the day after the long run, not before it. Always the LIIFT 50/50 version -- no HIIT/jumping legs while mileage rebuilds. Knee check: any sharp or lingering knee pain = drop the weight or skip the lunge/jump-type moves.",
+              "durationMinutes": 40,
+              "humanReadable": "LIIFT4 Build It · Week 4\nLegs — LIIFT 50/50 (~40 min)\n\nMoved to Monday so legs land the day after the long run, not before it. Always the LIIFT 50/50 version -- no HIIT/jumping legs while mileage rebuilds. Knee check: any sharp or lingering knee pain = drop the weight or skip the lunge/jump-type moves.",
               "completed": false
             }
           ]
@@ -711,13 +758,13 @@
               "completed": false
             },
             {
-              "id": "w4-tue-str",
+              "id": "w4-tue-liift4",
               "sport": "strength",
-              "type": "endurance",
-              "name": "Strength (after run)",
-              "description": "Folded into today's run — do it right after while warm.",
-              "durationMinutes": 15,
-              "humanReadable": "Flex-week strength (10-15 min): one round of the usual routine at lighter effort. Skip entirely if life is busy — this is the week that absorbs it.",
+              "type": "strength",
+              "name": "LIIFT4 · Chest/Triceps — Circuit",
+              "description": "LIIFT4 Build It, week 4. Follow the LIIFT4 video for this day.",
+              "durationMinutes": 40,
+              "humanReadable": "LIIFT4 Build It · Week 4\nChest/Triceps — Circuit (~40 min)\n\nFollow the LIIFT4 video for this day.",
               "completed": false
             }
           ]
@@ -751,6 +798,16 @@
               "primaryZone": "Zone 2",
               "humanReadable": "3 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.",
               "completed": false
+            },
+            {
+              "id": "w4-thu-liift4",
+              "sport": "strength",
+              "type": "strength",
+              "name": "LIIFT4 · Back/Biceps — LIIFT 50/50",
+              "description": "LIIFT4 Build It, week 4. Follow the LIIFT4 video for this day.",
+              "durationMinutes": 40,
+              "humanReadable": "LIIFT4 Build It · Week 4\nBack/Biceps — LIIFT 50/50 (~40 min)\n\nFollow the LIIFT4 video for this day.",
+              "completed": false
             }
           ]
         },
@@ -771,13 +828,13 @@
               "completed": false
             },
             {
-              "id": "w4-fri-str",
+              "id": "w4-fri-liift4",
               "sport": "strength",
-              "type": "endurance",
-              "name": "Strength (after run)",
-              "description": "Folded into today's run — do it right after while warm.",
-              "durationMinutes": 15,
-              "humanReadable": "Flex-week strength (10-15 min): one round of the usual routine at lighter effort. Skip entirely if life is busy — this is the week that absorbs it.",
+              "type": "strength",
+              "name": "LIIFT4 · Shoulders — LIIFT Intervals",
+              "description": "LIIFT4 Build It, week 4. Follow the LIIFT4 video for this day.",
+              "durationMinutes": 40,
+              "humanReadable": "LIIFT4 Build It · Week 4\nShoulders — LIIFT Intervals (~40 min)\n\nFollow the LIIFT4 video for this day.",
               "completed": false
             }
           ]
@@ -816,7 +873,7 @@
         }
       ],
       "summary": {
-        "totalHours": 2.5,
+        "totalHours": 4.7,
         "bySport": {
           "run": {
             "sessions": 4,
@@ -824,8 +881,8 @@
             "km": 19.3
           },
           "strength": {
-            "sessions": 2,
-            "hours": 0.5
+            "sessions": 4,
+            "hours": 2.67
           }
         }
       }
@@ -836,7 +893,7 @@
       "endDate": "2026-11-15",
       "phase": "Aerobic Base",
       "focus": "Build the engine — strides return · 18 mi",
-      "targetHours": 3.8,
+      "targetHours": 5.8,
       "isRecoveryWeek": false,
       "days": [
         {
@@ -844,11 +901,13 @@
           "dayOfWeek": "Monday",
           "workouts": [
             {
-              "id": "w5-mon-rest",
-              "sport": "rest",
-              "type": "rest",
-              "name": "Rest Day",
-              "description": "Full rest. Walking is fine.",
+              "id": "w5-mon-liift4",
+              "sport": "strength",
+              "type": "strength",
+              "name": "LIIFT4 · Legs — LIIFT 50/50",
+              "description": "LIIFT4 Build It, week 5. Moved to Monday so legs land the day after the long run, not before it. Always the LIIFT 50/50 version -- no HIIT/jumping legs while mileage rebuilds. Knee check: any sharp or lingering knee pain = drop the weight or skip the lunge/jump-type moves.",
+              "durationMinutes": 40,
+              "humanReadable": "LIIFT4 Build It · Week 5\nLegs — LIIFT 50/50 (~40 min)\n\nMoved to Monday so legs land the day after the long run, not before it. Always the LIIFT 50/50 version -- no HIIT/jumping legs while mileage rebuilds. Knee check: any sharp or lingering knee pain = drop the weight or skip the lunge/jump-type moves.",
               "completed": false
             }
           ]
@@ -870,13 +929,13 @@
               "completed": false
             },
             {
-              "id": "w5-tue-str",
+              "id": "w5-tue-liift4",
               "sport": "strength",
-              "type": "endurance",
-              "name": "Strength (after run)",
-              "description": "Folded into today's run — do it right after while warm.",
-              "durationMinutes": 20,
-              "humanReadable": "Knee-insurance strength (15-20 min, right after the run)\n2 rounds:\n  • Glute bridge x 15\n  • Side-lying leg raise x 12 each\n  • Clamshell (band) x 15 each\n  • Lateral band walk x 12 steps each way\n  • Slow step-down (4-6\" step) x 8 each leg — knee tracks over 2nd toe\n  • Calf raise x 15 (straight knee) + x 15 (bent knee)\n  • Plank 30-45s + side plank 20-30s each side",
+              "type": "strength",
+              "name": "LIIFT4 · Chest/Triceps — LIIFT 50/50",
+              "description": "LIIFT4 Build It, week 5. Follow the LIIFT4 video for this day.",
+              "durationMinutes": 40,
+              "humanReadable": "LIIFT4 Build It · Week 5\nChest/Triceps — LIIFT 50/50 (~40 min)\n\nFollow the LIIFT4 video for this day.",
               "completed": false
             }
           ]
@@ -910,6 +969,16 @@
               "primaryZone": "Zone 2",
               "humanReadable": "4 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.\nAfter the run: 4 x 20s strides — quick and relaxed, not sprints. Full walk-back recovery.",
               "completed": false
+            },
+            {
+              "id": "w5-thu-liift4",
+              "sport": "strength",
+              "type": "strength",
+              "name": "LIIFT4 · Back/Biceps — Circuit",
+              "description": "LIIFT4 Build It, week 5. Follow the LIIFT4 video for this day.",
+              "durationMinutes": 40,
+              "humanReadable": "LIIFT4 Build It · Week 5\nBack/Biceps — Circuit (~40 min)\n\nFollow the LIIFT4 video for this day.",
+              "completed": false
             }
           ]
         },
@@ -930,13 +999,13 @@
               "completed": false
             },
             {
-              "id": "w5-fri-str",
+              "id": "w5-fri-liift4",
               "sport": "strength",
-              "type": "endurance",
-              "name": "Strength (after run)",
-              "description": "Folded into today's run — do it right after while warm.",
-              "durationMinutes": 20,
-              "humanReadable": "Knee-insurance strength (15-20 min, right after the run)\n2 rounds:\n  • Glute bridge x 15\n  • Side-lying leg raise x 12 each\n  • Clamshell (band) x 15 each\n  • Lateral band walk x 12 steps each way\n  • Slow step-down (4-6\" step) x 8 each leg — knee tracks over 2nd toe\n  • Calf raise x 15 (straight knee) + x 15 (bent knee)\n  • Plank 30-45s + side plank 20-30s each side",
+              "type": "strength",
+              "name": "LIIFT4 · Shoulders — LIIFT Intervals",
+              "description": "LIIFT4 Build It, week 5. Follow the LIIFT4 video for this day.",
+              "durationMinutes": 40,
+              "humanReadable": "LIIFT4 Build It · Week 5\nShoulders — LIIFT Intervals (~40 min)\n\nFollow the LIIFT4 video for this day.",
               "completed": false
             }
           ]
@@ -975,7 +1044,7 @@
         }
       ],
       "summary": {
-        "totalHours": 3.8,
+        "totalHours": 5.8,
         "bySport": {
           "run": {
             "sessions": 4,
@@ -983,8 +1052,8 @@
             "km": 29
           },
           "strength": {
-            "sessions": 2,
-            "hours": 0.67
+            "sessions": 4,
+            "hours": 2.67
           }
         }
       }
@@ -995,7 +1064,7 @@
       "endDate": "2026-11-22",
       "phase": "Aerobic Base",
       "focus": "Volume climbing — all easy · 20 mi",
-      "targetHours": 4.1,
+      "targetHours": 6.1,
       "isRecoveryWeek": false,
       "days": [
         {
@@ -1003,11 +1072,13 @@
           "dayOfWeek": "Monday",
           "workouts": [
             {
-              "id": "w6-mon-rest",
-              "sport": "rest",
-              "type": "rest",
-              "name": "Rest Day",
-              "description": "Full rest. Walking is fine.",
+              "id": "w6-mon-liift4",
+              "sport": "strength",
+              "type": "strength",
+              "name": "LIIFT4 · Legs — LIIFT 50/50",
+              "description": "LIIFT4 Build It, week 6. Moved to Monday so legs land the day after the long run, not before it. Always the LIIFT 50/50 version -- no HIIT/jumping legs while mileage rebuilds. Knee check: any sharp or lingering knee pain = drop the weight or skip the lunge/jump-type moves.",
+              "durationMinutes": 40,
+              "humanReadable": "LIIFT4 Build It · Week 6\nLegs — LIIFT 50/50 (~40 min)\n\nMoved to Monday so legs land the day after the long run, not before it. Always the LIIFT 50/50 version -- no HIIT/jumping legs while mileage rebuilds. Knee check: any sharp or lingering knee pain = drop the weight or skip the lunge/jump-type moves.",
               "completed": false
             }
           ]
@@ -1029,13 +1100,13 @@
               "completed": false
             },
             {
-              "id": "w6-tue-str",
+              "id": "w6-tue-liift4",
               "sport": "strength",
-              "type": "endurance",
-              "name": "Strength (after run)",
-              "description": "Folded into today's run — do it right after while warm.",
-              "durationMinutes": 20,
-              "humanReadable": "Knee-insurance strength (15-20 min, right after the run)\n2 rounds:\n  • Glute bridge x 15\n  • Side-lying leg raise x 12 each\n  • Clamshell (band) x 15 each\n  • Lateral band walk x 12 steps each way\n  • Slow step-down (4-6\" step) x 8 each leg — knee tracks over 2nd toe\n  • Calf raise x 15 (straight knee) + x 15 (bent knee)\n  • Plank 30-45s + side plank 20-30s each side",
+              "type": "strength",
+              "name": "LIIFT4 · Chest/Triceps — Circuit",
+              "description": "LIIFT4 Build It, week 6. Follow the LIIFT4 video for this day.",
+              "durationMinutes": 40,
+              "humanReadable": "LIIFT4 Build It · Week 6\nChest/Triceps — Circuit (~40 min)\n\nFollow the LIIFT4 video for this day.",
               "completed": false
             }
           ]
@@ -1069,6 +1140,16 @@
               "primaryZone": "Zone 2",
               "humanReadable": "5 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.\nAfter the run: 6 x 20s strides — quick and relaxed, not sprints. Full walk-back recovery.",
               "completed": false
+            },
+            {
+              "id": "w6-thu-liift4",
+              "sport": "strength",
+              "type": "strength",
+              "name": "LIIFT4 · Back/Biceps — LIIFT 50/50",
+              "description": "LIIFT4 Build It, week 6. Follow the LIIFT4 video for this day.",
+              "durationMinutes": 40,
+              "humanReadable": "LIIFT4 Build It · Week 6\nBack/Biceps — LIIFT 50/50 (~40 min)\n\nFollow the LIIFT4 video for this day.",
+              "completed": false
             }
           ]
         },
@@ -1089,13 +1170,13 @@
               "completed": false
             },
             {
-              "id": "w6-fri-str",
+              "id": "w6-fri-liift4",
               "sport": "strength",
-              "type": "endurance",
-              "name": "Strength (after run)",
-              "description": "Folded into today's run — do it right after while warm.",
-              "durationMinutes": 20,
-              "humanReadable": "Knee-insurance strength (15-20 min, right after the run)\n2 rounds:\n  • Glute bridge x 15\n  • Side-lying leg raise x 12 each\n  • Clamshell (band) x 15 each\n  • Lateral band walk x 12 steps each way\n  • Slow step-down (4-6\" step) x 8 each leg — knee tracks over 2nd toe\n  • Calf raise x 15 (straight knee) + x 15 (bent knee)\n  • Plank 30-45s + side plank 20-30s each side",
+              "type": "strength",
+              "name": "LIIFT4 · Shoulders — LIIFT Intervals",
+              "description": "LIIFT4 Build It, week 6. Follow the LIIFT4 video for this day.",
+              "durationMinutes": 40,
+              "humanReadable": "LIIFT4 Build It · Week 6\nShoulders — LIIFT Intervals (~40 min)\n\nFollow the LIIFT4 video for this day.",
               "completed": false
             }
           ]
@@ -1134,7 +1215,7 @@
         }
       ],
       "summary": {
-        "totalHours": 4.1,
+        "totalHours": 6.1,
         "bySport": {
           "run": {
             "sessions": 4,
@@ -1142,8 +1223,8 @@
             "km": 32.2
           },
           "strength": {
-            "sessions": 2,
-            "hours": 0.67
+            "sessions": 4,
+            "hours": 2.67
           }
         }
       }
@@ -1154,7 +1235,7 @@
       "endDate": "2026-11-29",
       "phase": "Aerobic Base",
       "focus": "Thanksgiving week — strides twice a week · 22 mi",
-      "targetHours": 4.4,
+      "targetHours": 6.4,
       "isRecoveryWeek": false,
       "days": [
         {
@@ -1162,11 +1243,13 @@
           "dayOfWeek": "Monday",
           "workouts": [
             {
-              "id": "w7-mon-rest",
-              "sport": "rest",
-              "type": "rest",
-              "name": "Rest Day",
-              "description": "Full rest. Walking is fine.",
+              "id": "w7-mon-liift4",
+              "sport": "strength",
+              "type": "strength",
+              "name": "LIIFT4 · Legs — LIIFT 50/50",
+              "description": "LIIFT4 Shred It, week 7. Moved to Monday so legs land the day after the long run, not before it. Always the LIIFT 50/50 version -- no HIIT/jumping legs while mileage rebuilds. Knee check: any sharp or lingering knee pain = drop the weight or skip the lunge/jump-type moves.",
+              "durationMinutes": 40,
+              "humanReadable": "LIIFT4 Shred It · Week 7\nLegs — LIIFT 50/50 (~40 min)\n\nMoved to Monday so legs land the day after the long run, not before it. Always the LIIFT 50/50 version -- no HIIT/jumping legs while mileage rebuilds. Knee check: any sharp or lingering knee pain = drop the weight or skip the lunge/jump-type moves.",
               "completed": false
             }
           ]
@@ -1188,13 +1271,13 @@
               "completed": false
             },
             {
-              "id": "w7-tue-str",
+              "id": "w7-tue-liift4",
               "sport": "strength",
-              "type": "endurance",
-              "name": "Strength (after run)",
-              "description": "Folded into today's run — do it right after while warm.",
-              "durationMinutes": 20,
-              "humanReadable": "Knee-insurance strength (15-20 min, right after the run)\n2 rounds:\n  • Glute bridge x 15\n  • Side-lying leg raise x 12 each\n  • Clamshell (band) x 15 each\n  • Lateral band walk x 12 steps each way\n  • Slow step-down (4-6\" step) x 8 each leg — knee tracks over 2nd toe\n  • Calf raise x 15 (straight knee) + x 15 (bent knee)\n  • Plank 30-45s + side plank 20-30s each side",
+              "type": "strength",
+              "name": "LIIFT4 · Chest/Back — Circuit",
+              "description": "LIIFT4 Shred It, week 7. Follow the LIIFT4 video for this day.",
+              "durationMinutes": 40,
+              "humanReadable": "LIIFT4 Shred It · Week 7\nChest/Back — Circuit (~40 min)\n\nFollow the LIIFT4 video for this day.",
               "completed": false
             }
           ]
@@ -1228,6 +1311,16 @@
               "primaryZone": "Zone 2",
               "humanReadable": "5 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.\nAfter the run: 6 x 20s strides — quick and relaxed, not sprints. Full walk-back recovery.\n\nThanksgiving. A Turkey Trot is a great way to get this in — run it easy, not as a race (skip the strides if you do).",
               "completed": false
+            },
+            {
+              "id": "w7-thu-liift4",
+              "sport": "strength",
+              "type": "strength",
+              "name": "LIIFT4 · Shoulders/Arms — Circuit",
+              "description": "LIIFT4 Shred It, week 7. Follow the LIIFT4 video for this day.",
+              "durationMinutes": 40,
+              "humanReadable": "LIIFT4 Shred It · Week 7\nShoulders/Arms — Circuit (~40 min)\n\nFollow the LIIFT4 video for this day.",
+              "completed": false
             }
           ]
         },
@@ -1248,13 +1341,13 @@
               "completed": false
             },
             {
-              "id": "w7-fri-str",
+              "id": "w7-fri-liift4",
               "sport": "strength",
-              "type": "endurance",
-              "name": "Strength (after run)",
-              "description": "Folded into today's run — do it right after while warm.",
-              "durationMinutes": 20,
-              "humanReadable": "Knee-insurance strength (15-20 min, right after the run)\n2 rounds:\n  • Glute bridge x 15\n  • Side-lying leg raise x 12 each\n  • Clamshell (band) x 15 each\n  • Lateral band walk x 12 steps each way\n  • Slow step-down (4-6\" step) x 8 each leg — knee tracks over 2nd toe\n  • Calf raise x 15 (straight knee) + x 15 (bent knee)\n  • Plank 30-45s + side plank 20-30s each side",
+              "type": "strength",
+              "name": "LIIFT4 · Full Body — HIIT",
+              "description": "LIIFT4 Shred It, week 7. HIIT day: use the low-impact modifier throughout (no jumping) -- protect the knees for running.",
+              "durationMinutes": 40,
+              "humanReadable": "LIIFT4 Shred It · Week 7\nFull Body — HIIT (~40 min)\n\nHIIT day: use the low-impact modifier throughout (no jumping) -- protect the knees for running.",
               "completed": false
             }
           ]
@@ -1293,7 +1386,7 @@
         }
       ],
       "summary": {
-        "totalHours": 4.4,
+        "totalHours": 6.4,
         "bySport": {
           "run": {
             "sessions": 4,
@@ -1301,8 +1394,8 @@
             "km": 35.4
           },
           "strength": {
-            "sessions": 2,
-            "hours": 0.67
+            "sessions": 4,
+            "hours": 2.67
           }
         }
       }
@@ -1313,7 +1406,7 @@
       "endDate": "2026-12-06",
       "phase": "Aerobic Base",
       "focus": "FLEX WEEK · 16 mi",
-      "targetHours": 3.2,
+      "targetHours": 5.4,
       "isRecoveryWeek": true,
       "days": [
         {
@@ -1321,11 +1414,13 @@
           "dayOfWeek": "Monday",
           "workouts": [
             {
-              "id": "w8-mon-rest",
-              "sport": "rest",
-              "type": "rest",
-              "name": "Rest Day",
-              "description": "Full rest. Walking is fine.",
+              "id": "w8-mon-liift4",
+              "sport": "strength",
+              "type": "strength",
+              "name": "LIIFT4 · Legs — LIIFT 50/50",
+              "description": "LIIFT4 Shred It, week 8. Moved to Monday so legs land the day after the long run, not before it. Always the LIIFT 50/50 version -- no HIIT/jumping legs while mileage rebuilds. Knee check: any sharp or lingering knee pain = drop the weight or skip the lunge/jump-type moves.",
+              "durationMinutes": 40,
+              "humanReadable": "LIIFT4 Shred It · Week 8\nLegs — LIIFT 50/50 (~40 min)\n\nMoved to Monday so legs land the day after the long run, not before it. Always the LIIFT 50/50 version -- no HIIT/jumping legs while mileage rebuilds. Knee check: any sharp or lingering knee pain = drop the weight or skip the lunge/jump-type moves.",
               "completed": false
             }
           ]
@@ -1347,13 +1442,13 @@
               "completed": false
             },
             {
-              "id": "w8-tue-str",
+              "id": "w8-tue-liift4",
               "sport": "strength",
-              "type": "endurance",
-              "name": "Strength (after run)",
-              "description": "Folded into today's run — do it right after while warm.",
-              "durationMinutes": 15,
-              "humanReadable": "Flex-week strength (10-15 min): one round of the usual routine at lighter effort. Skip entirely if life is busy — this is the week that absorbs it.",
+              "type": "strength",
+              "name": "LIIFT4 · Chest/Back — Circuit",
+              "description": "LIIFT4 Shred It, week 8. Follow the LIIFT4 video for this day.",
+              "durationMinutes": 40,
+              "humanReadable": "LIIFT4 Shred It · Week 8\nChest/Back — Circuit (~40 min)\n\nFollow the LIIFT4 video for this day.",
               "completed": false
             }
           ]
@@ -1387,6 +1482,16 @@
               "primaryZone": "Zone 2",
               "humanReadable": "4 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.\nAfter the run: 4 x 20s strides — quick and relaxed, not sprints. Full walk-back recovery.",
               "completed": false
+            },
+            {
+              "id": "w8-thu-liift4",
+              "sport": "strength",
+              "type": "strength",
+              "name": "LIIFT4 · Shoulders/Arms — Circuit",
+              "description": "LIIFT4 Shred It, week 8. Follow the LIIFT4 video for this day.",
+              "durationMinutes": 40,
+              "humanReadable": "LIIFT4 Shred It · Week 8\nShoulders/Arms — Circuit (~40 min)\n\nFollow the LIIFT4 video for this day.",
+              "completed": false
             }
           ]
         },
@@ -1407,13 +1512,13 @@
               "completed": false
             },
             {
-              "id": "w8-fri-str",
+              "id": "w8-fri-liift4",
               "sport": "strength",
-              "type": "endurance",
-              "name": "Strength (after run)",
-              "description": "Folded into today's run — do it right after while warm.",
-              "durationMinutes": 15,
-              "humanReadable": "Flex-week strength (10-15 min): one round of the usual routine at lighter effort. Skip entirely if life is busy — this is the week that absorbs it.",
+              "type": "strength",
+              "name": "LIIFT4 · Full Body — HIIT",
+              "description": "LIIFT4 Shred It, week 8. HIIT day: use the low-impact modifier throughout (no jumping) -- protect the knees for running.",
+              "durationMinutes": 40,
+              "humanReadable": "LIIFT4 Shred It · Week 8\nFull Body — HIIT (~40 min)\n\nHIIT day: use the low-impact modifier throughout (no jumping) -- protect the knees for running.",
               "completed": false
             }
           ]
@@ -1452,7 +1557,7 @@
         }
       ],
       "summary": {
-        "totalHours": 3.2,
+        "totalHours": 5.4,
         "bySport": {
           "run": {
             "sessions": 4,
@@ -1460,8 +1565,8 @@
             "km": 25.7
           },
           "strength": {
-            "sessions": 2,
-            "hours": 0.5
+            "sessions": 4,
+            "hours": 2.67
           }
         }
       }

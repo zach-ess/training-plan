@@ -88,7 +88,16 @@
   // "Workout" per the I/O matrix's "never blank" guarantee for this field;
   // `??` only catches `null`/`undefined`; and lets a genuinely empty string
   // straight through.
-  const title = $derived(isRestDay ? 'Rest Day' : dayView.type || 'Workout');
+  // Story 4.5 -- when the Plan names the day's sessions, the title lists them
+  // in plan order ("Easy 2 mi + LIIFT4 · Chest/Triceps — LIIFT 50/50"), even
+  // on a logged day, where the meta line still shows the LogEntry's values.
+  const title = $derived(
+    isRestDay
+      ? 'Rest Day'
+      : dayView.sessions
+        ? dayView.sessions.map((session) => session.name).join(' + ')
+        : dayView.type || 'Workout',
+  );
   // Story 2.4 -- a Missed row's meta line reads exactly "missed — no log
   // entry" (DESIGN.md's literal copy), overriding the usual
   // duration/distance readout -- there's nothing logged to show.
@@ -289,6 +298,7 @@
     font-size: var(--type-row-label-size);
     font-weight: var(--type-row-label-weight);
     color: var(--text-primary);
+    overflow-wrap: break-word;
   }
 
   .meta {

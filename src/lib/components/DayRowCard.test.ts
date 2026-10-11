@@ -245,3 +245,63 @@ describe('DayRowCard date label (Story 4.4)', () => {
     expect(container.querySelector('.day-row')?.getAttribute('aria-label')).toContain('October 13');
   });
 });
+
+describe('DayRowCard session names (Story 4.5)', () => {
+  const runAndLift: Workout = {
+    date: '2026-10-13',
+    type: 'Run',
+    duration: '20 min + 40 min strength',
+    distance: '2 mi',
+    sessions: [
+      { name: 'Easy 2 mi', duration: '20 min', distance: '2 mi' },
+      { name: 'LIIFT4 · Chest/Triceps — LIIFT 50/50', duration: '40 min' },
+    ],
+  };
+
+  it('titles a run + lift day with both session names, keeps the meta line, and uses the same text in the aria-label', () => {
+    const { container } = render(DayRowCard, {
+      props: { date: runAndLift.date, workout: runAndLift, isToday: false, onOpen: vi.fn() },
+    });
+    expect(container.querySelector('.title')?.textContent).toBe('Easy 2 mi + LIIFT4 · Chest/Triceps — LIIFT 50/50');
+    expect(container.querySelector('.meta')?.textContent).toBe('20 min + 40 min strength · 2 mi');
+    expect(container.querySelector('.day-row')?.getAttribute('aria-label')).toContain(
+      'Easy 2 mi + LIIFT4 · Chest/Triceps — LIIFT 50/50',
+    );
+  });
+
+  it('a day without sessions still titles by type, and a rest day reads Rest Day', () => {
+    const plain = render(DayRowCard, {
+      props: { date: '2026-10-14', workout: { date: '2026-10-14', type: 'Bike' }, isToday: false, onOpen: vi.fn() },
+    });
+    expect(plain.container.querySelector('.title')?.textContent).toBe('Bike');
+    cleanup();
+    const rest = render(DayRowCard, { props: { date: '2026-10-15', workout: undefined, isToday: false, onOpen: vi.fn() } });
+    expect(rest.container.querySelector('.title')?.textContent).toBe('Rest Day');
+  });
+});
+
+describe('DayRowCard session names on a logged day (Story 4.5 review)', () => {
+  it('keeps the planned names as the title while the meta line and aria-label show the LogEntry values', async () => {
+    const { replaceLogEntry } = await import('../data/logStore.svelte');
+    const date = '2026-10-20';
+    const workout: Workout = {
+      date,
+      type: 'Run',
+      duration: '40 min + 40 min strength',
+      distance: '4 mi',
+      sessions: [
+        { name: 'Easy 4 mi', duration: '40 min', distance: '4 mi' },
+        { name: 'LIIFT4 · Chest/Triceps — Circuit', duration: '40 min' },
+      ],
+    };
+    replaceLogEntry(date, { type: 'Run', duration: '25 min' });
+
+    const { container } = render(DayRowCard, { props: { date, workout, isToday: false, onOpen: vi.fn() } });
+
+    expect(container.querySelector('.title')?.textContent).toBe('Easy 4 mi + LIIFT4 · Chest/Triceps — Circuit');
+    expect(container.querySelector('.meta')?.textContent).toContain('25 min');
+    const label = container.querySelector('.day-row')?.getAttribute('aria-label') ?? '';
+    expect(label).toContain('Easy 4 mi + LIIFT4 · Chest/Triceps — Circuit');
+    expect(label).toContain('25 min');
+  });
+});
