@@ -91,8 +91,12 @@
   // Days missed get the following Monday as their `todayIso`, so the week
   // counts as fully elapsed and the Streak is the one Zach had that Sunday,
   // not today's. On the day itself this is just `todayIso`, unchanged.
+  // The one "is this review late?" decision both `asOfIso` and
+  // `streakEntries` below key on, so they can't disagree again (Epic 4
+  // retro, F1: they once used different conditions on the following Monday).
+  const isLateReview = $derived(weekStartIso < todayIso);
   const asOfIso = $derived.by(() => {
-    if (weekStartIso >= todayIso) {
+    if (!isLateReview) {
       return todayIso;
     }
     const sunday = parseLocalDate(weekStartIso);
@@ -119,8 +123,15 @@
   // a late review the following Monday's LogEntry is left out: the Streak
   // must end with the reviewed Sunday (a Monday workout logged afterward
   // must not raise it), while a missed Sunday still breaks it as elapsed.
+  // This relies on `computeStreak`'s rule that its `todayIso` day never
+  // breaks the Streak (a scheduled day breaks only once `date < todayIso`),
+  // so the now-unlogged Monday is simply skipped -- revisit this if that
+  // rule changes.
   const streakEntries = $derived.by(() => {
-    if (asOfIso === todayIso || !(asOfIso in logStore.entries)) {
+    // Keyed on `isLateReview`, not `asOfIso === todayIso`: reviewed on the
+    // Monday right after, `asOfIso` (that Monday) *is* today, and its
+    // LogEntry must still be left out (Epic 4 retro, F1).
+    if (!isLateReview || !(asOfIso in logStore.entries)) {
       return logStore.entries;
     }
     const { [asOfIso]: _afterSunday, ...throughSunday } = logStore.entries;

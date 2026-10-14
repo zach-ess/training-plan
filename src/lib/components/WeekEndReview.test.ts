@@ -376,3 +376,55 @@ describe('WeekEndReview -- Streak/Days missed edges (Story 4.3 review)', () => {
     expect(cellValue(container, 'Streak')).toBe('1');
   });
 });
+
+// Epic 4 retro, F1: the boundary day -- a late review opened on the Monday
+// right after its Sunday (asOfIso is that Monday AND today). The Monday's
+// LogEntry must still not count toward the "as of that Sunday" Streak.
+describe('WeekEndReview -- late review opened on the following Monday (Epic 4 retro F1)', () => {
+  // Both fixtures' weeks and Mondays sit outside every other test's 7-day
+  // review window in this file, since the log store is shared across it.
+  it('missed Sunday + Monday logged: Streak 0, Sunday counted as missed, and that is what Save freezes', async () => {
+    const sunday = '2026-11-29';
+    const monday = '2026-11-30';
+    today.iso = monday;
+    const plan: Workout[] = [
+      { date: '2026-11-27', type: 'Run', duration: '30 min' },
+      { date: sunday, type: 'Run', duration: '60 min' },
+      { date: monday, type: 'Lift', duration: '40 min' },
+    ];
+    setLoadedPlan(plan);
+    setCompleted('2026-11-27', true, plan[0]);
+    setCompleted(monday, true, plan[2]);
+
+    const { container, getByRole } = render(WeekEndReview, {
+      props: { weekStartIso: sunday, readOnly: false, onClose: vi.fn() },
+    });
+
+    expect(cellValue(container, 'Streak')).toBe('0');
+    expect(cellValue(container, 'Days missed')).toBe('1');
+    // The Monday's Lift falls after the Mon-Sun week, so it isn't in the rollup.
+    expect(cellValue(container, 'Workouts completed')).toBe('1');
+
+    await fireEvent.click(getByRole('button', { name: 'Save' }));
+    expect(getReview(sunday)).toMatchObject({ streak: 0, missedCount: 1, workoutsCompleted: 1 });
+  });
+
+  it('completed Sunday + Monday logged: the Monday does not raise the Streak', () => {
+    const sunday = '2026-11-01';
+    const monday = '2026-11-02';
+    today.iso = monday;
+    const plan: Workout[] = [
+      { date: sunday, type: 'Run', duration: '60 min' },
+      { date: monday, type: 'Lift', duration: '40 min' },
+    ];
+    setLoadedPlan(plan);
+    setCompleted(sunday, true, plan[0]);
+    setCompleted(monday, true, plan[1]);
+
+    const { container } = render(WeekEndReview, { props: { weekStartIso: sunday, readOnly: false, onClose: vi.fn() } });
+
+    expect(cellValue(container, 'Streak')).toBe('1');
+    expect(cellValue(container, 'Days missed')).toBe('0');
+    expect(cellValue(container, 'Workouts completed')).toBe('1');
+  });
+});
