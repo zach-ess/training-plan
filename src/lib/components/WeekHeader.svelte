@@ -21,12 +21,17 @@
   }
 
   /** "Oct 12–18", "Oct 26–Nov 1", or "Dec 28–Jan 3" -- the month is repeated
-   * only when the week crosses into a new one. No year: a plan spans months,
-   * and the header only needs to orient within it. */
+   * only when the week crosses into a new one -- or just "Oct 12" for a
+   * one-day week. No year: a plan spans months, and the header only needs to
+   * orient within it. */
   function formatRange(startIso: string, endIso: string): string {
     const start = parseLocalDate(startIso);
     const end = parseLocalDate(endIso);
     const startText = `${monthShort(start)} ${start.getDate()}`;
+    // Epic 4 retro A6 (F8): a one-day week is just its date, not "Oct 12–12".
+    if (endIso === startIso) {
+      return startText;
+    }
     const sameMonth = start.getFullYear() === end.getFullYear() && start.getMonth() === end.getMonth();
     const endText = sameMonth ? `${end.getDate()}` : `${monthShort(end)} ${end.getDate()}`;
     return `${startText}–${endText}`;

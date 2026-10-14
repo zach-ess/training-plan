@@ -149,10 +149,22 @@ function nonEmptyText(value: unknown): string | undefined {
 }
 
 function toCoachSession(raw: unknown): CoachSession | null {
-  if (!isRecord(raw) || typeof raw.sport !== 'string' || raw.sport === 'rest') {
+  // Epic 4 retro A6 (F5): unusable sessions are dropped with a Story 4.1
+  // console note. Rest sessions are skipped silently -- that's by design.
+  if (!isRecord(raw)) {
+    console.warn('parsePlan: dropping Coach session that is not an object', raw);
     return null;
   }
-  const session: CoachSession = { sport: raw.sport };
+  if (typeof raw.sport !== 'string') {
+    console.warn('parsePlan: dropping Coach session without a string sport', raw);
+    return null;
+  }
+  // Trimmed once, so a padded "rest" is still rest and " run " still maps.
+  const sport = raw.sport.trim();
+  if (sport === 'rest') {
+    return null;
+  }
+  const session: CoachSession = { sport };
   if (typeof raw.durationMinutes === 'number' && raw.durationMinutes > 0) {
     session.minutes = raw.durationMinutes;
   }
@@ -197,7 +209,10 @@ function toWorkoutFromCoachDay(date: string, rawSessions: unknown, useMiles: boo
   }
 
   const [primary, ...extras] = sessions;
-  const typeLabel = (sport: string) => COACH_SPORT_TYPES[sport] ?? sport.charAt(0).toUpperCase() + sport.slice(1);
+  // The type and session-name label; a blank sport reads "Workout" (Epic 4
+  // retro A6, F5). `sport` is already trimmed by `toCoachSession`.
+  const typeLabel = (sport: string) =>
+    COACH_SPORT_TYPES[sport] ?? (sport.charAt(0).toUpperCase() + sport.slice(1) || 'Workout');
   const workout: Workout = {
     date,
     type: typeLabel(primary.sport),
@@ -209,7 +224,9 @@ function toWorkoutFromCoachDay(date: string, rawSessions: unknown, useMiles: boo
   }
   for (const extra of extras) {
     if (extra.minutes !== undefined) {
-      durationParts.push(`${extra.minutes} min ${extra.sport}`);
+      // Deliberately the raw sport ("+ 40 min strength", not the "Lift"
+      // label), but never a blank suffix.
+      durationParts.push(`${extra.minutes} min ${extra.sport || 'workout'}`);
     }
   }
   if (durationParts.length > 0) {
@@ -225,7 +242,7 @@ function toWorkoutFromCoachDay(date: string, rawSessions: unknown, useMiles: boo
   // its own minutes/distance and instructions, for the row title and
   // Workout Detail.
   workout.sessions = sessions.map((s) => {
-    const session: PlanSession = { name: s.name ?? (typeLabel(s.sport).trim() || 'Workout') };
+    const session: PlanSession = { name: s.name ?? typeLabel(s.sport) };
     if (s.minutes !== undefined) {
       session.duration = `${s.minutes} min`;
     }
@@ -249,11 +266,22 @@ function parseCoachPlan(raw: Record<string, unknown>, weeks: unknown[]): Plan {
 
   const workouts: Workout[] = [];
   for (const week of weeks) {
-    if (!isRecord(week) || !Array.isArray(week.days)) {
+    // A non-object week already warns in `parsePlanWeeks`; the rest warn
+    // here (Epic 4 retro A6, F5).
+    if (!isRecord(week)) {
+      continue;
+    }
+    if (!Array.isArray(week.days)) {
+      console.warn('parsePlan: dropping Coach week without a days array', week.weekNumber, week.startDate);
       continue;
     }
     for (const day of week.days) {
       if (!isRecord(day)) {
+        console.warn('parsePlan: dropping Coach day that is not an object', day);
+        continue;
+      }
+      if (!Array.isArray(day.workouts)) {
+        console.warn('parsePlan: dropping Coach day without a workouts array', day.date);
         continue;
       }
       const folded = toWorkoutFromCoachDay(String(day.date), day.workouts, useMiles);

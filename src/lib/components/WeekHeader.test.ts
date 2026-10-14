@@ -31,6 +31,12 @@ describe('WeekHeader', () => {
     expect(heading.textContent).toBe('Week 1 · Oct 12–18 · Return');
   });
 
+  // Epic 4 retro A6 (F8).
+  it('a one-day week shows a single date, not "Oct 12–12"', () => {
+    const { container } = renderWeek({ weekNumber: 1, startDate: '2026-10-12', endDate: '2026-10-12', phase: 'Return' });
+    expect(container.querySelector('.week-title')?.textContent).toBe('Week 1 · Oct 12 · Return');
+  });
+
   it('repeats the month when a week crosses into a new one', () => {
     const { container } = renderWeek({ weekNumber: 3, startDate: '2026-10-26', endDate: '2026-11-01', phase: 'Return' });
     expect(container.querySelector('.week-title')?.textContent).toBe('Week 3 · Oct 26–Nov 1 · Return');

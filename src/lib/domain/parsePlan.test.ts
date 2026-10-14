@@ -4,6 +4,7 @@
 // produces -- plus the flat shape's own existing contract, which had no
 // direct test until now.
 import { describe, it, expect, vi, afterEach } from 'vitest';
+import realPlanText from '../../../public/plan.json?raw';
 import { parsePlan } from './parsePlan';
 
 afterEach(() => {
@@ -308,5 +309,119 @@ describe('parsePlan -- session edge cases (Story 4.5 review)', () => {
   it('a session with a blank sport and no name is named "Workout", never blank', () => {
     const plan = parsePlan(coachPlan([{ date: '2026-10-13', workouts: [{ sport: '  ', durationMinutes: 20 }] }]));
     expect(plan.workouts[0].sessions?.[0].name).toBe('Workout');
+  });
+});
+
+// Epic 4 retro A6 (F5): the Coach path's remaining drops warn (Story 4.1),
+// and a blank sport reads "Workout" for the type too.
+describe('parsePlan -- Coach drops warn, blank sport (Epic 4 retro A6)', () => {
+  function warnings(warn: ReturnType<typeof vi.spyOn>, text: string) {
+    return warn.mock.calls.filter((call: unknown[]) => String(call[0]).includes(text));
+  }
+
+  it('warns once for a week without a days array, naming the week', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const plan = parsePlan({
+      weeks: [
+        { weekNumber: 2, startDate: '2026-10-19' },
+        { weekNumber: 3, startDate: '2026-10-26', days: [{ date: '2026-10-27', workouts: [RUN_4MI] }] },
+      ],
+    });
+    expect(plan.workouts.map((w) => w.date)).toEqual(['2026-10-27']);
+    const drops = warnings(warn, 'Coach week without a days array');
+    expect(drops).toHaveLength(1);
+    expect(drops[0].slice(1)).toEqual([2, '2026-10-19']);
+  });
+
+  it('a non-object week warns only once (from the week-header parse), not twice', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    parsePlan({ weeks: ['oops', { weekNumber: 1, startDate: '2026-10-12', days: [] }] });
+    expect(warnings(warn, 'week that is not an object')).toHaveLength(1);
+    expect(warnings(warn, 'Coach week')).toHaveLength(0);
+  });
+
+  it('warns for a non-object day and keeps the valid one', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const plan = parsePlan(coachPlan([null, { date: '2026-10-13', workouts: [RUN_4MI] }]));
+    expect(plan.workouts.map((w) => w.date)).toEqual(['2026-10-13']);
+    expect(warnings(warn, 'Coach day that is not an object')).toEqual([
+      ['parsePlan: dropping Coach day that is not an object', null],
+    ]);
+  });
+
+  it('warns for a non-object session and one without a string sport, keeping the rest of the day', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const noSport = { name: 'Mystery', durationMinutes: 10 };
+    const plan = parsePlan(coachPlan([{ date: '2026-10-13', workouts: ['oops', noSport, RUN_4MI] }]));
+    expect(plan.workouts[0].sessions?.map((s) => s.name)).toEqual(['Run']);
+    expect(warnings(warn, 'Coach session that is not an object')).toEqual([
+      ['parsePlan: dropping Coach session that is not an object', 'oops'],
+    ]);
+    expect(warnings(warn, 'Coach session without a string sport')).toEqual([
+      ['parsePlan: dropping Coach session without a string sport', noSport],
+    ]);
+  });
+
+  it('stays silent for rest sessions and a well-formed plan', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    parsePlan({
+      weeks: [
+        {
+          weekNumber: 1,
+          startDate: '2026-10-12',
+          days: [
+            { date: '2026-10-12', workouts: [REST] },
+            { date: '2026-10-13', workouts: [RUN_4MI, STRENGTH] },
+          ],
+        },
+      ],
+    });
+    expect(warn).not.toHaveBeenCalled();
+  });
+
+  it('a blank sport reads "Workout" for the type, and a blank extra session never leaves a bare suffix', () => {
+    const plan = parsePlan(
+      coachPlan([
+        { date: '2026-10-13', workouts: [{ sport: '  ', durationMinutes: 20 }] },
+        { date: '2026-10-14', workouts: [RUN_4MI, { sport: '', durationMinutes: 15 }] },
+      ]),
+    );
+    expect(plan.workouts[0].type).toBe('Workout');
+    expect(plan.workouts[1].type).toBe('Run');
+    expect(plan.workouts[1].duration).toBe('40 min + 15 min workout');
+  });
+
+  it('warns for a day without a workouts array, naming its date', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const plan = parsePlan(coachPlan([{ date: '2026-10-12' }, { date: '2026-10-13', workouts: [RUN_4MI] }]));
+    expect(plan.workouts.map((w) => w.date)).toEqual(['2026-10-13']);
+    expect(warnings(warn, 'Coach day without a workouts array')).toEqual([
+      ['parsePlan: dropping Coach day without a workouts array', '2026-10-12'],
+    ]);
+  });
+
+  it('trims a padded sport: " rest " is still rest, " run " still maps to Run', () => {
+    const plan = parsePlan(
+      coachPlan([
+        { date: '2026-10-12', workouts: [{ sport: ' rest ' }] },
+        { date: '2026-10-13', workouts: [{ sport: ' run ', durationMinutes: 30 }, { sport: ' yoga ', durationMinutes: 10 }] },
+      ]),
+    );
+    expect(plan.workouts.map((w) => w.date)).toEqual(['2026-10-13']);
+    expect(plan.workouts[0].type).toBe('Run');
+    expect(plan.workouts[0].duration).toBe('30 min + 10 min yoga');
+    expect(plan.workouts[0].sessions?.map((s) => s.name)).toEqual(['Run', 'Yoga']);
+  });
+
+  it('the repo\x27s real Coach plan (public/plan.json) parses with no warnings', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const plan = parsePlan(JSON.parse(realPlanText));
+    expect(plan.workouts.length).toBeGreaterThan(0);
+    expect(warn).not.toHaveBeenCalled();
+  });
+
+  it('a well-formed extra session keeps its raw sport in the duration', () => {
+    const plan = parsePlan(coachPlan([{ date: '2026-10-13', workouts: [RUN_4MI, STRENGTH] }]));
+    expect(plan.workouts[0].duration).toBe('40 min + 20 min strength');
   });
 });
