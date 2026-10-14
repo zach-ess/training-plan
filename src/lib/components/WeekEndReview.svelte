@@ -1,7 +1,8 @@
 <script lang="ts">
-  // Story 3.3 -- Week-End Review: the full-screen dialog opened either
-  // unsaved/editable from Home's Sunday-only banner, or read-only from a
-  // saved week's Sunday row in History & Trends (this story's Decisions).
+  // Story 3.3 -- Week-End Review: the full-screen dialog, opened from Home's
+  // Sunday-only banner (today's Sunday) or, since Story 4.3, from any
+  // Sunday's Workout Detail on either tab -- editable while that week is
+  // unsaved (including a late review of a past Sunday), read-only once saved.
   // Mirrors `WorkoutDetail.svelte`'s own overlay pattern exactly (this
   // story's Boundaries): a scrim + panel `role="dialog"`/`aria-modal="true"`,
   // a real `<button type="button" class="back-button">` Back control, and
@@ -15,9 +16,9 @@
   // frozen `WeekEndReview` this story's Data Store already saved for
   // `weekStartIso` -- never recomputed, even if that week's Log Entries are
   // later edited (this story's I/O matrix, "Reopen a saved week"). When
-  // `false` (only ever reachable via the banner, for the current week), every
-  // number is `$derived` live off `logStore.entries`/`planStore.plan`, the
-  // same "recomputes with no manual refresh" precedent `RollupSummary`/
+  // `false` (an unsaved week: today's Sunday, or a late review of a past one
+  // -- see `asOfIso` below), every number is `$derived` live off
+  // `logStore.entries`/`planStore.plan`, the same "recomputes with no manual refresh" precedent `RollupSummary`/
   // `TrendChart` already established in Story 3.2, and a reflection
   // `<textarea>` is editable and Save writes the numbers + reflection
   // together in one `saveReview` call (this story's Always section).
@@ -145,8 +146,8 @@
   // Read-only mode's frozen snapshot -- the one and only place this file
   // reads a previously-saved WeekEndReview. `undefined` only in the
   // defensive case of a `readOnly` open for a week with no saved Review at
-  // all (never reachable through this app's own UI, which only ever opens
-  // read-only via a History row already gated on a saved Review existing) --
+  // all (never reachable through this app's own UI: App.svelte opens
+  // read-only only when a saved Review exists for that Sunday) --
   // falls back to the live values rather than rendering nothing.
   const savedReview = $derived(readOnly ? getReview(weekStartIso) : undefined);
 

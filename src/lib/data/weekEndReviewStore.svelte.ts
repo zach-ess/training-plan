@@ -196,9 +196,9 @@ export type WeekEndReviewInput = Omit<WeekEndReview, 'schemaVersion'>;
  * all -- `input` alone (plus a freshly-stamped `schemaVersion`) becomes the
  * entire record for `input.weekStartIso`, overwriting anything previously
  * saved for that week outright. A week is only ever saved once in normal use
- * (the banner disappears the moment a save succeeds, and a saved week's row
- * opens read-only, per this story's Decisions), so this is not a real re-save
- * path in practice -- but it stays a full overwrite rather than a
+ * (the banner disappears the moment a save succeeds, and a saved week's
+ * Review opens read-only from its Sunday's Workout Detail), so this is not a
+ * real re-save path in practice -- but it stays a full overwrite rather than a
  * conditional "only if absent" write so this function's own contract needs
  * no separate case for "what if one already exists."
  *

@@ -157,16 +157,17 @@
   );
 
   // Which week's Review dialog is open, if any, and whether it's read-only
-  // (a saved week, opened from a History row) or the live/editable one (only
-  // ever the current week, opened from the banner). An overlay flag, same
+  // (a saved week) or live/editable (an unsaved one -- today's Sunday from
+  // the banner, or any Sunday from its Workout Detail, including a late
+  // review of a past Sunday; Story 4.3). An overlay flag, same
   // convention as `selectedDate` above -- opening/closing it never touches
   // `activeTab`/`dayRange`/scroll position.
   let reviewDialog = $state<{ weekStartIso: string; readOnly: boolean } | null>(null);
 
   // Epic 3 retro fix (F1, 2026-09-26): `todayWeekStartIso` here is used only
-  // as the review's identity/storage key (the Sunday it's filed under, which
-  // `HistoryView`'s saved-Sunday lookup also depends on) -- it is NOT the
-  // start of the date range actually reviewed. Zach's own convention is
+  // as the review's identity/storage key (the Sunday it's filed under, the
+  // same key WorkoutDetail's review action passes for a Sunday) -- it is
+  // NOT the start of the date range actually reviewed. Zach's own convention is
   // Sunday as the LAST day of his workout week, so `WeekEndReview.svelte`
   // itself computes the live rollup over the 7 days ending on this date, not
   // starting from it. No change needed here: passing today's own date as the
@@ -202,15 +203,16 @@
       return;
     }
     // Mirrors `handleCloseDetail`'s own query-selector convention (and its
-    // review-fix scoping, above): refocus the row/banner that opened this,
-    // falling back to whichever tab panel is actually active right now if
-    // it's no longer there to refocus (e.g. a successful Save just dropped
-    // the banner it was opened from). Scoped to `#panel-${activeTab}`, not
-    // a bare document-wide selector -- a saved week's Sunday date exists
-    // as a row in *both* Home's and History's day lists (both span the
-    // full Plan day range), and Home's markup is always declared first in
-    // the DOM, so an unscoped selector would match Home's hidden row first
-    // when this dialog was opened from a History row, silently dropping
+    // review-fix scoping, above): refocus this week's Sunday row -- the row
+    // whose Detail opened the Review, and also the target when the banner
+    // opened it (the banner is gone after a Save, but today's Sunday row
+    // never is) -- falling back to the active tab panel if no such row is
+    // rendered. Scoped to `#panel-${activeTab}`, not
+    // a bare document-wide selector -- a Sunday's date exists as a row in
+    // *both* Home's and History's day lists (both span the full Plan day
+    // range), and Home's markup is always declared first in the DOM, so an
+    // unscoped selector would match Home's hidden row first when this
+    // dialog was opened via a History row's Workout Detail, silently dropping
     // focus instead of returning it to the tapped row.
     const row = document.querySelector<HTMLElement>(
       `#panel-${activeTab} [data-date="${closedWeekStartIso}"]`,
@@ -285,7 +287,7 @@
     // story's Boundaries: "mirrors WorkoutDetail.svelte exactly"), so a tab
     // switch must close it too rather than leaving it open behind the
     // now-active tab. A bare `reviewDialog = null` here (not routed through
-    // `handleCloseReview`) is deliberate: that function's own row/banner
+    // `handleCloseReview`) is deliberate: that function's own Sunday-row
     // refocus logic targets the panel being switched *away* from, the exact
     // same hazard `skipFocusRestore` guards against for `handleCloseDetail`
     // above -- the `tick().then(...)` below already restores focus into the

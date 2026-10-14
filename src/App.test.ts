@@ -10,6 +10,7 @@ import { render, fireEvent, cleanup, screen } from '@testing-library/svelte';
 import { tick } from 'svelte';
 import App from './App.svelte';
 import { planStore } from './lib/data/planStore.svelte';
+import { weekEndReviewStore } from './lib/data/weekEndReviewStore.svelte';
 import type { Workout } from './lib/domain/parsePlan';
 
 const FIXED_TODAY = '2026-10-06';
@@ -175,6 +176,90 @@ describe('App -- tap the active tab to reset its view', () => {
     expect(windowScrollTo).toHaveBeenCalledTimes(1);
     expect(elementScrollTo).toHaveBeenCalledTimes(1);
   });
+
+  // Epic 4 retro A2 (F2): Story 4.3 made the Week-End Review reachable from
+  // any past Sunday's Workout Detail, so a tab tap with the Review open is
+  // now a common path through `handleSelect`'s `reviewDialog` branch.
+  // 2026-10-04 is an unsaved past Sunday, so the Review opens editable.
+  async function openReviewFromSunday(container: HTMLElement, panel: 'home' | 'history') {
+    // The store is shared across this file; keep this Sunday unsaved.
+    delete weekEndReviewStore.reviews['2026-10-04'];
+    await fireEvent.click(container.querySelector<HTMLElement>(`#panel-${panel} [data-date="2026-10-04"]`)!);
+    await tick();
+    await fireEvent.click(screen.getByRole('button', { name: 'Review this week' }));
+    await tick();
+    expect(screen.getByRole('button', { name: 'Save' })).toBeInTheDocument();
+    expect(screen.getAllByRole('dialog')).toHaveLength(1);
+  }
+
+  /** The panel is focused once, only after it stopped being hidden/inert
+   * (jsdom would accept either), and without scrolling on a re-tap so the
+   * reset owns the scroll position. */
+  function expectPanelFocusedOnceVisible(
+    focusCalls: ReturnType<typeof trackFocusInert>,
+    container: HTMLElement,
+    panel: 'home' | 'history',
+    preventScroll: boolean,
+  ) {
+    const panelCalls = focusCalls.filter((c) => c.el === container.querySelector(`#panel-${panel}`));
+    expect(panelCalls.map(({ inert, hidden, options }) => ({ inert, hidden, preventScroll: options?.preventScroll }))).toEqual([
+      { inert: false, hidden: false, preventScroll },
+    ]);
+  }
+
+  it('re-tapping Home with the Week-End Review open (from a Sunday\x27s Detail) closes it, then resets', async () => {
+    const { container } = await renderApp();
+    await openReviewFromSunday(container, 'home');
+    const focusCalls = trackFocusInert();
+
+    await tapTab(/home/i);
+
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(scrollIntoView).toHaveBeenCalledTimes(1);
+    expect(scrollIntoView.mock.contexts[0]).toHaveAttribute('data-date', FIXED_TODAY);
+    expect(document.activeElement).toBe(container.querySelector('#panel-home'));
+    expectPanelFocusedOnceVisible(focusCalls, container, 'home', true);
+  });
+
+  it('re-tapping History with the Week-End Review open (from a History Sunday\x27s Detail) closes it, then resets', async () => {
+    const { container } = await renderApp();
+    await tapTab(/history/i);
+    await openReviewFromSunday(container, 'history');
+    const focusCalls = trackFocusInert();
+
+    await tapTab(/history/i);
+
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    expect(windowScrollTo).toHaveBeenCalledTimes(1);
+    expect(elementScrollTo).toHaveBeenCalledTimes(1);
+    expect(document.activeElement).toBe(container.querySelector('#panel-history'));
+    expectPanelFocusedOnceVisible(focusCalls, container, 'history', true);
+  });
+
+  for (const [from, to] of [
+    ['home', 'history'],
+    ['history', 'home'],
+  ] as const) {
+    it(`tapping ${to} with the Week-End Review open on ${from} closes it and lands on ${to}, without resetting scroll`, async () => {
+      const { container } = await renderApp();
+      if (from === 'history') {
+        await tapTab(/history/i);
+      }
+      await openReviewFromSunday(container, from);
+      const focusCalls = trackFocusInert();
+
+      await tapTab(new RegExp(to, 'i'));
+
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+      expect(container.querySelector(`#panel-${to}`)).not.toHaveAttribute('hidden');
+      expect(container.querySelector(`#panel-${from}`)).toHaveAttribute('hidden');
+      expect(document.activeElement).toBe(container.querySelector(`#panel-${to}`));
+      expectPanelFocusedOnceVisible(focusCalls, container, to, false);
+      expect(scrollIntoView).not.toHaveBeenCalled();
+      expect(windowScrollTo).not.toHaveBeenCalled();
+      expect(elementScrollTo).not.toHaveBeenCalled();
+    });
+  }
 });
 
 // Story 4.4 -- week headers on Home: before each plan week's first day only,
@@ -227,21 +312,25 @@ describe('App -- week headers on Home (Story 4.4)', () => {
  * a focus, but jsdom doesn't enforce `inert`, so asserting
  * `document.activeElement` alone can't catch focusing too early. */
 function trackFocusInert() {
-  const calls: { el: HTMLElement; inert: boolean }[] = [];
+  const calls: { el: HTMLElement; inert: boolean; hidden: boolean; options?: FocusOptions }[] = [];
   const original = HTMLElement.prototype.focus;
   vi.spyOn(HTMLElement.prototype, 'focus').mockImplementation(function (this: HTMLElement, options?: FocusOptions) {
     // jsdom has no native `inert`, so Svelte sets it as a plain property
     // rather than an attribute -- walk the ancestors and read that.
     let node: HTMLElement | null = this;
+    // jsdom also focuses a `hidden` element, so record that too.
     let inert = false;
+    let hidden = false;
     while (node) {
       if ((node as HTMLElement & { inert?: boolean }).inert === true) {
         inert = true;
-        break;
+      }
+      if (node.hidden) {
+        hidden = true;
       }
       node = node.parentElement;
     }
-    calls.push({ el: this, inert });
+    calls.push({ el: this, inert, hidden, options });
     return original.call(this, options);
   });
   return calls;
