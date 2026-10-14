@@ -131,7 +131,13 @@ async function loadPlanUnguarded(): Promise<void> {
     // unread, can be written into the cache as-is below.
     const parsed = await response.clone().json();
 
-    planStore.plan = parsed;
+    // Epic 4 retro A5: the usual refetch returns exactly the cached Plan.
+    // Reassigning it anyway would re-run every Plan derivation and print
+    // each parse diagnostic a second time for the same load, so keep the
+    // loaded value when the content is unchanged.
+    if (JSON.stringify(parsed) !== JSON.stringify(planStore.plan)) {
+      planStore.plan = parsed;
+    }
     planStore.status = 'loaded';
 
     try {

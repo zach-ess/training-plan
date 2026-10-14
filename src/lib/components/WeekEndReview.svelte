@@ -18,14 +18,14 @@
   // later edited (this story's I/O matrix, "Reopen a saved week"). When
   // `false` (an unsaved week: today's Sunday, or a late review of a past one
   // -- see `asOfIso` below), every number is `$derived` live off
-  // `logStore.entries`/`planStore.plan`, the same "recomputes with no manual refresh" precedent `RollupSummary`/
-  // `TrendChart` already established in Story 3.2, and a reflection
-  // `<textarea>` is editable and Save writes the numbers + reflection
-  // together in one `saveReview` call (this story's Always section).
-  import { planStore } from '../data/planStore.svelte';
+  // `logStore.entries` and the shared parsed Plan, the same "recomputes with
+  // no manual refresh" precedent `RollupSummary`/`TrendChart` already
+  // established in Story 3.2, and a reflection `<textarea>` is editable and
+  // Save writes the numbers + reflection together in one `saveReview` call
+  // (this story's Always section).
   import { logStore } from '../data/logStore.svelte';
   import { getReview, saveReview, type WriteResult } from '../data/weekEndReviewStore.svelte';
-  import { parsePlan } from '../domain/parsePlan';
+  import { getParsedPlan } from '../domain/parsedPlan.svelte';
   import { getPlanDayRange } from '../domain/getPlanDayRange';
   import { computeStreak } from '../domain/computeStreak';
   import { computeRollup, ROLLUP_TYPE_ORDER } from '../domain/computeRollup';
@@ -49,13 +49,10 @@
   // `getTodayIso()` call site in this app.
   const todayIso = getTodayIso();
 
-  // Independently re-derives `plan`/`dayRange`/`workoutsByDate` off
-  // `planStore.plan` the same way App.svelte and HistoryView.svelte each
-  // already do (this story's Code Map: "needs planStore.plan/logStore.entries
-  // the same way those components already read them") -- no new shared
-  // derivation is introduced, and none of Story 2.4/3.2's own domain
-  // functions are touched.
-  const plan = $derived(parsePlan(planStore.plan));
+  // Derives `dayRange`/`workoutsByDate` the same way App.svelte and
+  // HistoryView.svelte do, from the one shared parsed Plan (Epic 4 retro A5:
+  // parsed once, not once per view).
+  const plan = $derived(getParsedPlan());
   const dayRange = $derived(getPlanDayRange(plan.workouts, todayIso));
   const workoutsByDate = $derived(new Map(plan.workouts.map((workout) => [workout.date, workout])));
 

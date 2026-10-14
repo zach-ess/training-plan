@@ -173,6 +173,38 @@ describe('planStore', () => {
     expect(warnCall('planStore: fetched plan.json could not be cached')).toBeDefined();
   });
 
+  // Epic 4 retro A5: an unchanged refetch must not re-trigger every Plan
+  // derivation (and its parse diagnostics) for the same load.
+  it('a background refetch with unchanged content keeps the loaded Plan object', async () => {
+    const plan = { workouts: [{ date: '2026-10-13', type: 'Run' }] };
+    const { planStore, loadPlan } = await import('./planStore.svelte');
+    planStore.plan = plan;
+    planStore.status = 'loaded';
+    const loaded = planStore.plan;
+    vi.stubGlobal('fetch', vi.fn(() => Promise.resolve(new Response(JSON.stringify(plan), { status: 200 }))));
+    emptyCache();
+
+    await loadPlan();
+
+    expect(planStore.plan).toBe(loaded);
+    expect(planStore.status).toBe('loaded');
+  });
+
+  it('a background refetch with changed content replaces the loaded Plan', async () => {
+    const { planStore, loadPlan } = await import('./planStore.svelte');
+    planStore.plan = { workouts: [{ date: '2026-10-13', type: 'Run' }] };
+    planStore.status = 'loaded';
+    const previous = planStore.plan;
+    const changed = { workouts: [{ date: '2026-10-14', type: 'Lift' }] };
+    vi.stubGlobal('fetch', vi.fn(() => Promise.resolve(new Response(JSON.stringify(changed), { status: 200 }))));
+    emptyCache();
+
+    await loadPlan();
+
+    expect(planStore.plan).not.toBe(previous);
+    expect(planStore.plan).toEqual(changed);
+  });
+
   it('stays silent on a cache miss followed by a successful fetch and cache write', async () => {
     emptyCache();
     vi.stubGlobal(

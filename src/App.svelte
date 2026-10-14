@@ -27,7 +27,7 @@
   import { planStore, loadPlan } from './lib/data/planStore.svelte';
   import { logStore } from './lib/data/logStore.svelte';
   import { weekEndReviewStore } from './lib/data/weekEndReviewStore.svelte';
-  import { parsePlan } from './lib/domain/parsePlan';
+  import { getParsedPlan } from './lib/domain/parsedPlan.svelte';
   import { getPlanDayRange } from './lib/domain/getPlanDayRange';
   import { getWeekHeaderDates } from './lib/domain/getWeekHeaderDates';
   import { computeStreak } from './lib/domain/computeStreak';
@@ -115,7 +115,8 @@
   // Both are `$derived` so a background refetch that silently updates
   // `planStore.plan` (I/O matrix: "Background refetch updates Plan while
   // already 'loaded'") re-renders these rows in place with no re-mount.
-  const plan = $derived(parsePlan(planStore.plan));
+  // The Plan itself is parsed once for every view (Epic 4 retro A5).
+  const plan = $derived(getParsedPlan());
   const dayRange = $derived(getPlanDayRange(plan.workouts, todayIso));
   // Built from `plan.workouts` in array order so a later duplicate entry for
   // the same date overwrites an earlier one in the map -- "the later array
@@ -446,8 +447,8 @@
     aria-hidden={selectedDate !== null || reviewDialog !== null}
   >
     <!-- Story 3.1 -- HistoryView turned out not to need `plan`/`todayIso`
-         threaded in as props at all: it reads `planStore.plan`/`getTodayIso()`
-         itself, the same way App.svelte does, so `onOpen` is the only prop
+         threaded in as props at all: it reads the shared parsed Plan and
+         `getTodayIso()` itself, the same way App.svelte does, so `onOpen` is the only prop
          passed. This `#panel-history`'s own `id`/`hidden`/`inert`/
          `aria-hidden` wiring above is untouched -- only this child markup
          changed.

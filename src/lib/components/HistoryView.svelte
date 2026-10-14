@@ -4,8 +4,9 @@
   // Pure composition over pieces every prior story already built (AD-8: "no
   // separate day-state merge logic written for History") -- mirrors
   // App.svelte's own `plan`/`dayRange`/`workoutsByDate` `$derived` pattern
-  // exactly, reading the same `planStore.plan` Data Store App.svelte already
-  // reads (Never section: no new access path) so a background Plan refetch
+  // exactly, reading the same Plan App.svelte reads (Never section: no new
+  // access path; since Epic 4 retro A5 that's the one shared parse,
+  // `getParsedPlan()`, plus `planStore.status`) so a background Plan refetch
   // re-renders these rows in place, same as Home. This component never reads
   // `logStore` itself -- `DayRowCard` already reads its own `logEntry`
   // internally, so `'logged'`/`'orphaned-log'`/Missed rendering comes for
@@ -43,7 +44,7 @@
   import RollupSummary from './RollupSummary.svelte';
   import { planStore, loadPlan } from '../data/planStore.svelte';
   import { logStore } from '../data/logStore.svelte';
-  import { parsePlan } from '../domain/parsePlan';
+  import { getParsedPlan } from '../domain/parsedPlan.svelte';
   import { getPlanDayRange } from '../domain/getPlanDayRange';
   import { getWeekHeaderDates } from '../domain/getWeekHeaderDates';
   import { getTodayIso } from '../domain/date';
@@ -64,8 +65,8 @@
   // (Boundaries: "no second, differently-scoped notion of 'all days'"). Both
   // `$derived` so a background Plan refetch that silently updates
   // `planStore.plan` re-renders these rows in place with no re-mount, same
-  // as Home's own pattern.
-  const plan = $derived(parsePlan(planStore.plan));
+  // as Home's own pattern. The Plan is the one shared parse (Epic 4 retro A5).
+  const plan = $derived(getParsedPlan());
   const dayRange = $derived(getPlanDayRange(plan.workouts, todayIso));
   // Built from `plan.workouts` in array order so a later duplicate entry for
   // the same date overwrites an earlier one in the map, mirroring
