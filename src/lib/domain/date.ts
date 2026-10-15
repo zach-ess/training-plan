@@ -37,6 +37,14 @@ export function parseLocalDate(iso: string): Date {
   return new Date(year, month - 1, day);
 }
 
+/** Epic 4 retro A7 -- the ISO date `days` days after `iso` (negative goes
+ * back). Same construction as the rest of this file: `parseLocalDate`, local
+ * getters, `toLocalIsoDate` -- so a DST change never shifts it a day. */
+export function addDaysIso(iso: string, days: number): string {
+  const date = parseLocalDate(iso);
+  return toLocalIsoDate(new Date(date.getFullYear(), date.getMonth(), date.getDate() + days));
+}
+
 /** Story 3.2 -- Rollups & Trend Chart. Returns the ISO date of the Sunday
  * that starts `dateIso`'s calendar week, local time -- this app's fixed
  * "week" boundary (Boundaries: "Sunday–Saturday, local time") for
@@ -48,8 +56,7 @@ export function parseLocalDate(iso: string): Date {
 export function getWeekStartIso(dateIso: string): string {
   const date = parseLocalDate(dateIso);
   const dayOfWeek = date.getDay(); // 0 (Sunday) .. 6 (Saturday), local time
-  const weekStart = new Date(date.getFullYear(), date.getMonth(), date.getDate() - dayOfWeek);
-  return toLocalIsoDate(weekStart);
+  return addDaysIso(dateIso, -dayOfWeek);
 }
 
 /** Story 3.3 -- Week-End Review. Returns all 7 ISO dates, Sunday through
@@ -62,11 +69,9 @@ export function getWeekStartIso(dateIso: string): string {
  * calculation would (AD-2). Used to scope `computeMissedCount` to exactly
  * one week's 7 dates. */
 export function getWeekDates(weekStartIso: string): string[] {
-  const start = parseLocalDate(weekStartIso);
   const dates: string[] = [];
   for (let i = 0; i < 7; i++) {
-    const day = new Date(start.getFullYear(), start.getMonth(), start.getDate() + i);
-    dates.push(toLocalIsoDate(day));
+    dates.push(addDaysIso(weekStartIso, i));
   }
   return dates;
 }

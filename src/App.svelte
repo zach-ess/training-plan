@@ -28,6 +28,7 @@
   import { logStore } from './lib/data/logStore.svelte';
   import { weekEndReviewStore } from './lib/data/weekEndReviewStore.svelte';
   import { getParsedPlan } from './lib/domain/parsedPlan.svelte';
+  import { prefersReducedMotion } from './lib/components/motion';
   import { getPlanDayRange } from './lib/domain/getPlanDayRange';
   import { getWeekHeaderDates } from './lib/domain/getWeekHeaderDates';
   import { computeStreak } from './lib/domain/computeStreak';
@@ -65,38 +66,39 @@
     if (options?.skipFocusRestore || !closedDate) {
       return;
     }
-    // Fix (2026-10-11, deferred from Story 4.3): `tick()` first -- both tab
-    // panels stay `inert` until `selectedDate = null` flushes, and a real
-    // browser silently refuses `.focus()` inside an inert subtree (jsdom
-    // doesn't enforce `inert`), which dropped focus to <body>. Same fix as
-    // `handleCloseReview`, including bailing out if another dialog opened
-    // during that tick.
+    await restoreRowFocusAfterClose(closedDate);
+  }
+
+  // Epic 4 retro A7 -- the shared tail of `handleCloseDetail` and
+  // `handleCloseReview`: return focus to `date`'s row once the closed dialog
+  // has left the DOM.
+  //
+  // `tick()` first (2026-10-11 focus fix, first found live in Story 4.3):
+  // both tab panels stay `inert` until the dialog's state flushes, and a real
+  // browser silently refuses `.focus()` inside an inert subtree (jsdom
+  // doesn't enforce `inert`, so tests alone never showed it -- hence
+  // `trackFocusInert` in App.test.ts), which dropped focus to <body>. If another
+  // dialog opened during that tick, it owns focus now, so bail out.
+  //
+  // Mirrors `scrollToToday`'s query-selector convention. The day list stays
+  // mounted while a dialog is open, so the row is normally still there -- but
+  // if a background refetch or a `dayRange` rollover removed it, fall back to
+  // the active panel itself (a real focus target via its `tabindex="0"`)
+  // rather than dropping focus to `<body>`.
+  //
+  // Story 3.3 review fix: scoped to `#panel-${activeTab}`, not a bare
+  // document-wide `[data-date="..."]` selector. Home's and History's day
+  // lists render rows for the same dates, and Home's markup comes first in
+  // the DOM, so an unscoped selector would match Home's *hidden* row when the
+  // dialog was opened from History -- and `.focus()` on a hidden element
+  // silently no-ops (the same hazard `skipFocusRestore`/Epic 2 retro F1
+  // guards against), dropping focus instead of returning it to the tapped row.
+  async function restoreRowFocusAfterClose(date: string) {
     await tick();
     if (selectedDate !== null || reviewDialog !== null) {
       return;
     }
-    // Mirrors `scrollToToday`'s existing query-selector convention. The day
-    // list stays mounted the whole time this dialog is open (Boundaries), so
-    // the row is normally still there to refocus -- but if a background
-    // refetch or a `dayRange` window rollover removed/hid that date's row
-    // while the dialog was open, fall back to the Home panel's own
-    // container (already a real focus target via its `tabindex="0"`) rather
-    // than silently dropping focus to `<body>`.
-    //
-    // Story 3.3 review fix: scoped to `#panel-${activeTab}`, not a bare
-    // document-wide `[data-date="..."]` selector -- since Story 3.1,
-    // HistoryView's own day list renders a row for the exact same dates
-    // (the full Plan day range), and Workout Detail can be opened from
-    // either tab's list via this same handler. Home's `#panel-home` is
-    // always declared first in the DOM, so an unscoped selector would match
-    // Home's *hidden* row first whenever this dialog was opened from
-    // History, and `.focus()` on a hidden element silently no-ops (the same
-    // hazard `skipFocusRestore`/Epic 2 retro finding F1 already guards
-    // against elsewhere in this file) -- dropping focus to `<body>` instead
-    // of back into the row the user actually tapped.
-    const row = document.querySelector<HTMLElement>(
-      `#panel-${activeTab} [data-date="${closedDate}"]`,
-    );
+    const row = document.querySelector<HTMLElement>(`#panel-${activeTab} [data-date="${date}"]`);
     if (row) {
       row.focus();
     } else {
@@ -190,39 +192,13 @@
   async function handleCloseReview() {
     const closedWeekStartIso = reviewDialog?.weekStartIso;
     reviewDialog = null;
-    // Story 4.3 (found live): `tick()` first -- both tab panels stay `inert`
-    // until `reviewDialog = null` flushes, and a real browser silently
-    // refuses `.focus()` on an element inside an inert subtree (jsdom does
-    // not enforce `inert`, so tests alone never showed it), dropping focus to
-    // <body> instead of the row the Review was opened from.
     if (!closedWeekStartIso) {
       return;
     }
-    await tick();
-    // If another dialog opened during that tick, it owns focus now.
-    if (reviewDialog !== null || selectedDate !== null) {
-      return;
-    }
-    // Mirrors `handleCloseDetail`'s own query-selector convention (and its
-    // review-fix scoping, above): refocus this week's Sunday row -- the row
-    // whose Detail opened the Review, and also the target when the banner
-    // opened it (the banner is gone after a Save, but today's Sunday row
-    // never is) -- falling back to the active tab panel if no such row is
-    // rendered. Scoped to `#panel-${activeTab}`, not
-    // a bare document-wide selector -- a Sunday's date exists as a row in
-    // *both* Home's and History's day lists (both span the full Plan day
-    // range), and Home's markup is always declared first in the DOM, so an
-    // unscoped selector would match Home's hidden row first when this
-    // dialog was opened via a History row's Workout Detail, silently dropping
-    // focus instead of returning it to the tapped row.
-    const row = document.querySelector<HTMLElement>(
-      `#panel-${activeTab} [data-date="${closedWeekStartIso}"]`,
-    );
-    if (row) {
-      row.focus();
-    } else {
-      document.getElementById(`panel-${activeTab}`)?.focus();
-    }
+    // This week's Sunday row -- the row whose Detail opened the Review, and
+    // also the target when the banner opened it (the banner is gone after a
+    // Save, but today's Sunday row stays).
+    await restoreRowFocusAfterClose(closedWeekStartIso);
   }
 
   // Scrolls today's row into view once, right after the 'loaded' panel's day
@@ -240,12 +216,9 @@
   // scroll) or History back to its top -- both the page and History's own
   // independently scrolling `.history-list`, so the trend chart is visible
   // again. Smooth unless `prefers-reduced-motion` is set (read at tap time,
-  // same check as `CompletionCelebration`), in which case it jumps.
+  // via the shared `prefersReducedMotion`), in which case it jumps.
   function resetTabView(tab: Tab) {
-    const reducedMotion =
-      typeof window.matchMedia === 'function' &&
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const behavior: ScrollBehavior = reducedMotion ? 'auto' : 'smooth';
+    const behavior: ScrollBehavior = prefersReducedMotion() ? 'auto' : 'smooth';
     if (tab === 'home') {
       document
         .querySelector('#panel-home [data-today="true"]')

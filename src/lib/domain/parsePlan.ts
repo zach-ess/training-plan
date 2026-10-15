@@ -5,7 +5,7 @@
 // this returns.
 
 import { isRecord } from './guards';
-import { parseLocalDate, toLocalIsoDate } from './date';
+import { addDaysIso } from './date';
 
 export interface Workout {
   date: string;
@@ -346,8 +346,6 @@ function parsePlanWeeks(rawWeeks: unknown[]): PlanWeek[] {
       console.warn('parsePlan: dropping week with invalid or missing startDate', raw.weekNumber, raw.startDate);
       continue;
     }
-    const fallbackEnd = parseLocalDate(raw.startDate);
-    fallbackEnd.setDate(fallbackEnd.getDate() + 6);
     // An `endDate` before `startDate` (a hand-edit typo) would render an
     // inverted range, so it gets the same +6 fallback as a missing one.
     const endDate =
@@ -356,7 +354,7 @@ function parsePlanWeeks(rawWeeks: unknown[]): PlanWeek[] {
       isRealCalendarDate(raw.endDate) &&
       raw.endDate >= raw.startDate
         ? raw.endDate
-        : toLocalIsoDate(fallbackEnd);
+        : addDaysIso(raw.startDate, 6);
 
     const week: PlanWeek = { startDate: raw.startDate, endDate };
     if (typeof raw.weekNumber === 'number' && Number.isInteger(raw.weekNumber) && raw.weekNumber > 0) {

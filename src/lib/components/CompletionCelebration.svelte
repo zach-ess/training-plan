@@ -15,6 +15,7 @@
   // hand-built CSS/SVG checkmark+particle burst, matching every prior
   // story's zero-new-runtime-dependency pattern.
   import { tick } from 'svelte';
+  import { prefersReducedMotion } from './motion';
 
   let { onSettled }: { onSettled: () => void } = $props();
 
@@ -22,10 +23,7 @@
   // a mid-playback OS setting change isn't a case worth reacting to
   // reactively (mirrors this app's other one-time environment reads, e.g.
   // App.svelte's `todayIso`).
-  const prefersReducedMotion =
-    typeof window !== 'undefined' && typeof window.matchMedia === 'function'
-      ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
-      : false;
+  const reducedMotion = prefersReducedMotion();
 
   // Confetti particles -- purely decorative. Generated once per mount so the
   // scatter is randomized but stable for this single playback (no re-roll
@@ -44,7 +42,7 @@
   // How long this component stays mounted before calling `onSettled` --
   // shorter under reduced motion since there's no confetti/checkmark-draw
   // animation to wait out, only the static checkmark's own brief hold.
-  const SETTLE_MS = prefersReducedMotion ? 700 : 1400;
+  const SETTLE_MS = reducedMotion ? 700 : 1400;
 
   // The aria-live announcement text -- deliberately starts empty and is
   // populated slightly after this component (and its always-present
@@ -172,11 +170,11 @@
      component uses to reach a screen reader (UX-DR7's announcement
      requirement). -->
 <div class="celebration" aria-hidden="true">
-  <svg class="checkmark" class:static-variant={prefersReducedMotion} viewBox="0 0 52 52">
+  <svg class="checkmark" class:static-variant={reducedMotion} viewBox="0 0 52 52">
     <circle class="checkmark-circle" cx="26" cy="26" r="23" />
     <path class="checkmark-check" d="M15 27l7.5 7.5L37 18" />
   </svg>
-  {#if !prefersReducedMotion}
+  {#if !reducedMotion}
     <div class="confetti">
       {#each particles as particle (particle.id)}
         <span

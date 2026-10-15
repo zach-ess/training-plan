@@ -30,7 +30,7 @@
   import { computeStreak } from '../domain/computeStreak';
   import { computeRollup, ROLLUP_TYPE_ORDER } from '../domain/computeRollup';
   import { computeMissedCount } from '../domain/computeMissedCount';
-  import { getTodayIso, getWeekDates, parseLocalDate, toLocalIsoDate } from '../domain/date';
+  import { addDaysIso, getTodayIso, getWeekDates, parseLocalDate } from '../domain/date';
 
   let {
     weekStartIso,
@@ -69,7 +69,7 @@
   // could only ever return 0 (every date in range is `>= todayIso`), and
   // `computeRollup` only ever saw whatever was logged on the Sunday itself.
   // The window is now built backward: the 7 days ending on and including
-  // `weekStartIso`, via the same parseLocalDate/toLocalIsoDate arithmetic
+  // `weekStartIso`, via `addDaysIso` -- the same local-date arithmetic
   // every other date computation in this app uses (never `new
   // Date(iso)`/`toISOString()`, per AD-2) -- `getWeekDates` itself is
   // unchanged (it still just returns 7 consecutive dates starting from
@@ -77,10 +77,7 @@
   // that start changed. Scope confirmed with Zach: this fix is scoped to
   // Week-End Review alone -- `computeTrend`'s own Sun-Sat bucketing for the
   // already-shipped Trend Chart (Story 3.2) is deliberately left untouched.
-  const windowStartIso = $derived.by(() => {
-    const weekEnd = parseLocalDate(weekStartIso);
-    return toLocalIsoDate(new Date(weekEnd.getFullYear(), weekEnd.getMonth(), weekEnd.getDate() - 6));
-  });
+  const windowStartIso = $derived(addDaysIso(weekStartIso, -6));
   const weekDates = $derived(getWeekDates(windowStartIso));
   const weekEndIso = $derived(weekStartIso);
 
@@ -93,13 +90,7 @@
   // `streakEntries` below key on, so they can't disagree again (Epic 4
   // retro, F1: they once used different conditions on the following Monday).
   const isLateReview = $derived(weekStartIso < todayIso);
-  const asOfIso = $derived.by(() => {
-    if (!isLateReview) {
-      return todayIso;
-    }
-    const sunday = parseLocalDate(weekStartIso);
-    return toLocalIsoDate(new Date(sunday.getFullYear(), sunday.getMonth(), sunday.getDate() + 1));
-  });
+  const asOfIso = $derived(isLateReview ? addDaysIso(weekStartIso, 1) : todayIso);
 
   const weekRangeLabel = $derived.by(() => {
     const fmt = (iso: string) =>

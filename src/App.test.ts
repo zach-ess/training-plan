@@ -441,6 +441,29 @@ describe('App -- Workout Detail close returns focus to the row', () => {
     });
   }
 
+  // Epic 4 retro A7: both close handlers now share one focus helper; this is
+  // its fallback branch.
+  it('if the row left the day list while Detail was open, focus falls back to the panel', async () => {
+    const { container } = await renderApp();
+    await fireEvent.click(container.querySelector<HTMLElement>('#panel-home [data-date="2026-10-11"]')!);
+    await tick();
+    // A background refetch drops Oct 11, the last day, so its row unmounts.
+    planStore.plan = { workouts: WORKOUTS.filter((w) => w.date !== '2026-10-11') };
+    await tick();
+    expect(container.querySelector('#panel-home [data-date="2026-10-11"]')).toBeNull();
+    const focusCalls = trackFocusInert();
+
+    await fireEvent.keyDown(window, { key: 'Escape' });
+    await tick();
+    await tick();
+
+    const panel = container.querySelector<HTMLElement>('#panel-home')!;
+    expect(document.activeElement).toBe(panel);
+    expect(focusCalls.map(({ el, inert, hidden }) => ({ el, inert, hidden }))).toEqual([
+      { el: panel, inert: false, hidden: false },
+    ]);
+  });
+
   it('from the History tab, closing returns focus to the History row (not Home\x27s copy)', async () => {
     const { container } = await renderApp();
     await tapTab(/history/i);
