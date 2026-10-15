@@ -480,3 +480,30 @@ describe('App -- Workout Detail close returns focus to the row', () => {
     expect(focusCalls.filter((c) => c.el === row).map((c) => c.inert)).toEqual([false]);
   });
 });
+
+describe('App -- rest-day note in Workout Detail (Epic 4 retro A11)', () => {
+  it("tapping a Coach plan's rest row shows that day's note", async () => {
+    const run = { sport: 'run', durationMinutes: 30 };
+    planStore.plan = {
+      weeks: [
+        {
+          weekNumber: 1,
+          startDate: '2026-10-05',
+          endDate: '2026-10-11',
+          days: [
+            { date: '2026-10-05', workouts: [run] },
+            { date: FIXED_TODAY, workouts: [{ sport: 'rest', description: 'Full rest. Walking is fine.' }] },
+            { date: '2026-10-11', workouts: [run] },
+          ],
+        },
+      ],
+    };
+    const { container } = await renderApp();
+
+    await fireEvent.click(container.querySelector<HTMLElement>(`#panel-home [data-date="${FIXED_TODAY}"]`)!);
+    await tick();
+    expect(screen.getByRole('heading', { name: 'Rest Day' })).toBeInTheDocument();
+    expect(screen.getByRole('dialog')).toHaveTextContent('Full rest. Walking is fine.');
+    expect(screen.queryByText('Nothing scheduled to log yet')).toBeNull();
+  });
+});

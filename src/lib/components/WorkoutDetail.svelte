@@ -45,11 +45,15 @@
   let {
     date,
     workout,
+    restNote,
     onClose,
     onOpenReview,
   }: {
     date: string;
     workout: Workout | undefined;
+    // Epic 4 retro A11 -- the plan's note for this date; shown only on a
+    // rest day, in place of "Nothing scheduled to log yet".
+    restNote?: string;
     onClose: () => void;
     // Story 4.3 -- opens this Sunday's Week-End Review (App.svelte decides
     // editable vs read-only from whether it's saved).
@@ -312,7 +316,11 @@
       <WorkoutEditForm {date} {workout} onSaved={handleEditSaved} onCancel={handleEditCancel} />
     {:else}
       {#if isRestDay}
-        <p class="empty-copy">Nothing scheduled to log yet</p>
+        {#if restNote}
+          <p class="rest-note">{restNote}</p>
+        {:else}
+          <p class="empty-copy">Nothing scheduled to log yet</p>
+        {/if}
       {:else}
         <!-- Story 4.5 -- each planned session by name, with its own minutes ·
              distance and the plan's full instructions, above the day's stats
@@ -544,6 +552,19 @@
 
   .session-instructions {
     margin: var(--space-3) 0 0;
+    font-family: var(--type-body-font-family);
+    font-size: var(--type-body-size);
+    font-weight: var(--type-body-weight);
+    line-height: var(--type-body-line-height);
+    color: var(--text-secondary);
+    white-space: pre-line;
+    overflow-wrap: break-word;
+  }
+
+  /* Epic 4 retro A11 -- the plan's rest-day note: body text, wrapping,
+     never truncated. */
+  .rest-note {
+    margin: 0;
     font-family: var(--type-body-font-family);
     font-size: var(--type-body-size);
     font-weight: var(--type-body-weight);

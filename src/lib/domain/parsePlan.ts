@@ -43,6 +43,11 @@ export interface Plan {
   planName?: string;
   workouts: Workout[];
   weeks?: PlanWeek[];
+  /** Epic 4 retro A11 -- a Claude Coach plan's rest-day notes, keyed by ISO
+   * date, for days that fold to no Workout. Display-only (Workout Detail on a
+   * rest day); a rest day is still never a Workout. Absent when there are none
+   * and for the flat format. */
+  restNotes?: Record<string, string>;
 }
 
 // Architecture's Consistency Conventions: "Dates are ISO 8601 strings
@@ -257,6 +262,24 @@ function toWorkoutFromCoachDay(date: string, rawSessions: unknown, useMiles: boo
   return workout;
 }
 
+/** Epic 4 retro A11 -- a rest-only day's note: the first rest entry with a
+ * non-blank `humanReadable`, else `description` (Story 4.5's instructions
+ * rule). Only a day whose every entry is a rest entry gets one -- a day with
+ * a dropped malformed session was meant as a workout day. Silent on bad input. */
+function restNoteFromCoachDay(rawSessions: unknown[]): string | undefined {
+  const isRest = (raw: unknown) => isRecord(raw) && typeof raw.sport === 'string' && raw.sport.trim() === 'rest';
+  if (rawSessions.length === 0 || !rawSessions.every(isRest)) {
+    return undefined;
+  }
+  for (const raw of rawSessions as Record<string, unknown>[]) {
+    const note = nonEmptyText(raw.humanReadable) ?? nonEmptyText(raw.description);
+    if (note) {
+      return note;
+    }
+  }
+  return undefined;
+}
+
 /** Reads a Claude Coach plan's `weeks[].days[]` into flat Workouts, routing
  * each day's `date` through the same `toWorkout` validation the flat shape
  * uses so a malformed date is dropped (with its warning) identically. */
@@ -265,6 +288,7 @@ function parseCoachPlan(raw: Record<string, unknown>, weeks: unknown[]): Plan {
   const useMiles = preferences.run !== 'km';
 
   const workouts: Workout[] = [];
+  const restNotes: Record<string, string> = {};
   for (const week of weeks) {
     // A non-object week already warns in `parsePlanWeeks`; the rest warn
     // here (Epic 4 retro A6, F5).
@@ -285,7 +309,17 @@ function parseCoachPlan(raw: Record<string, unknown>, weeks: unknown[]): Plan {
         continue;
       }
       const folded = toWorkoutFromCoachDay(String(day.date), day.workouts, useMiles);
-      const workout = folded && toWorkout(folded);
+      if (!folded) {
+        // Epic 4 retro A11 -- keep a rest day's note, keyed by a real ISO
+        // date only (the same validation `toWorkout` applies).
+        const note = restNoteFromCoachDay(day.workouts);
+        const date = day.date;
+        if (note && typeof date === 'string' && ISO_DATE_RE.test(date) && isRealCalendarDate(date)) {
+          restNotes[date] = note;
+        }
+        continue;
+      }
+      const workout = toWorkout(folded);
       if (workout) {
         // `toWorkout` keeps only the flat-format fields; re-attach the
         // sessions it validated the date for (Story 4.5).
@@ -298,6 +332,9 @@ function parseCoachPlan(raw: Record<string, unknown>, weeks: unknown[]): Plan {
   }
 
   const plan: Plan = { workouts };
+  if (Object.keys(restNotes).length > 0) {
+    plan.restNotes = restNotes;
+  }
   const meta = isRecord(raw.meta) ? raw.meta : {};
   if (typeof meta.event === 'string') {
     plan.planName = meta.event;

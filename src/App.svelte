@@ -434,6 +434,7 @@
       <WorkoutDetail
         date={selectedDate}
         workout={workoutsByDate.get(selectedDate)}
+        restNote={plan.restNotes?.[selectedDate]}
         onClose={handleCloseDetail}
         onOpenReview={handleOpenReviewFromDetail}
       />

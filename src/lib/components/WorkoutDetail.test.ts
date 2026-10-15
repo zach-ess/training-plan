@@ -265,3 +265,49 @@ describe('WorkoutDetail -- planned sessions on logged and orphaned days (Story 4
     expect(container.querySelector('.sessions')).toBeNull();
   });
 });
+
+describe('WorkoutDetail -- rest-day note (Epic 4 retro A11)', () => {
+  // Earlier describes leave their renders mounted; start clean.
+  beforeEach(() => {
+    cleanup();
+  });
+  afterEach(() => {
+    cleanup();
+  });
+
+  it('a rest day with a note shows "Rest Day", then the note, in place of "Nothing scheduled"', () => {
+    const { getByRole, getByText, queryByText } = render(WorkoutDetail, {
+      props: { date: '2026-12-10', workout: undefined, restNote: 'Full rest. Walking is fine.', onClose: vi.fn() },
+    });
+    expect(getByRole('heading', { level: 2 })).toHaveTextContent('Rest Day');
+    expect(getByText('Full rest. Walking is fine.')).toBeInTheDocument();
+    expect(queryByText('Nothing scheduled to log yet')).toBeNull();
+    expect(getByRole('button', { name: 'Edit' })).toBeInTheDocument();
+  });
+
+  it('a rest day without a note (or a blank one) reads as before', () => {
+    const { getByText, container } = render(WorkoutDetail, {
+      props: { date: '2026-12-11', workout: undefined, restNote: '', onClose: vi.fn() },
+    });
+    expect(getByText('Nothing scheduled to log yet')).toBeInTheDocument();
+    expect(container.querySelector('.rest-note')).toBeNull();
+  });
+
+  it('a logged rest date shows its log and no note', async () => {
+    const { replaceLogEntry } = await import('../data/logStore.svelte');
+    const date = '2026-12-12';
+    replaceLogEntry(date, { type: 'Bike', duration: '30 min' });
+    const { container, queryByText } = render(WorkoutDetail, {
+      props: { date, workout: undefined, restNote: 'Full rest. Walking is fine.', onClose: vi.fn() },
+    });
+    expect(queryByText('Full rest. Walking is fine.')).toBeNull();
+    expect(container.querySelector('.stats')?.textContent).toContain('30 min');
+  });
+
+  it('a day with a Workout never shows a note', () => {
+    const { queryByText } = render(WorkoutDetail, {
+      props: { date: '2026-12-13', workout: { ...workout, date: '2026-12-13' }, restNote: 'Rest.', onClose: vi.fn() },
+    });
+    expect(queryByText('Rest.')).toBeNull();
+  });
+});

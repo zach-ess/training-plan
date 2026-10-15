@@ -425,3 +425,93 @@ describe('parsePlan -- Coach drops warn, blank sport (Epic 4 retro A6)', () => {
     expect(plan.workouts[0].duration).toBe('40 min + 20 min strength');
   });
 });
+
+describe('parsePlan -- rest-day notes (Epic 4 retro A11)', () => {
+  it('keeps a rest-only day\x27s description as its note, and the day stays no Workout', () => {
+    const plan = parsePlan(
+      coachPlan([{ date: '2026-10-12', workouts: [{ ...REST, description: 'Full rest. Walking is fine.' }] }]),
+    );
+    expect(plan.workouts).toEqual([]);
+    expect(plan.restNotes).toEqual({ '2026-10-12': 'Full rest. Walking is fine.' });
+  });
+
+  it('prefers humanReadable over description', () => {
+    const plan = parsePlan(
+      coachPlan([
+        { date: '2026-10-12', workouts: [{ ...REST, description: 'Short.', humanReadable: 'Rest day\nWalking is fine.' }] },
+      ]),
+    );
+    expect(plan.restNotes?.['2026-10-12']).toBe('Rest day\nWalking is fine.');
+  });
+
+  it('a blank note means no note (and no map)', () => {
+    const plan = parsePlan(
+      coachPlan([
+        { date: '2026-10-12', workouts: [{ ...REST, description: '   ', humanReadable: '' }] },
+        { date: '2026-10-13', workouts: [REST] },
+      ]),
+    );
+    expect(plan.restNotes).toBeUndefined();
+  });
+
+  it('a day with a rest entry and a real session gets its Workout and no note', () => {
+    const plan = parsePlan(
+      coachPlan([{ date: '2026-10-12', workouts: [{ ...REST, description: 'Rest.' }, RUN_4MI] }]),
+    );
+    expect(plan.workouts.map((w) => w.date)).toEqual(['2026-10-12']);
+    expect(plan.restNotes).toBeUndefined();
+  });
+
+  it('a rest entry plus a malformed (dropped) session gets no note', () => {
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const plan = parsePlan(
+      coachPlan([{ date: '2026-10-12', workouts: [{ ...REST, description: 'Rest.' }, { durationMinutes: 30 }] }]),
+    );
+    expect(plan.workouts).toEqual([]);
+    expect(plan.restNotes).toBeUndefined();
+  });
+
+  it('a padded " rest " sport still gives a note', () => {
+    const plan = parsePlan(coachPlan([{ date: '2026-10-12', workouts: [{ sport: ' rest ', description: 'Rest.' }] }]));
+    expect(plan.restNotes).toEqual({ '2026-10-12': 'Rest.' });
+  });
+
+  it("two rest entries, first blank: the second's text is the note", () => {
+    const plan = parsePlan(
+      coachPlan([{ date: '2026-10-12', workouts: [{ ...REST, description: ' ' }, { ...REST, description: 'Second.' }] }]),
+    );
+    expect(plan.restNotes).toEqual({ '2026-10-12': 'Second.' });
+  });
+
+  it('a rest day with an invalid date gets no note', () => {
+    const plan = parsePlan(coachPlan([{ date: '2026-02-30', workouts: [{ ...REST, description: 'Rest.' }] }]));
+    expect(plan.restNotes).toBeUndefined();
+  });
+
+  it('a flat plan has no notes map', () => {
+    const plan = parsePlan({ workouts: [{ date: '2026-10-12', type: 'Run' }] });
+    expect(plan.restNotes).toBeUndefined();
+  });
+
+  it('the real Coach plan (public/plan.json) gives every rest-only day a note, with no warnings', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const raw = JSON.parse(realPlanText);
+    const plan = parsePlan(raw);
+    const restDates: string[] = [];
+    for (const week of raw.weeks) {
+      for (const day of week.days) {
+        if (
+          day.workouts.length > 0 &&
+          day.workouts.every((w: { sport: unknown }) => typeof w.sport === 'string' && w.sport.trim() === 'rest')
+        ) {
+          restDates.push(day.date);
+        }
+      }
+    }
+    expect(restDates.length).toBeGreaterThan(0);
+    expect(Object.keys(plan.restNotes ?? {}).sort()).toEqual(restDates.sort());
+    expect(plan.restNotes?.['2026-10-14']).toBe('Rest. Walking is fine.');
+    expect(plan.workouts.some((w) => restDates.includes(w.date))).toBe(false);
+    expect(warn).not.toHaveBeenCalled();
+  });
+});
