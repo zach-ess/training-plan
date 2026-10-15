@@ -1542,6 +1542,26 @@ function checkRootWiring(failures) {
       failures.push(`src/Root.svelte: missing ${description} (expected to find "${needle}")`);
     }
   }
+
+  // Epic 1 retro item 2 -- the boundary and listeners above are only useful
+  // if they actually render the fallback. Comment-masked, so prose about
+  // CrashFallback can't satisfy it: imported, rendered inside the boundary's
+  // failed snippet, and rendered again on the global-crash path.
+  const rootCode = maskAllComments(rootSource);
+  if (!/import\s+CrashFallback\s+from\s+['"][^'"]*CrashFallback\.svelte['"]/.test(rootCode)) {
+    failures.push('src/Root.svelte: CrashFallback.svelte is not imported');
+  }
+  const failedSnippet = rootCode.match(/\{#snippet failed\b[\s\S]*?\{\/snippet\}/);
+  if (!failedSnippet || !/<CrashFallback(?![\w-])/.test(failedSnippet[0])) {
+    failures.push("src/Root.svelte: the boundary's failed snippet does not render <CrashFallback />");
+  }
+  const globalCrashBranch = rootCode.match(/\{#if globalCrash\}([\s\S]*?)\{:else\}/);
+  if (!globalCrashBranch || !/<CrashFallback(?![\w-])/.test(globalCrashBranch[1])) {
+    failures.push(
+      "src/Root.svelte: the {#if globalCrash} branch (errors the boundary can't see) does not render " +
+        '<CrashFallback />',
+    );
+  }
 }
 
 /** Whole-style-block color-property scan over App.svelte, same pattern as
@@ -2070,6 +2090,82 @@ function checkWorkoutDetailReviewActionWiring(failures) {
   }
 }
 
+/** Epic 1 retro items 3, 4 and 6 + epic 2 item 18 -- string contracts that
+ * span files, which no single-file check can see drift:
+ *   - TabBar's `id="tab-<tab>"`/`aria-controls="panel-<tab>"` against
+ *     App.svelte's `id="panel-<tab>"`/`aria-labelledby="tab-<tab>"` panels;
+ *   - each panel stays mounted and is hidden with `hidden={activeTab !==
+ *     '<tab>'}`, never wrapped in `{#if activeTab ...}` (the Epic 1
+ *     aria-controls-pointing-at-nothing bug);
+ *   - DayRowCard's `data-today`/`data-date` attributes against App.svelte's
+ *     `[data-today="true"]`/`[data-date=...]` selectors;
+ *   - App.svelte still branches its Home panel on `planStore.status` and
+ *     still mounts `<DayRowCard` and `<TabBar`.
+ * Everything is matched against comment-masked source, so prose can't
+ * satisfy a check. */
+function checkCrossFileContracts(failures) {
+  const appCode = maskAllComments(readFileSync(appSveltePath, 'utf8'));
+  const tabBarCode = maskAllComments(readFileSync(tabBarSveltePath, 'utf8'));
+  const dayRowCardCode = maskAllComments(readFileSync(dayRowCardSveltePath, 'utf8'));
+
+  for (const tab of ['home', 'history']) {
+    if (!tabBarCode.includes(`id="tab-${tab}"`) || !tabBarCode.includes(`aria-controls="panel-${tab}"`)) {
+      failures.push(
+        `TabBar.svelte <-> App.svelte: TabBar no longer declares id="tab-${tab}" with aria-controls="panel-${tab}"`,
+      );
+    }
+    const panel = appCode.match(new RegExp(`<div\\s[^>]*id="panel-${tab}"[^>]*>`));
+    if (!panel) {
+      failures.push(`App.svelte <-> TabBar.svelte: no <div id="panel-${tab}"> for TabBar's aria-controls to point at`);
+      continue;
+    }
+    if (!panel[0].includes(`aria-labelledby="tab-${tab}"`)) {
+      failures.push(`App.svelte <-> TabBar.svelte: #panel-${tab} is not aria-labelledby="tab-${tab}"`);
+    }
+    if (!panel[0].includes(`hidden={activeTab !== '${tab}'}`)) {
+      failures.push(
+        `App.svelte: #panel-${tab} must stay mounted and be hidden with hidden={activeTab !== '${tab}'} ` +
+          `(conditionally unmounting it leaves TabBar's aria-controls pointing at nothing)`,
+      );
+    }
+  }
+  if (/\{#if\s+activeTab\b/.test(appCode)) {
+    failures.push(
+      'App.svelte: a {#if activeTab ...} block was found -- tab panels must be hidden, not conditionally rendered',
+    );
+  }
+
+  if (!dayRowCardCode.includes("data-today={isToday ? 'true' : undefined}")) {
+    failures.push("DayRowCard.svelte: no longer renders data-today={isToday ? 'true' : undefined}");
+  }
+  if (!appCode.includes('[data-today="true"]')) {
+    failures.push('App.svelte: no [data-today="true"] selector (today-row scroll) -- does it still match DayRowCard?');
+  }
+  if (!dayRowCardCode.includes('data-date={date}')) {
+    failures.push('DayRowCard.svelte: no longer renders data-date={date}');
+  }
+  if (!appCode.includes('[data-date="')) {
+    failures.push('App.svelte: no [data-date="..."] selector (focus return) -- does it still match DayRowCard?');
+  }
+
+  // Scoped to the Home panel's own markup: from its opening tag to History's.
+  const homeStart = appCode.indexOf('id="panel-home"');
+  const historyStart = appCode.indexOf('id="panel-history"');
+  const homePanel = homeStart >= 0 && historyStart > homeStart ? appCode.slice(homeStart, historyStart) : '';
+  if (
+    !homePanel.includes("{#if planStore.status === 'loading'}") ||
+    !homePanel.includes("{:else if planStore.status === 'error'}")
+  ) {
+    failures.push("App.svelte: the Home panel no longer branches on planStore.status ('loading' / 'error' / loaded)");
+  }
+  if (!/<DayRowCard(?![\w-])/.test(homePanel)) {
+    failures.push('App.svelte: the Home panel no longer mounts <DayRowCard');
+  }
+  if (!/<TabBar(?![\w-])/.test(appCode)) {
+    failures.push('App.svelte: no longer mounts <TabBar');
+  }
+}
+
 function main() {
   /** @type {string[]} */
   const failures = [];
@@ -2113,6 +2209,7 @@ function main() {
   checkHistoryViewWeekEndReviewWiring(failures);
   checkWorkoutDetailReviewActionWiring(failures);
   checkRootWiring(failures);
+  checkCrossFileContracts(failures);
 
   if (failures.length > 0) {
     console.error(`Design token verification FAILED (${failures.length} mismatch(es)):`);
@@ -2176,7 +2273,10 @@ function main() {
       `WorkoutDetail.svelte offers a Sunday-only, not-future "Review this week"/"View this week's review" ` +
       `action calling onOpenReview(date); and WeekHeader.svelte ` +
       `routes its color declarations through tokens, carries a level-2 heading, has no background fill, and ` +
-      `no interactive element or attribute in its template.`,
+      `no interactive element or attribute in its template; and Root.svelte renders <CrashFallback in both ` +
+      `the boundary's failed snippet and the {#if globalCrash} branch; and the TabBar/App tab-panel ids, the hidden={...} panels, DayRowCard's data-today/` +
+      `data-date and App's selectors for them, and App's planStore.status branches and DayRowCard/TabBar ` +
+      `mounts all still agree across files.`,
   );
 }
 
