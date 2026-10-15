@@ -18,7 +18,7 @@
   // (its own header comment); trimming to "only the elapsed weeks" is this
   // component's job, not `computeTrend`'s (this story's Tasks).
   import { computeTrend } from '../domain/computeTrend';
-  import { getTodayIso, getWeekStartIso } from '../domain/date';
+  import { getTodayIso, getWeekStartIso, parseLocalDate } from '../domain/date';
   import { isRecord } from '../domain/guards';
 
   let { entries }: { entries: Record<string, unknown> } = $props();
@@ -107,8 +107,7 @@
    * an axis label, not a stored/compared value, so `toLocaleDateString` is
    * fine here even though the rest of this app avoids it for date math. */
   function weekLabel(weekStartIso: string): string {
-    const [year, month, day] = weekStartIso.split('-').map(Number);
-    return new Date(year, month - 1, day).toLocaleDateString(undefined, {
+    return parseLocalDate(weekStartIso).toLocaleDateString(undefined, {
       month: 'short',
       day: 'numeric',
     });

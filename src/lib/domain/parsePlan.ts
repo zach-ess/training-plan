@@ -5,7 +5,7 @@
 // this returns.
 
 import { isRecord } from './guards';
-import { addDaysIso } from './date';
+import { addDaysIso, parseLocalDate, toLocalIsoDate } from './date';
 
 export interface Workout {
   date: string;
@@ -69,14 +69,11 @@ const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
  * date-keyed Map) still keys on the original, un-rolled-over string -- so
  * the Workout itself silently vanishes from its own row while the day list
  * balloons to cover the bogus rolled-over date. Round-tripping through
- * `Date`'s own getters and comparing back to the input catches this: a
- * genuine calendar date always survives the round trip unchanged. */
+ * date.ts's `parseLocalDate`/`toLocalIsoDate` and comparing back to the
+ * input catches this: a genuine calendar date always survives the round
+ * trip unchanged. */
 function isRealCalendarDate(iso: string): boolean {
-  const [year, month, day] = iso.split('-').map(Number);
-  const date = new Date(year, month - 1, day);
-  return (
-    date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day
-  );
+  return toLocalIsoDate(parseLocalDate(iso)) === iso;
 }
 
 /** A raw array entry is treated as a Workout only if it at least carries a

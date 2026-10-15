@@ -515,3 +515,19 @@ describe('parsePlan -- rest-day notes (Epic 4 retro A11)', () => {
     expect(warn).not.toHaveBeenCalled();
   });
 });
+
+// Epic 1 retro item 8 -- isRealCalendarDate now round-trips through date.ts.
+describe('parsePlan -- calendar-date validation (Epic 1 retro item 8)', () => {
+  it('accepts a real leap day and rejects a non-leap Feb 29 and a 3-digit-era year, with warnings', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const plan = parsePlan({
+      workouts: [
+        { date: '2028-02-29', type: 'Run' },
+        { date: '2027-02-29', type: 'Run' },
+        { date: '0999-01-01', type: 'Run' },
+      ],
+    });
+    expect(plan.workouts.map((w) => w.date)).toEqual(['2028-02-29']);
+    expect(warn.mock.calls.filter((call) => String(call[0]).includes('invalid or missing date'))).toHaveLength(2);
+  });
+});
