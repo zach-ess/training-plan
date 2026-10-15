@@ -25,6 +25,7 @@
   // (this story's Always section).
   import { logStore } from '../data/logStore.svelte';
   import { getReview, saveReview, type WriteResult } from '../data/weekEndReviewStore.svelte';
+  import { clearDraft, getDraft, setDraft } from '../data/reviewDraftStore.svelte';
   import { getParsedPlan } from '../domain/parsedPlan.svelte';
   import { getPlanDayRange } from '../domain/getPlanDayRange';
   import { computeStreak } from '../domain/computeStreak';
@@ -144,11 +145,25 @@
   const streak = $derived(savedReview ? savedReview.streak : liveStreak);
   const missedCount = $derived(savedReview ? savedReview.missedCount : liveMissedCount);
 
-  // Reflection: a plain local draft while editable (nothing is persisted
-  // until Save), or the frozen saved text in read-only mode -- never a
-  // two-way binding onto the saved record either way (this story's Never
-  // section: "no editing a saved Review's reflection... after Save").
-  let reflectionDraft = $state('');
+  // Reflection: a local draft while editable, or the frozen saved text in
+  // read-only mode -- never a two-way binding onto the saved record either
+  // way (this story's Never section: "no editing a saved Review's
+  // reflection... after Save").
+  //
+  // Epic 4 retro A10: while editable, the draft starts from this week's
+  // stored draft and every edit is written back to the draft store (blank
+  // text removes it), so closing the Review, tapping a tab, or reloading the
+  // app keeps it. App.svelte mounts this component fresh per open, so the
+  // initial read is enough. Read-only mode never reads or writes a draft.
+  // svelte-ignore state_referenced_locally
+  let reflectionDraft = $state(readOnly ? '' : getDraft(weekStartIso));
+
+  function updateReflectionDraft(text: string) {
+    reflectionDraft = text;
+    if (!readOnly) {
+      setDraft(weekStartIso, text);
+    }
+  }
   const reflectionDisplay = $derived(readOnly ? (savedReview?.reflection ?? '') : reflectionDraft);
 
   let writeErrorReason = $state<'quota-exceeded' | 'write-error' | undefined>(undefined);
@@ -164,9 +179,11 @@
       reflection: reflectionDraft,
     });
     if (!result.ok) {
+      // The week's draft is kept, alongside the error and Retry (A10).
       writeErrorReason = result.reason;
       return;
     }
+    clearDraft(weekStartIso);
     // Only success closes the dialog and drops the banner (Always section) --
     // the banner's own visibility is a separate `$derived` in App.svelte over
     // this same Data Store, so it disappears the instant this write commits,
@@ -280,7 +297,7 @@
           id="week-end-review-reflection"
           class="reflection-input"
           placeholder="How did this week go?"
-          bind:value={reflectionDraft}
+          bind:value={() => reflectionDraft, updateReflectionDraft}
         ></textarea>
       {/if}
     </div>

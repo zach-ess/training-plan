@@ -11,6 +11,7 @@ import { tick } from 'svelte';
 import App from './App.svelte';
 import { planStore } from './lib/data/planStore.svelte';
 import { weekEndReviewStore } from './lib/data/weekEndReviewStore.svelte';
+import { clearDraft } from './lib/data/reviewDraftStore.svelte';
 import type { Workout } from './lib/domain/parsePlan';
 
 const FIXED_TODAY = '2026-10-06';
@@ -260,6 +261,25 @@ describe('App -- tap the active tab to reset its view', () => {
       expect(elementScrollTo).not.toHaveBeenCalled();
     });
   }
+
+  // Epic 4 retro A10: the unsaved reflection survives the tab tap that
+  // closed the Review, and comes back when that Sunday's Review reopens.
+  it('text typed in the Review is restored after a tab tap closes it and it is reopened', async () => {
+    try {
+      const { container } = await renderApp();
+      await openReviewFromSunday(container, 'home');
+      await fireEvent.input(screen.getByLabelText('Reflection'), { target: { value: 'Good week' } });
+
+      await tapTab(/history/i);
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+
+      await openReviewFromSunday(container, 'history');
+      expect(screen.getByLabelText('Reflection')).toHaveValue('Good week');
+    } finally {
+      // Keep the draft out of later tests that open this Sunday.
+      clearDraft('2026-10-04');
+    }
+  });
 });
 
 // Story 4.4 -- week headers on Home: before each plan week's first day only,

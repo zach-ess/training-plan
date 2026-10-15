@@ -14,6 +14,7 @@ import WeekEndReview from './WeekEndReview.svelte';
 import { planStore } from '../data/planStore.svelte';
 import { setCompleted } from '../data/logStore.svelte';
 import { getReview, weekEndReviewStore } from '../data/weekEndReviewStore.svelte';
+import { getDraft, setDraft, reviewDraftStore } from '../data/reviewDraftStore.svelte';
 import { getWeekDates, parseLocalDate, toLocalIsoDate } from '../domain/date';
 import type { Workout } from '../domain/parsePlan';
 
@@ -426,5 +427,153 @@ describe('WeekEndReview -- late review opened on the following Monday (Epic 4 re
     expect(cellValue(container, 'Streak')).toBe('1');
     expect(cellValue(container, 'Days missed')).toBe('0');
     expect(cellValue(container, 'Workouts completed')).toBe('1');
+  });
+});
+
+// Epic 4 retro A10 -- an unsaved reflection is kept as a per-week draft and
+// restored when that week's editable Review opens again. Each test uses its
+// own Sunday, and the afterEach below resets the shared draft store and any
+// Reviews these tests saved.
+const DRAFTS_KEY = 'week-end-review-drafts-v1';
+const REVIEWS_KEY = 'week-end-reviews-v1';
+const DRAFT_TEST_WEEKS = ['2026-12-06', '2026-12-13', '2026-12-20', '2026-12-27', '2027-02-14', '2027-02-21', '2027-01-10'];
+
+describe('WeekEndReview -- reflection drafts (Epic 4 retro A10)', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+    reviewDraftStore.drafts = {};
+    localStorage.removeItem(DRAFTS_KEY);
+    const storedReviews = JSON.parse(localStorage.getItem(REVIEWS_KEY) ?? '{}') as Record<string, unknown>;
+    for (const week of DRAFT_TEST_WEEKS) {
+      delete weekEndReviewStore.reviews[week];
+      delete storedReviews[week];
+    }
+    localStorage.setItem(REVIEWS_KEY, JSON.stringify(storedReviews));
+  });
+
+  function storedDrafts(): Record<string, unknown> {
+    return JSON.parse(localStorage.getItem(DRAFTS_KEY) ?? '{}') as Record<string, unknown>;
+  }
+
+  function failWrites() {
+    return vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new DOMException('quota exceeded (simulated)', 'QuotaExceededError');
+    });
+  }
+
+  function openEditable(week: string) {
+    return render(WeekEndReview, { props: { weekStartIso: week, readOnly: false, onClose: vi.fn() } });
+  }
+
+  it('typed text is restored when the same week is reopened, and another week starts empty', async () => {
+    setLoadedPlan([]);
+    const week = '2026-12-06';
+    const first = openEditable(week);
+    await fireEvent.input(first.getByLabelText('Reflection'), { target: { value: 'Good week' } });
+    first.unmount();
+
+    const reopened = openEditable(week);
+    expect((reopened.getByLabelText('Reflection') as HTMLTextAreaElement).value).toBe('Good week');
+    reopened.unmount();
+
+    const other = openEditable('2026-12-13');
+    expect((other.getByLabelText('Reflection') as HTMLTextAreaElement).value).toBe('');
+  });
+
+  it('clearing the text removes the draft', async () => {
+    setLoadedPlan([]);
+    const week = '2026-12-20';
+    const first = openEditable(week);
+    const textarea = first.getByLabelText('Reflection');
+    await fireEvent.input(textarea, { target: { value: 'Good week' } });
+    expect(getDraft(week)).toBe('Good week');
+    expect(storedDrafts()).toHaveProperty(week);
+
+    await fireEvent.input(textarea, { target: { value: '' } });
+    expect(getDraft(week)).toBe('');
+    expect(storedDrafts()).not.toHaveProperty(week);
+  });
+
+  it('a successful Save clears the draft, and reopening shows the saved text read-only', async () => {
+    setLoadedPlan([]);
+    const week = '2026-12-27';
+    const first = openEditable(week);
+    await fireEvent.input(first.getByLabelText('Reflection'), { target: { value: 'Good week' } });
+    await fireEvent.click(first.getByRole('button', { name: 'Save' }));
+    first.unmount();
+
+    expect(getDraft(week)).toBe('');
+    expect(JSON.parse(localStorage.getItem('week-end-review-drafts-v1') ?? '{}')).not.toHaveProperty(week);
+    expect(getReview(week)?.reflection).toBe('Good week');
+
+    const { queryByRole, getByText } = render(WeekEndReview, {
+      props: { weekStartIso: week, readOnly: true, onClose: vi.fn() },
+    });
+    expect(queryByRole('textbox')).toBeNull();
+    expect(getByText('Good week')).toBeTruthy();
+  });
+
+  it('a failed Save keeps the draft alongside the error and Retry', async () => {
+    setLoadedPlan([]);
+    const week = '2027-02-14';
+    const first = openEditable(week);
+    await fireEvent.input(first.getByLabelText('Reflection'), { target: { value: 'Good week' } });
+
+    const spy = failWrites();
+    await fireEvent.click(first.getByRole('button', { name: 'Save' }));
+    spy.mockRestore();
+
+    expect(first.getByRole('alert')).toBeTruthy();
+    expect(first.getByRole('button', { name: 'Retry' })).toBeTruthy();
+    expect(getDraft(week)).toBe('Good week');
+    first.unmount();
+
+    const reopened = openEditable(week);
+    expect((reopened.getByLabelText('Reflection') as HTMLTextAreaElement).value).toBe('Good week');
+  });
+
+  it('a failed Save keeps the draft, then a successful Retry clears it', async () => {
+    setLoadedPlan([]);
+    const week = '2027-02-21';
+    const onClose = vi.fn();
+    const { getByLabelText, getByRole } = render(WeekEndReview, {
+      props: { weekStartIso: week, readOnly: false, onClose },
+    });
+    await fireEvent.input(getByLabelText('Reflection'), { target: { value: 'Good week' } });
+
+    const spy = failWrites();
+    await fireEvent.click(getByRole('button', { name: 'Save' }));
+    spy.mockRestore();
+    expect(getDraft(week)).toBe('Good week');
+    expect(storedDrafts()).toHaveProperty(week);
+
+    await fireEvent.click(getByRole('button', { name: 'Retry' }));
+
+    expect(onClose).toHaveBeenCalledTimes(1);
+    expect(getReview(week)?.reflection).toBe('Good week');
+    expect(getDraft(week)).toBe('');
+    expect(storedDrafts()).not.toHaveProperty(week);
+  });
+
+  it('read-only mode shows the saved reflection, never the draft, and leaves the draft alone', () => {
+    const week = '2027-01-10';
+    setDraft(week, 'An old draft');
+    weekEndReviewStore.reviews[week] = {
+      weekStartIso: week,
+      workoutsCompleted: 0,
+      byType: { Run: 0, Bike: 0, Lift: 0, Mobility: 0, Stretch: 0, Other: 0, Unspecified: 0 },
+      streak: 0,
+      missedCount: 0,
+      reflection: 'Saved text.',
+      schemaVersion: 1,
+    };
+
+    const { getByText, queryByText } = render(WeekEndReview, {
+      props: { weekStartIso: week, readOnly: true, onClose: vi.fn() },
+    });
+
+    expect(getByText('Saved text.')).toBeTruthy();
+    expect(queryByText('An old draft')).toBeNull();
+    expect(getDraft(week)).toBe('An old draft');
   });
 });
