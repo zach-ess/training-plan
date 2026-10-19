@@ -4,14 +4,14 @@
     "id": "base-block-2026-fall",
     "athlete": "Zach Essler",
     "event": "Fall Base Block",
-    "eventDate": "2027-01-31",
-    "planStartDate": "2026-10-12",
-    "planEndDate": "2027-01-31",
+    "eventDate": "2027-02-07",
+    "planStartDate": "2026-10-19",
+    "planEndDate": "2027-02-07",
     "createdAt": "2026-09-21T00:00:00Z",
-    "updatedAt": "2026-10-13T00:00:00Z",
+    "updatedAt": "2026-10-18T00:00:00Z",
     "totalWeeks": 16,
     "generatedBy": "Claude Coach",
-    "note": "Open-ended base block after the Sept 12 BurliMOT half (1:54:00). Week 1 starts Mon Oct 12 2026 (first run Tue Oct 13), after a missed first attempt the week of Oct 5. Four 4-week blocks; every 4th week is a flex week. Thanksgiving falls in Week 7, Christmas in Week 11, New Year’s in Week 12 (flex). Ends with a 5K time trial Jan 30 and a check-in on what comes next. Weeks 2-9 (Oct 19 - Dec 13) add LIIFT4 on Mon/Tue/Thu/Fri, knee-safe: legs moved to Monday and always LIIFT 50/50, Full Body HIIT done low-impact; LIIFT replaces the after-run knee-strength sessions until Week 10. LIIFT4 start pushed back one week on Oct 13; runs unchanged."
+    "note": "Open-ended base block after the Sept 12 BurliMOT half (1:54:00). Week 1 starts Mon Oct 19 2026 (first run Tue Oct 20), after missed starts the weeks of Oct 5 and Oct 12. Four 4-week blocks; every 4th week is a flex week. Thanksgiving falls in Week 6, Christmas in Week 10, New Year’s in Week 11. Ends with a 5K time trial Feb 6 and a check-in on what comes next. Weeks 1-8 (Oct 19 - Dec 13) add LIIFT4 on Mon/Tue/Thu/Fri, knee-safe: legs moved to Monday and always LIIFT 50/50, Full Body HIIT done low-impact; LIIFT replaces the after-run knee-strength sessions until Week 9."
   },
   "preferences": {
     "run": "miles",
@@ -55,9 +55,9 @@
     ],
     "constraints": [
       "Knee: conservative volume progression, flex week every 4th week",
-      "Holidays: Thanksgiving (Week 7), Christmas (Week 11), New Year's (Week 12 flex)",
+      "Holidays: Thanksgiving (Week 6), Christmas (Week 10), New Year's (Week 11)",
       "Strength folded into Tue/Fri easy-run days",
-      "LIIFT4 Weeks 2-9: legs Monday (after the long run), no HIIT legs, low-impact Full Body HIIT; LIIFT replaces knee-strength add-ons"
+      "LIIFT4 Weeks 1-8: legs Monday (after the long run), no HIIT legs, low-impact Full Body HIIT; LIIFT replaces knee-strength add-ons"
     ]
   },
   "zones": {
@@ -218,7 +218,7 @@
       "keyWorkouts": [
         "Steady 25-30 min",
         "Long run 10 mi",
-        "5K time trial Jan 30"
+        "5K time trial Feb 6"
       ],
       "physiologicalGoals": [
         "Consolidate base",
@@ -229,29 +229,31 @@
   "weeks": [
     {
       "weekNumber": 1,
-      "startDate": "2026-10-12",
-      "endDate": "2026-10-18",
+      "startDate": "2026-10-19",
+      "endDate": "2026-10-25",
       "phase": "Return",
       "focus": "Ease back in — short, easy, run/walk OK · 8 mi",
-      "targetHours": 4,
+      "targetHours": 1.3,
       "isRecoveryWeek": false,
       "days": [
         {
-          "date": "2026-10-12",
+          "date": "2026-10-19",
           "dayOfWeek": "Monday",
           "workouts": [
             {
-              "id": "w1-mon-rest",
-              "sport": "rest",
-              "type": "rest",
-              "name": "Rest Day",
-              "description": "Full rest. Walking is fine.",
+              "id": "w1-mon-liift4",
+              "sport": "strength",
+              "type": "strength",
+              "name": "LIIFT4 · Legs — LIIFT 50/50",
+              "description": "LIIFT4 Build It, week 1. Moved to Monday so legs land the day after the long run, not before it. Always the LIIFT 50/50 version -- no HIIT/jumping legs while mileage rebuilds. Knee check: any sharp or lingering knee pain = drop the weight or skip the lunge/jump-type moves.",
+              "durationMinutes": 40,
+              "humanReadable": "LIIFT4 Build It · Week 1\nLegs — LIIFT 50/50 (~40 min)\n\nMoved to Monday so legs land the day after the long run, not before it. Always the LIIFT 50/50 version -- no HIIT/jumping legs while mileage rebuilds. Knee check: any sharp or lingering knee pain = drop the weight or skip the lunge/jump-type moves.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-10-13",
+          "date": "2026-10-20",
           "dayOfWeek": "Tuesday",
           "workouts": [
             {
@@ -265,11 +267,21 @@
               "primaryZone": "Zone 2",
               "humanReadable": "2 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.\n\nFIRST RUN of the block. Run/walk is completely fine (4 min run / 1 min walk). Only goal: finish feeling like you could do it again tomorrow.\nKnee check: soreness that changes your stride or lingers into the next morning = take the next day off.",
               "completed": false
+            },
+            {
+              "id": "w1-tue-liift4",
+              "sport": "strength",
+              "type": "strength",
+              "name": "LIIFT4 · Chest/Triceps — LIIFT 50/50",
+              "description": "LIIFT4 Build It, week 1. Follow the LIIFT4 video for this day.",
+              "durationMinutes": 40,
+              "humanReadable": "LIIFT4 Build It · Week 1\nChest/Triceps — LIIFT 50/50 (~40 min)\n\nFollow the LIIFT4 video for this day.",
+              "completed": false
             }
           ]
         },
         {
-          "date": "2026-10-14",
+          "date": "2026-10-21",
           "dayOfWeek": "Wednesday",
           "workouts": [
             {
@@ -283,7 +295,7 @@
           ]
         },
         {
-          "date": "2026-10-15",
+          "date": "2026-10-22",
           "dayOfWeek": "Thursday",
           "workouts": [
             {
@@ -297,25 +309,37 @@
               "primaryZone": "Zone 2",
               "humanReadable": "3 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.\n\nKnee check: soreness that changes your stride or lingers into the next morning = take the next day off.",
               "completed": false
-            }
-          ]
-        },
-        {
-          "date": "2026-10-16",
-          "dayOfWeek": "Friday",
-          "workouts": [
+            },
             {
-              "id": "w1-fri-rest",
-              "sport": "rest",
-              "type": "rest",
-              "name": "Rest Day",
-              "description": "Full rest. Walking is fine.",
+              "id": "w1-thu-liift4",
+              "sport": "strength",
+              "type": "strength",
+              "name": "LIIFT4 · Back/Biceps — Circuit",
+              "description": "LIIFT4 Build It, week 1. Follow the LIIFT4 video for this day.",
+              "durationMinutes": 40,
+              "humanReadable": "LIIFT4 Build It · Week 1\nBack/Biceps — Circuit (~40 min)\n\nFollow the LIIFT4 video for this day.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-10-17",
+          "date": "2026-10-23",
+          "dayOfWeek": "Friday",
+          "workouts": [
+            {
+              "id": "w1-fri-liift4",
+              "sport": "strength",
+              "type": "strength",
+              "name": "LIIFT4 · Shoulders — LIIFT Intervals",
+              "description": "LIIFT4 Build It, week 1. Follow the LIIFT4 video for this day.",
+              "durationMinutes": 40,
+              "humanReadable": "LIIFT4 Build It · Week 1\nShoulders — LIIFT Intervals (~40 min)\n\nFollow the LIIFT4 video for this day.",
+              "completed": false
+            }
+          ]
+        },
+        {
+          "date": "2026-10-24",
           "dayOfWeek": "Saturday",
           "workouts": [
             {
@@ -329,7 +353,7 @@
           ]
         },
         {
-          "date": "2026-10-18",
+          "date": "2026-10-25",
           "dayOfWeek": "Sunday",
           "workouts": [
             {
@@ -348,27 +372,31 @@
         }
       ],
       "summary": {
-        "totalHours": 1.3,
+        "totalHours": 4,
         "bySport": {
           "run": {
             "sessions": 3,
             "hours": 1.33,
             "km": 12.9
+          },
+          "strength": {
+            "sessions": 4,
+            "hours": 2.67
           }
         }
       }
     },
     {
       "weekNumber": 2,
-      "startDate": "2026-10-19",
-      "endDate": "2026-10-25",
+      "startDate": "2026-10-26",
+      "endDate": "2026-11-01",
       "phase": "Return",
       "focus": "Rebuild the routine + strength begins · 12 mi",
-      "targetHours": 4.7,
+      "targetHours": 2.7,
       "isRecoveryWeek": false,
       "days": [
         {
-          "date": "2026-10-19",
+          "date": "2026-10-26",
           "dayOfWeek": "Monday",
           "workouts": [
             {
@@ -376,15 +404,15 @@
               "sport": "strength",
               "type": "strength",
               "name": "LIIFT4 · Legs — LIIFT 50/50",
-              "description": "LIIFT4 Build It, week 1. Moved to Monday so legs land the day after the long run, not before it. Always the LIIFT 50/50 version -- no HIIT/jumping legs while mileage rebuilds. Knee check: any sharp or lingering knee pain = drop the weight or skip the lunge/jump-type moves.",
+              "description": "LIIFT4 Build It, week 2. Moved to Monday so legs land the day after the long run, not before it. Always the LIIFT 50/50 version -- no HIIT/jumping legs while mileage rebuilds. Knee check: any sharp or lingering knee pain = drop the weight or skip the lunge/jump-type moves.",
               "durationMinutes": 40,
-              "humanReadable": "LIIFT4 Build It · Week 1\nLegs — LIIFT 50/50 (~40 min)\n\nMoved to Monday so legs land the day after the long run, not before it. Always the LIIFT 50/50 version -- no HIIT/jumping legs while mileage rebuilds. Knee check: any sharp or lingering knee pain = drop the weight or skip the lunge/jump-type moves.",
+              "humanReadable": "LIIFT4 Build It · Week 2\nLegs — LIIFT 50/50 (~40 min)\n\nMoved to Monday so legs land the day after the long run, not before it. Always the LIIFT 50/50 version -- no HIIT/jumping legs while mileage rebuilds. Knee check: any sharp or lingering knee pain = drop the weight or skip the lunge/jump-type moves.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-10-20",
+          "date": "2026-10-27",
           "dayOfWeek": "Tuesday",
           "workouts": [
             {
@@ -403,16 +431,16 @@
               "id": "w2-tue-liift4",
               "sport": "strength",
               "type": "strength",
-              "name": "LIIFT4 · Chest/Triceps — LIIFT 50/50",
-              "description": "LIIFT4 Build It, week 1. Follow the LIIFT4 video for this day.",
+              "name": "LIIFT4 · Chest/Triceps — Circuit",
+              "description": "LIIFT4 Build It, week 2. Follow the LIIFT4 video for this day.",
               "durationMinutes": 40,
-              "humanReadable": "LIIFT4 Build It · Week 1\nChest/Triceps — LIIFT 50/50 (~40 min)\n\nFollow the LIIFT4 video for this day.",
+              "humanReadable": "LIIFT4 Build It · Week 2\nChest/Triceps — Circuit (~40 min)\n\nFollow the LIIFT4 video for this day.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-10-21",
+          "date": "2026-10-28",
           "dayOfWeek": "Wednesday",
           "workouts": [
             {
@@ -426,23 +454,23 @@
           ]
         },
         {
-          "date": "2026-10-22",
+          "date": "2026-10-29",
           "dayOfWeek": "Thursday",
           "workouts": [
             {
               "id": "w2-thu-liift4",
               "sport": "strength",
               "type": "strength",
-              "name": "LIIFT4 · Back/Biceps — Circuit",
-              "description": "LIIFT4 Build It, week 1. Follow the LIIFT4 video for this day.",
+              "name": "LIIFT4 · Back/Biceps — LIIFT 50/50",
+              "description": "LIIFT4 Build It, week 2. Follow the LIIFT4 video for this day.",
               "durationMinutes": 40,
-              "humanReadable": "LIIFT4 Build It · Week 1\nBack/Biceps — Circuit (~40 min)\n\nFollow the LIIFT4 video for this day.",
+              "humanReadable": "LIIFT4 Build It · Week 2\nBack/Biceps — LIIFT 50/50 (~40 min)\n\nFollow the LIIFT4 video for this day.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-10-23",
+          "date": "2026-10-30",
           "dayOfWeek": "Friday",
           "workouts": [
             {
@@ -462,15 +490,15 @@
               "sport": "strength",
               "type": "strength",
               "name": "LIIFT4 · Shoulders — LIIFT Intervals",
-              "description": "LIIFT4 Build It, week 1. Follow the LIIFT4 video for this day.",
+              "description": "LIIFT4 Build It, week 2. Follow the LIIFT4 video for this day.",
               "durationMinutes": 40,
-              "humanReadable": "LIIFT4 Build It · Week 1\nShoulders — LIIFT Intervals (~40 min)\n\nFollow the LIIFT4 video for this day.",
+              "humanReadable": "LIIFT4 Build It · Week 2\nShoulders — LIIFT Intervals (~40 min)\n\nFollow the LIIFT4 video for this day.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-10-24",
+          "date": "2026-10-31",
           "dayOfWeek": "Saturday",
           "workouts": [
             {
@@ -484,7 +512,7 @@
           ]
         },
         {
-          "date": "2026-10-25",
+          "date": "2026-11-01",
           "dayOfWeek": "Sunday",
           "workouts": [
             {
@@ -519,15 +547,15 @@
     },
     {
       "weekNumber": 3,
-      "startDate": "2026-10-26",
-      "endDate": "2026-11-01",
+      "startDate": "2026-11-02",
+      "endDate": "2026-11-08",
       "phase": "Return",
       "focus": "Move to 4 runs/week · 15 mi",
-      "targetHours": 5.2,
+      "targetHours": 3.2,
       "isRecoveryWeek": false,
       "days": [
         {
-          "date": "2026-10-26",
+          "date": "2026-11-02",
           "dayOfWeek": "Monday",
           "workouts": [
             {
@@ -535,15 +563,15 @@
               "sport": "strength",
               "type": "strength",
               "name": "LIIFT4 · Legs — LIIFT 50/50",
-              "description": "LIIFT4 Build It, week 2. Moved to Monday so legs land the day after the long run, not before it. Always the LIIFT 50/50 version -- no HIIT/jumping legs while mileage rebuilds. Knee check: any sharp or lingering knee pain = drop the weight or skip the lunge/jump-type moves.",
+              "description": "LIIFT4 Build It, week 3. Moved to Monday so legs land the day after the long run, not before it. Always the LIIFT 50/50 version -- no HIIT/jumping legs while mileage rebuilds. Knee check: any sharp or lingering knee pain = drop the weight or skip the lunge/jump-type moves.",
               "durationMinutes": 40,
-              "humanReadable": "LIIFT4 Build It · Week 2\nLegs — LIIFT 50/50 (~40 min)\n\nMoved to Monday so legs land the day after the long run, not before it. Always the LIIFT 50/50 version -- no HIIT/jumping legs while mileage rebuilds. Knee check: any sharp or lingering knee pain = drop the weight or skip the lunge/jump-type moves.",
+              "humanReadable": "LIIFT4 Build It · Week 3\nLegs — LIIFT 50/50 (~40 min)\n\nMoved to Monday so legs land the day after the long run, not before it. Always the LIIFT 50/50 version -- no HIIT/jumping legs while mileage rebuilds. Knee check: any sharp or lingering knee pain = drop the weight or skip the lunge/jump-type moves.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-10-27",
+          "date": "2026-11-03",
           "dayOfWeek": "Tuesday",
           "workouts": [
             {
@@ -562,16 +590,16 @@
               "id": "w3-tue-liift4",
               "sport": "strength",
               "type": "strength",
-              "name": "LIIFT4 · Chest/Triceps — Circuit",
-              "description": "LIIFT4 Build It, week 2. Follow the LIIFT4 video for this day.",
+              "name": "LIIFT4 · Chest/Triceps — LIIFT 50/50",
+              "description": "LIIFT4 Build It, week 3. Follow the LIIFT4 video for this day.",
               "durationMinutes": 40,
-              "humanReadable": "LIIFT4 Build It · Week 2\nChest/Triceps — Circuit (~40 min)\n\nFollow the LIIFT4 video for this day.",
+              "humanReadable": "LIIFT4 Build It · Week 3\nChest/Triceps — LIIFT 50/50 (~40 min)\n\nFollow the LIIFT4 video for this day.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-10-28",
+          "date": "2026-11-04",
           "dayOfWeek": "Wednesday",
           "workouts": [
             {
@@ -585,7 +613,7 @@
           ]
         },
         {
-          "date": "2026-10-29",
+          "date": "2026-11-05",
           "dayOfWeek": "Thursday",
           "workouts": [
             {
@@ -604,16 +632,16 @@
               "id": "w3-thu-liift4",
               "sport": "strength",
               "type": "strength",
-              "name": "LIIFT4 · Back/Biceps — LIIFT 50/50",
-              "description": "LIIFT4 Build It, week 2. Follow the LIIFT4 video for this day.",
+              "name": "LIIFT4 · Back/Biceps — Circuit",
+              "description": "LIIFT4 Build It, week 3. Follow the LIIFT4 video for this day.",
               "durationMinutes": 40,
-              "humanReadable": "LIIFT4 Build It · Week 2\nBack/Biceps — LIIFT 50/50 (~40 min)\n\nFollow the LIIFT4 video for this day.",
+              "humanReadable": "LIIFT4 Build It · Week 3\nBack/Biceps — Circuit (~40 min)\n\nFollow the LIIFT4 video for this day.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-10-30",
+          "date": "2026-11-06",
           "dayOfWeek": "Friday",
           "workouts": [
             {
@@ -633,15 +661,15 @@
               "sport": "strength",
               "type": "strength",
               "name": "LIIFT4 · Shoulders — LIIFT Intervals",
-              "description": "LIIFT4 Build It, week 2. Follow the LIIFT4 video for this day.",
+              "description": "LIIFT4 Build It, week 3. Follow the LIIFT4 video for this day.",
               "durationMinutes": 40,
-              "humanReadable": "LIIFT4 Build It · Week 2\nShoulders — LIIFT Intervals (~40 min)\n\nFollow the LIIFT4 video for this day.",
+              "humanReadable": "LIIFT4 Build It · Week 3\nShoulders — LIIFT Intervals (~40 min)\n\nFollow the LIIFT4 video for this day.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-10-31",
+          "date": "2026-11-07",
           "dayOfWeek": "Saturday",
           "workouts": [
             {
@@ -655,7 +683,7 @@
           ]
         },
         {
-          "date": "2026-11-01",
+          "date": "2026-11-08",
           "dayOfWeek": "Sunday",
           "workouts": [
             {
@@ -690,15 +718,15 @@
     },
     {
       "weekNumber": 4,
-      "startDate": "2026-11-02",
-      "endDate": "2026-11-08",
+      "startDate": "2026-11-09",
+      "endDate": "2026-11-15",
       "phase": "Return",
       "focus": "FLEX WEEK — absorb life, consolidate · 12 mi",
-      "targetHours": 4.7,
+      "targetHours": 2.5,
       "isRecoveryWeek": true,
       "days": [
         {
-          "date": "2026-11-02",
+          "date": "2026-11-09",
           "dayOfWeek": "Monday",
           "workouts": [
             {
@@ -706,15 +734,15 @@
               "sport": "strength",
               "type": "strength",
               "name": "LIIFT4 · Legs — LIIFT 50/50",
-              "description": "LIIFT4 Build It, week 3. Moved to Monday so legs land the day after the long run, not before it. Always the LIIFT 50/50 version -- no HIIT/jumping legs while mileage rebuilds. Knee check: any sharp or lingering knee pain = drop the weight or skip the lunge/jump-type moves.",
+              "description": "LIIFT4 Build It, week 4. Moved to Monday so legs land the day after the long run, not before it. Always the LIIFT 50/50 version -- no HIIT/jumping legs while mileage rebuilds. Knee check: any sharp or lingering knee pain = drop the weight or skip the lunge/jump-type moves.",
               "durationMinutes": 40,
-              "humanReadable": "LIIFT4 Build It · Week 3\nLegs — LIIFT 50/50 (~40 min)\n\nMoved to Monday so legs land the day after the long run, not before it. Always the LIIFT 50/50 version -- no HIIT/jumping legs while mileage rebuilds. Knee check: any sharp or lingering knee pain = drop the weight or skip the lunge/jump-type moves.",
+              "humanReadable": "LIIFT4 Build It · Week 4\nLegs — LIIFT 50/50 (~40 min)\n\nMoved to Monday so legs land the day after the long run, not before it. Always the LIIFT 50/50 version -- no HIIT/jumping legs while mileage rebuilds. Knee check: any sharp or lingering knee pain = drop the weight or skip the lunge/jump-type moves.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-11-03",
+          "date": "2026-11-10",
           "dayOfWeek": "Tuesday",
           "workouts": [
             {
@@ -733,16 +761,16 @@
               "id": "w4-tue-liift4",
               "sport": "strength",
               "type": "strength",
-              "name": "LIIFT4 · Chest/Triceps — LIIFT 50/50",
-              "description": "LIIFT4 Build It, week 3. Follow the LIIFT4 video for this day.",
+              "name": "LIIFT4 · Chest/Triceps — Circuit",
+              "description": "LIIFT4 Build It, week 4. Follow the LIIFT4 video for this day.",
               "durationMinutes": 40,
-              "humanReadable": "LIIFT4 Build It · Week 3\nChest/Triceps — LIIFT 50/50 (~40 min)\n\nFollow the LIIFT4 video for this day.",
+              "humanReadable": "LIIFT4 Build It · Week 4\nChest/Triceps — Circuit (~40 min)\n\nFollow the LIIFT4 video for this day.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-11-04",
+          "date": "2026-11-11",
           "dayOfWeek": "Wednesday",
           "workouts": [
             {
@@ -756,7 +784,7 @@
           ]
         },
         {
-          "date": "2026-11-05",
+          "date": "2026-11-12",
           "dayOfWeek": "Thursday",
           "workouts": [
             {
@@ -775,16 +803,16 @@
               "id": "w4-thu-liift4",
               "sport": "strength",
               "type": "strength",
-              "name": "LIIFT4 · Back/Biceps — Circuit",
-              "description": "LIIFT4 Build It, week 3. Follow the LIIFT4 video for this day.",
+              "name": "LIIFT4 · Back/Biceps — LIIFT 50/50",
+              "description": "LIIFT4 Build It, week 4. Follow the LIIFT4 video for this day.",
               "durationMinutes": 40,
-              "humanReadable": "LIIFT4 Build It · Week 3\nBack/Biceps — Circuit (~40 min)\n\nFollow the LIIFT4 video for this day.",
+              "humanReadable": "LIIFT4 Build It · Week 4\nBack/Biceps — LIIFT 50/50 (~40 min)\n\nFollow the LIIFT4 video for this day.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-11-06",
+          "date": "2026-11-13",
           "dayOfWeek": "Friday",
           "workouts": [
             {
@@ -804,15 +832,15 @@
               "sport": "strength",
               "type": "strength",
               "name": "LIIFT4 · Shoulders — LIIFT Intervals",
-              "description": "LIIFT4 Build It, week 3. Follow the LIIFT4 video for this day.",
+              "description": "LIIFT4 Build It, week 4. Follow the LIIFT4 video for this day.",
               "durationMinutes": 40,
-              "humanReadable": "LIIFT4 Build It · Week 3\nShoulders — LIIFT Intervals (~40 min)\n\nFollow the LIIFT4 video for this day.",
+              "humanReadable": "LIIFT4 Build It · Week 4\nShoulders — LIIFT Intervals (~40 min)\n\nFollow the LIIFT4 video for this day.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-11-07",
+          "date": "2026-11-14",
           "dayOfWeek": "Saturday",
           "workouts": [
             {
@@ -826,7 +854,7 @@
           ]
         },
         {
-          "date": "2026-11-08",
+          "date": "2026-11-15",
           "dayOfWeek": "Sunday",
           "workouts": [
             {
@@ -861,15 +889,15 @@
     },
     {
       "weekNumber": 5,
-      "startDate": "2026-11-09",
-      "endDate": "2026-11-15",
+      "startDate": "2026-11-16",
+      "endDate": "2026-11-22",
       "phase": "Aerobic Base",
       "focus": "Build the engine — strides return · 18 mi",
-      "targetHours": 5.8,
+      "targetHours": 3.8,
       "isRecoveryWeek": false,
       "days": [
         {
-          "date": "2026-11-09",
+          "date": "2026-11-16",
           "dayOfWeek": "Monday",
           "workouts": [
             {
@@ -877,15 +905,15 @@
               "sport": "strength",
               "type": "strength",
               "name": "LIIFT4 · Legs — LIIFT 50/50",
-              "description": "LIIFT4 Build It, week 4. Moved to Monday so legs land the day after the long run, not before it. Always the LIIFT 50/50 version -- no HIIT/jumping legs while mileage rebuilds. Knee check: any sharp or lingering knee pain = drop the weight or skip the lunge/jump-type moves.",
+              "description": "LIIFT4 Build It, week 5. Moved to Monday so legs land the day after the long run, not before it. Always the LIIFT 50/50 version -- no HIIT/jumping legs while mileage rebuilds. Knee check: any sharp or lingering knee pain = drop the weight or skip the lunge/jump-type moves.",
               "durationMinutes": 40,
-              "humanReadable": "LIIFT4 Build It · Week 4\nLegs — LIIFT 50/50 (~40 min)\n\nMoved to Monday so legs land the day after the long run, not before it. Always the LIIFT 50/50 version -- no HIIT/jumping legs while mileage rebuilds. Knee check: any sharp or lingering knee pain = drop the weight or skip the lunge/jump-type moves.",
+              "humanReadable": "LIIFT4 Build It · Week 5\nLegs — LIIFT 50/50 (~40 min)\n\nMoved to Monday so legs land the day after the long run, not before it. Always the LIIFT 50/50 version -- no HIIT/jumping legs while mileage rebuilds. Knee check: any sharp or lingering knee pain = drop the weight or skip the lunge/jump-type moves.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-11-10",
+          "date": "2026-11-17",
           "dayOfWeek": "Tuesday",
           "workouts": [
             {
@@ -904,16 +932,16 @@
               "id": "w5-tue-liift4",
               "sport": "strength",
               "type": "strength",
-              "name": "LIIFT4 · Chest/Triceps — Circuit",
-              "description": "LIIFT4 Build It, week 4. Follow the LIIFT4 video for this day.",
+              "name": "LIIFT4 · Chest/Triceps — LIIFT 50/50",
+              "description": "LIIFT4 Build It, week 5. Follow the LIIFT4 video for this day.",
               "durationMinutes": 40,
-              "humanReadable": "LIIFT4 Build It · Week 4\nChest/Triceps — Circuit (~40 min)\n\nFollow the LIIFT4 video for this day.",
+              "humanReadable": "LIIFT4 Build It · Week 5\nChest/Triceps — LIIFT 50/50 (~40 min)\n\nFollow the LIIFT4 video for this day.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-11-11",
+          "date": "2026-11-18",
           "dayOfWeek": "Wednesday",
           "workouts": [
             {
@@ -927,7 +955,7 @@
           ]
         },
         {
-          "date": "2026-11-12",
+          "date": "2026-11-19",
           "dayOfWeek": "Thursday",
           "workouts": [
             {
@@ -946,16 +974,16 @@
               "id": "w5-thu-liift4",
               "sport": "strength",
               "type": "strength",
-              "name": "LIIFT4 · Back/Biceps — LIIFT 50/50",
-              "description": "LIIFT4 Build It, week 4. Follow the LIIFT4 video for this day.",
+              "name": "LIIFT4 · Back/Biceps — Circuit",
+              "description": "LIIFT4 Build It, week 5. Follow the LIIFT4 video for this day.",
               "durationMinutes": 40,
-              "humanReadable": "LIIFT4 Build It · Week 4\nBack/Biceps — LIIFT 50/50 (~40 min)\n\nFollow the LIIFT4 video for this day.",
+              "humanReadable": "LIIFT4 Build It · Week 5\nBack/Biceps — Circuit (~40 min)\n\nFollow the LIIFT4 video for this day.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-11-13",
+          "date": "2026-11-20",
           "dayOfWeek": "Friday",
           "workouts": [
             {
@@ -975,15 +1003,15 @@
               "sport": "strength",
               "type": "strength",
               "name": "LIIFT4 · Shoulders — LIIFT Intervals",
-              "description": "LIIFT4 Build It, week 4. Follow the LIIFT4 video for this day.",
+              "description": "LIIFT4 Build It, week 5. Follow the LIIFT4 video for this day.",
               "durationMinutes": 40,
-              "humanReadable": "LIIFT4 Build It · Week 4\nShoulders — LIIFT Intervals (~40 min)\n\nFollow the LIIFT4 video for this day.",
+              "humanReadable": "LIIFT4 Build It · Week 5\nShoulders — LIIFT Intervals (~40 min)\n\nFollow the LIIFT4 video for this day.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-11-14",
+          "date": "2026-11-21",
           "dayOfWeek": "Saturday",
           "workouts": [
             {
@@ -997,7 +1025,7 @@
           ]
         },
         {
-          "date": "2026-11-15",
+          "date": "2026-11-22",
           "dayOfWeek": "Sunday",
           "workouts": [
             {
@@ -1032,15 +1060,15 @@
     },
     {
       "weekNumber": 6,
-      "startDate": "2026-11-16",
-      "endDate": "2026-11-22",
+      "startDate": "2026-11-23",
+      "endDate": "2026-11-29",
       "phase": "Aerobic Base",
-      "focus": "Volume climbing — all easy · 20 mi",
-      "targetHours": 6.1,
+      "focus": "Thanksgiving week — volume climbing, all easy · 20 mi",
+      "targetHours": 4.1,
       "isRecoveryWeek": false,
       "days": [
         {
-          "date": "2026-11-16",
+          "date": "2026-11-23",
           "dayOfWeek": "Monday",
           "workouts": [
             {
@@ -1048,15 +1076,15 @@
               "sport": "strength",
               "type": "strength",
               "name": "LIIFT4 · Legs — LIIFT 50/50",
-              "description": "LIIFT4 Build It, week 5. Moved to Monday so legs land the day after the long run, not before it. Always the LIIFT 50/50 version -- no HIIT/jumping legs while mileage rebuilds. Knee check: any sharp or lingering knee pain = drop the weight or skip the lunge/jump-type moves.",
+              "description": "LIIFT4 Build It, week 6. Moved to Monday so legs land the day after the long run, not before it. Always the LIIFT 50/50 version -- no HIIT/jumping legs while mileage rebuilds. Knee check: any sharp or lingering knee pain = drop the weight or skip the lunge/jump-type moves.",
               "durationMinutes": 40,
-              "humanReadable": "LIIFT4 Build It · Week 5\nLegs — LIIFT 50/50 (~40 min)\n\nMoved to Monday so legs land the day after the long run, not before it. Always the LIIFT 50/50 version -- no HIIT/jumping legs while mileage rebuilds. Knee check: any sharp or lingering knee pain = drop the weight or skip the lunge/jump-type moves.",
+              "humanReadable": "LIIFT4 Build It · Week 6\nLegs — LIIFT 50/50 (~40 min)\n\nMoved to Monday so legs land the day after the long run, not before it. Always the LIIFT 50/50 version -- no HIIT/jumping legs while mileage rebuilds. Knee check: any sharp or lingering knee pain = drop the weight or skip the lunge/jump-type moves.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-11-17",
+          "date": "2026-11-24",
           "dayOfWeek": "Tuesday",
           "workouts": [
             {
@@ -1075,16 +1103,16 @@
               "id": "w6-tue-liift4",
               "sport": "strength",
               "type": "strength",
-              "name": "LIIFT4 · Chest/Triceps — LIIFT 50/50",
-              "description": "LIIFT4 Build It, week 5. Follow the LIIFT4 video for this day.",
+              "name": "LIIFT4 · Chest/Triceps — Circuit",
+              "description": "LIIFT4 Build It, week 6. Follow the LIIFT4 video for this day.",
               "durationMinutes": 40,
-              "humanReadable": "LIIFT4 Build It · Week 5\nChest/Triceps — LIIFT 50/50 (~40 min)\n\nFollow the LIIFT4 video for this day.",
+              "humanReadable": "LIIFT4 Build It · Week 6\nChest/Triceps — Circuit (~40 min)\n\nFollow the LIIFT4 video for this day.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-11-18",
+          "date": "2026-11-25",
           "dayOfWeek": "Wednesday",
           "workouts": [
             {
@@ -1098,7 +1126,7 @@
           ]
         },
         {
-          "date": "2026-11-19",
+          "date": "2026-11-26",
           "dayOfWeek": "Thursday",
           "workouts": [
             {
@@ -1106,27 +1134,27 @@
               "sport": "run",
               "type": "endurance",
               "name": "Easy 5 mi + 6 strides",
-              "description": "Aerobic base run.",
+              "description": "Thanksgiving. A Turkey Trot is a great way to get this in — run it easy, not as a race (skip the strides if you do).",
               "durationMinutes": 50,
               "distanceMeters": 8047,
               "primaryZone": "Zone 2",
-              "humanReadable": "5 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.\nAfter the run: 6 x 20s strides — quick and relaxed, not sprints. Full walk-back recovery.",
+              "humanReadable": "5 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.\nAfter the run: 6 x 20s strides — quick and relaxed, not sprints. Full walk-back recovery.\n\nThanksgiving. A Turkey Trot is a great way to get this in — run it easy, not as a race (skip the strides if you do).",
               "completed": false
             },
             {
               "id": "w6-thu-liift4",
               "sport": "strength",
               "type": "strength",
-              "name": "LIIFT4 · Back/Biceps — Circuit",
-              "description": "LIIFT4 Build It, week 5. Follow the LIIFT4 video for this day.",
+              "name": "LIIFT4 · Back/Biceps — LIIFT 50/50",
+              "description": "LIIFT4 Build It, week 6. Follow the LIIFT4 video for this day.",
               "durationMinutes": 40,
-              "humanReadable": "LIIFT4 Build It · Week 5\nBack/Biceps — Circuit (~40 min)\n\nFollow the LIIFT4 video for this day.",
+              "humanReadable": "LIIFT4 Build It · Week 6\nBack/Biceps — LIIFT 50/50 (~40 min)\n\nFollow the LIIFT4 video for this day.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-11-20",
+          "date": "2026-11-27",
           "dayOfWeek": "Friday",
           "workouts": [
             {
@@ -1146,15 +1174,15 @@
               "sport": "strength",
               "type": "strength",
               "name": "LIIFT4 · Shoulders — LIIFT Intervals",
-              "description": "LIIFT4 Build It, week 5. Follow the LIIFT4 video for this day.",
+              "description": "LIIFT4 Build It, week 6. Follow the LIIFT4 video for this day.",
               "durationMinutes": 40,
-              "humanReadable": "LIIFT4 Build It · Week 5\nShoulders — LIIFT Intervals (~40 min)\n\nFollow the LIIFT4 video for this day.",
+              "humanReadable": "LIIFT4 Build It · Week 6\nShoulders — LIIFT Intervals (~40 min)\n\nFollow the LIIFT4 video for this day.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-11-21",
+          "date": "2026-11-28",
           "dayOfWeek": "Saturday",
           "workouts": [
             {
@@ -1168,7 +1196,7 @@
           ]
         },
         {
-          "date": "2026-11-22",
+          "date": "2026-11-29",
           "dayOfWeek": "Sunday",
           "workouts": [
             {
@@ -1203,15 +1231,15 @@
     },
     {
       "weekNumber": 7,
-      "startDate": "2026-11-23",
-      "endDate": "2026-11-29",
+      "startDate": "2026-11-30",
+      "endDate": "2026-12-06",
       "phase": "Aerobic Base",
-      "focus": "Thanksgiving week — strides twice a week · 22 mi",
-      "targetHours": 6.4,
+      "focus": "Strides twice a week · 22 mi",
+      "targetHours": 4.4,
       "isRecoveryWeek": false,
       "days": [
         {
-          "date": "2026-11-23",
+          "date": "2026-11-30",
           "dayOfWeek": "Monday",
           "workouts": [
             {
@@ -1219,15 +1247,15 @@
               "sport": "strength",
               "type": "strength",
               "name": "LIIFT4 · Legs — LIIFT 50/50",
-              "description": "LIIFT4 Build It, week 6. Moved to Monday so legs land the day after the long run, not before it. Always the LIIFT 50/50 version -- no HIIT/jumping legs while mileage rebuilds. Knee check: any sharp or lingering knee pain = drop the weight or skip the lunge/jump-type moves.",
+              "description": "LIIFT4 Shred It, week 7. Moved to Monday so legs land the day after the long run, not before it. Always the LIIFT 50/50 version -- no HIIT/jumping legs while mileage rebuilds. Knee check: any sharp or lingering knee pain = drop the weight or skip the lunge/jump-type moves.",
               "durationMinutes": 40,
-              "humanReadable": "LIIFT4 Build It · Week 6\nLegs — LIIFT 50/50 (~40 min)\n\nMoved to Monday so legs land the day after the long run, not before it. Always the LIIFT 50/50 version -- no HIIT/jumping legs while mileage rebuilds. Knee check: any sharp or lingering knee pain = drop the weight or skip the lunge/jump-type moves.",
+              "humanReadable": "LIIFT4 Shred It · Week 7\nLegs — LIIFT 50/50 (~40 min)\n\nMoved to Monday so legs land the day after the long run, not before it. Always the LIIFT 50/50 version -- no HIIT/jumping legs while mileage rebuilds. Knee check: any sharp or lingering knee pain = drop the weight or skip the lunge/jump-type moves.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-11-24",
+          "date": "2026-12-01",
           "dayOfWeek": "Tuesday",
           "workouts": [
             {
@@ -1246,16 +1274,16 @@
               "id": "w7-tue-liift4",
               "sport": "strength",
               "type": "strength",
-              "name": "LIIFT4 · Chest/Triceps — Circuit",
-              "description": "LIIFT4 Build It, week 6. Follow the LIIFT4 video for this day.",
+              "name": "LIIFT4 · Chest/Back — Circuit",
+              "description": "LIIFT4 Shred It, week 7. Follow the LIIFT4 video for this day.",
               "durationMinutes": 40,
-              "humanReadable": "LIIFT4 Build It · Week 6\nChest/Triceps — Circuit (~40 min)\n\nFollow the LIIFT4 video for this day.",
+              "humanReadable": "LIIFT4 Shred It · Week 7\nChest/Back — Circuit (~40 min)\n\nFollow the LIIFT4 video for this day.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-11-25",
+          "date": "2026-12-02",
           "dayOfWeek": "Wednesday",
           "workouts": [
             {
@@ -1269,7 +1297,7 @@
           ]
         },
         {
-          "date": "2026-11-26",
+          "date": "2026-12-03",
           "dayOfWeek": "Thursday",
           "workouts": [
             {
@@ -1277,27 +1305,27 @@
               "sport": "run",
               "type": "endurance",
               "name": "Easy 5 mi + 6 strides",
-              "description": "Thanksgiving. A Turkey Trot is a great way to get this in — run it easy, not as a race (skip the strides if you do).",
+              "description": "Aerobic base run.",
               "durationMinutes": 50,
               "distanceMeters": 8047,
               "primaryZone": "Zone 2",
-              "humanReadable": "5 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.\nAfter the run: 6 x 20s strides — quick and relaxed, not sprints. Full walk-back recovery.\n\nThanksgiving. A Turkey Trot is a great way to get this in — run it easy, not as a race (skip the strides if you do).",
+              "humanReadable": "5 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.\nAfter the run: 6 x 20s strides — quick and relaxed, not sprints. Full walk-back recovery.",
               "completed": false
             },
             {
               "id": "w7-thu-liift4",
               "sport": "strength",
               "type": "strength",
-              "name": "LIIFT4 · Back/Biceps — LIIFT 50/50",
-              "description": "LIIFT4 Build It, week 6. Follow the LIIFT4 video for this day.",
+              "name": "LIIFT4 · Shoulders/Arms — Circuit",
+              "description": "LIIFT4 Shred It, week 7. Follow the LIIFT4 video for this day.",
               "durationMinutes": 40,
-              "humanReadable": "LIIFT4 Build It · Week 6\nBack/Biceps — LIIFT 50/50 (~40 min)\n\nFollow the LIIFT4 video for this day.",
+              "humanReadable": "LIIFT4 Shred It · Week 7\nShoulders/Arms — Circuit (~40 min)\n\nFollow the LIIFT4 video for this day.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-11-27",
+          "date": "2026-12-04",
           "dayOfWeek": "Friday",
           "workouts": [
             {
@@ -1316,16 +1344,16 @@
               "id": "w7-fri-liift4",
               "sport": "strength",
               "type": "strength",
-              "name": "LIIFT4 · Shoulders — LIIFT Intervals",
-              "description": "LIIFT4 Build It, week 6. Follow the LIIFT4 video for this day.",
+              "name": "LIIFT4 · Full Body — HIIT",
+              "description": "LIIFT4 Shred It, week 7. HIIT day: use the low-impact modifier throughout (no jumping) -- protect the knees for running.",
               "durationMinutes": 40,
-              "humanReadable": "LIIFT4 Build It · Week 6\nShoulders — LIIFT Intervals (~40 min)\n\nFollow the LIIFT4 video for this day.",
+              "humanReadable": "LIIFT4 Shred It · Week 7\nFull Body — HIIT (~40 min)\n\nHIIT day: use the low-impact modifier throughout (no jumping) -- protect the knees for running.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-11-28",
+          "date": "2026-12-05",
           "dayOfWeek": "Saturday",
           "workouts": [
             {
@@ -1339,7 +1367,7 @@
           ]
         },
         {
-          "date": "2026-11-29",
+          "date": "2026-12-06",
           "dayOfWeek": "Sunday",
           "workouts": [
             {
@@ -1374,15 +1402,15 @@
     },
     {
       "weekNumber": 8,
-      "startDate": "2026-11-30",
-      "endDate": "2026-12-06",
+      "startDate": "2026-12-07",
+      "endDate": "2026-12-13",
       "phase": "Aerobic Base",
       "focus": "FLEX WEEK · 16 mi",
-      "targetHours": 5.4,
+      "targetHours": 3.2,
       "isRecoveryWeek": true,
       "days": [
         {
-          "date": "2026-11-30",
+          "date": "2026-12-07",
           "dayOfWeek": "Monday",
           "workouts": [
             {
@@ -1390,15 +1418,15 @@
               "sport": "strength",
               "type": "strength",
               "name": "LIIFT4 · Legs — LIIFT 50/50",
-              "description": "LIIFT4 Shred It, week 7. Moved to Monday so legs land the day after the long run, not before it. Always the LIIFT 50/50 version -- no HIIT/jumping legs while mileage rebuilds. Knee check: any sharp or lingering knee pain = drop the weight or skip the lunge/jump-type moves.",
+              "description": "LIIFT4 Shred It, week 8. Moved to Monday so legs land the day after the long run, not before it. Always the LIIFT 50/50 version -- no HIIT/jumping legs while mileage rebuilds. Knee check: any sharp or lingering knee pain = drop the weight or skip the lunge/jump-type moves.",
               "durationMinutes": 40,
-              "humanReadable": "LIIFT4 Shred It · Week 7\nLegs — LIIFT 50/50 (~40 min)\n\nMoved to Monday so legs land the day after the long run, not before it. Always the LIIFT 50/50 version -- no HIIT/jumping legs while mileage rebuilds. Knee check: any sharp or lingering knee pain = drop the weight or skip the lunge/jump-type moves.",
+              "humanReadable": "LIIFT4 Shred It · Week 8\nLegs — LIIFT 50/50 (~40 min)\n\nMoved to Monday so legs land the day after the long run, not before it. Always the LIIFT 50/50 version -- no HIIT/jumping legs while mileage rebuilds. Knee check: any sharp or lingering knee pain = drop the weight or skip the lunge/jump-type moves.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-12-01",
+          "date": "2026-12-08",
           "dayOfWeek": "Tuesday",
           "workouts": [
             {
@@ -1418,15 +1446,15 @@
               "sport": "strength",
               "type": "strength",
               "name": "LIIFT4 · Chest/Back — Circuit",
-              "description": "LIIFT4 Shred It, week 7. Follow the LIIFT4 video for this day.",
+              "description": "LIIFT4 Shred It, week 8. Follow the LIIFT4 video for this day.",
               "durationMinutes": 40,
-              "humanReadable": "LIIFT4 Shred It · Week 7\nChest/Back — Circuit (~40 min)\n\nFollow the LIIFT4 video for this day.",
+              "humanReadable": "LIIFT4 Shred It · Week 8\nChest/Back — Circuit (~40 min)\n\nFollow the LIIFT4 video for this day.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-12-02",
+          "date": "2026-12-09",
           "dayOfWeek": "Wednesday",
           "workouts": [
             {
@@ -1440,7 +1468,7 @@
           ]
         },
         {
-          "date": "2026-12-03",
+          "date": "2026-12-10",
           "dayOfWeek": "Thursday",
           "workouts": [
             {
@@ -1460,15 +1488,15 @@
               "sport": "strength",
               "type": "strength",
               "name": "LIIFT4 · Shoulders/Arms — Circuit",
-              "description": "LIIFT4 Shred It, week 7. Follow the LIIFT4 video for this day.",
+              "description": "LIIFT4 Shred It, week 8. Follow the LIIFT4 video for this day.",
               "durationMinutes": 40,
-              "humanReadable": "LIIFT4 Shred It · Week 7\nShoulders/Arms — Circuit (~40 min)\n\nFollow the LIIFT4 video for this day.",
+              "humanReadable": "LIIFT4 Shred It · Week 8\nShoulders/Arms — Circuit (~40 min)\n\nFollow the LIIFT4 video for this day.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-12-04",
+          "date": "2026-12-11",
           "dayOfWeek": "Friday",
           "workouts": [
             {
@@ -1488,15 +1516,15 @@
               "sport": "strength",
               "type": "strength",
               "name": "LIIFT4 · Full Body — HIIT",
-              "description": "LIIFT4 Shred It, week 7. HIIT day: use the low-impact modifier throughout (no jumping) -- protect the knees for running.",
+              "description": "LIIFT4 Shred It, week 8. HIIT day: use the low-impact modifier throughout (no jumping) -- protect the knees for running.",
               "durationMinutes": 40,
-              "humanReadable": "LIIFT4 Shred It · Week 7\nFull Body — HIIT (~40 min)\n\nHIIT day: use the low-impact modifier throughout (no jumping) -- protect the knees for running.",
+              "humanReadable": "LIIFT4 Shred It · Week 8\nFull Body — HIIT (~40 min)\n\nHIIT day: use the low-impact modifier throughout (no jumping) -- protect the knees for running.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-12-05",
+          "date": "2026-12-12",
           "dayOfWeek": "Saturday",
           "workouts": [
             {
@@ -1510,7 +1538,7 @@
           ]
         },
         {
-          "date": "2026-12-06",
+          "date": "2026-12-13",
           "dayOfWeek": "Sunday",
           "workouts": [
             {
@@ -1545,31 +1573,29 @@
     },
     {
       "weekNumber": 9,
-      "startDate": "2026-12-07",
-      "endDate": "2026-12-13",
+      "startDate": "2026-12-14",
+      "endDate": "2026-12-20",
       "phase": "Base + Quality",
-      "focus": "Steady run introduced; LIIFT4 finishes · 23 mi",
+      "focus": "Steady run introduced; general strength · 23 mi",
       "targetHours": 4.6,
       "isRecoveryWeek": false,
       "days": [
         {
-          "date": "2026-12-07",
+          "date": "2026-12-14",
           "dayOfWeek": "Monday",
           "workouts": [
             {
-              "id": "w9-mon-liift4",
-              "sport": "strength",
-              "type": "strength",
-              "name": "LIIFT4 · Legs — LIIFT 50/50",
-              "description": "LIIFT4 Shred It, week 8. Moved to Monday so legs land the day after the long run, not before it. Always the LIIFT 50/50 version -- no HIIT/jumping legs while mileage rebuilds. Knee check: any sharp or lingering knee pain = drop the weight or skip the lunge/jump-type moves.",
-              "durationMinutes": 40,
-              "humanReadable": "LIIFT4 Shred It · Week 8\nLegs — LIIFT 50/50 (~40 min)\n\nMoved to Monday so legs land the day after the long run, not before it. Always the LIIFT 50/50 version -- no HIIT/jumping legs while mileage rebuilds. Knee check: any sharp or lingering knee pain = drop the weight or skip the lunge/jump-type moves.",
+              "id": "w9-mon-rest",
+              "sport": "rest",
+              "type": "rest",
+              "name": "Rest Day",
+              "description": "Full rest. Walking is fine.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-12-08",
+          "date": "2026-12-15",
           "dayOfWeek": "Tuesday",
           "workouts": [
             {
@@ -1585,19 +1611,19 @@
               "completed": false
             },
             {
-              "id": "w9-tue-liift4",
+              "id": "w9-tue-str",
               "sport": "strength",
-              "type": "strength",
-              "name": "LIIFT4 · Chest/Back — Circuit",
-              "description": "LIIFT4 Shred It, week 8. Follow the LIIFT4 video for this day.",
-              "durationMinutes": 40,
-              "humanReadable": "LIIFT4 Shred It · Week 8\nChest/Back — Circuit (~40 min)\n\nFollow the LIIFT4 video for this day.",
+              "type": "endurance",
+              "name": "Strength (after run)",
+              "description": "Folded into today's run — do it right after while warm.",
+              "durationMinutes": 20,
+              "humanReadable": "Strength (20 min, right after the run)\nGlute/hip warm-up: bridges x 12, lateral band walk x 10 each way\n2-3 rounds:\n  • Goblet squat x 10\n  • Single-leg Romanian deadlift x 8 each\n  • Rear-foot-elevated split squat x 8 each\n  • Step-up x 10 each\n  • Single-leg calf raise x 12 each\n  • Push-up x 10-15\n  • Dead bug x 10 each + side plank 30s each\nModerate load — finish feeling like you had 2-3 reps left.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-12-09",
+          "date": "2026-12-16",
           "dayOfWeek": "Wednesday",
           "workouts": [
             {
@@ -1611,7 +1637,7 @@
           ]
         },
         {
-          "date": "2026-12-10",
+          "date": "2026-12-17",
           "dayOfWeek": "Thursday",
           "workouts": [
             {
@@ -1625,21 +1651,11 @@
               "primaryZone": "Zone 3",
               "humanReadable": "Warm-up: 1.5 mi easy\nMain: 20 min STEADY @ ~9:00-9:20/mi (Zone 3, HR ~153-160). Comfortable but purposeful — you can talk in short sentences. This is NOT tempo.\nCool-down: easy to finish 6 mi total.\n\nIf HR drifts above 160 or the knee complains, back off to easy and call it a normal run.\n\nFirst steady run of the block.",
               "completed": false
-            },
-            {
-              "id": "w9-thu-liift4",
-              "sport": "strength",
-              "type": "strength",
-              "name": "LIIFT4 · Shoulders/Arms — Circuit",
-              "description": "LIIFT4 Shred It, week 8. Follow the LIIFT4 video for this day.",
-              "durationMinutes": 40,
-              "humanReadable": "LIIFT4 Shred It · Week 8\nShoulders/Arms — Circuit (~40 min)\n\nFollow the LIIFT4 video for this day.",
-              "completed": false
             }
           ]
         },
         {
-          "date": "2026-12-11",
+          "date": "2026-12-18",
           "dayOfWeek": "Friday",
           "workouts": [
             {
@@ -1655,19 +1671,19 @@
               "completed": false
             },
             {
-              "id": "w9-fri-liift4",
+              "id": "w9-fri-str",
               "sport": "strength",
-              "type": "strength",
-              "name": "LIIFT4 · Full Body — HIIT",
-              "description": "LIIFT4 Shred It, week 8. HIIT day: use the low-impact modifier throughout (no jumping) -- protect the knees for running.",
-              "durationMinutes": 40,
-              "humanReadable": "LIIFT4 Shred It · Week 8\nFull Body — HIIT (~40 min)\n\nHIIT day: use the low-impact modifier throughout (no jumping) -- protect the knees for running.",
+              "type": "endurance",
+              "name": "Strength (after run)",
+              "description": "Folded into today's run — do it right after while warm.",
+              "durationMinutes": 20,
+              "humanReadable": "Knee-insurance strength (15-20 min, right after the run)\n2 rounds:\n  • Glute bridge x 15\n  • Side-lying leg raise x 12 each\n  • Clamshell (band) x 15 each\n  • Lateral band walk x 12 steps each way\n  • Slow step-down (4-6\" step) x 8 each leg — knee tracks over 2nd toe\n  • Calf raise x 15 (straight knee) + x 15 (bent knee)\n  • Plank 30-45s + side plank 20-30s each side",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-12-12",
+          "date": "2026-12-19",
           "dayOfWeek": "Saturday",
           "workouts": [
             {
@@ -1681,7 +1697,7 @@
           ]
         },
         {
-          "date": "2026-12-13",
+          "date": "2026-12-20",
           "dayOfWeek": "Sunday",
           "workouts": [
             {
@@ -1700,7 +1716,7 @@
         }
       ],
       "summary": {
-        "totalHours": 6.6,
+        "totalHours": 4.6,
         "bySport": {
           "run": {
             "sessions": 4,
@@ -1708,23 +1724,23 @@
             "km": 37
           },
           "strength": {
-            "sessions": 4,
-            "hours": 2.67
+            "sessions": 2,
+            "hours": 0.67
           }
         }
       }
     },
     {
       "weekNumber": 10,
-      "startDate": "2026-12-14",
-      "endDate": "2026-12-20",
+      "startDate": "2026-12-21",
+      "endDate": "2026-12-27",
       "phase": "Base + Quality",
-      "focus": "Settle into the steady-run rhythm · 24 mi",
+      "focus": "Christmas week — settle into the steady-run rhythm · 24 mi",
       "targetHours": 4.8,
       "isRecoveryWeek": false,
       "days": [
         {
-          "date": "2026-12-14",
+          "date": "2026-12-21",
           "dayOfWeek": "Monday",
           "workouts": [
             {
@@ -1738,7 +1754,7 @@
           ]
         },
         {
-          "date": "2026-12-15",
+          "date": "2026-12-22",
           "dayOfWeek": "Tuesday",
           "workouts": [
             {
@@ -1766,7 +1782,7 @@
           ]
         },
         {
-          "date": "2026-12-16",
+          "date": "2026-12-23",
           "dayOfWeek": "Wednesday",
           "workouts": [
             {
@@ -1780,7 +1796,7 @@
           ]
         },
         {
-          "date": "2026-12-17",
+          "date": "2026-12-24",
           "dayOfWeek": "Thursday",
           "workouts": [
             {
@@ -1788,17 +1804,17 @@
               "sport": "run",
               "type": "tempo",
               "name": "Steady Run — 20 min steady",
-              "description": "One controlled, moderate effort to keep some sharpness while volume builds.",
+              "description": "Christmas Eve. If the day is packed, run it all easy — fine.",
               "durationMinutes": 60,
               "distanceMeters": 9656,
               "primaryZone": "Zone 3",
-              "humanReadable": "Warm-up: 1.5 mi easy\nMain: 20 min STEADY @ ~9:00-9:20/mi (Zone 3, HR ~153-160). Comfortable but purposeful — you can talk in short sentences. This is NOT tempo.\nCool-down: easy to finish 6 mi total.\n\nIf HR drifts above 160 or the knee complains, back off to easy and call it a normal run.",
+              "humanReadable": "Warm-up: 1.5 mi easy\nMain: 20 min STEADY @ ~9:00-9:20/mi (Zone 3, HR ~153-160). Comfortable but purposeful — you can talk in short sentences. This is NOT tempo.\nCool-down: easy to finish 6 mi total.\n\nIf HR drifts above 160 or the knee complains, back off to easy and call it a normal run.\n\nChristmas Eve. If the day is packed, run it all easy — fine.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-12-18",
+          "date": "2026-12-25",
           "dayOfWeek": "Friday",
           "workouts": [
             {
@@ -1806,11 +1822,11 @@
               "sport": "run",
               "type": "endurance",
               "name": "Easy 5 mi",
-              "description": "Aerobic base run.",
+              "description": "Christmas Day — skip or shorten freely; if you skip it, don't make it up.",
               "durationMinutes": 50,
               "distanceMeters": 8047,
               "primaryZone": "Zone 2",
-              "humanReadable": "5 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.",
+              "humanReadable": "5 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.\n\nChristmas Day — skip or shorten freely; if you skip it, don't make it up.",
               "completed": false
             },
             {
@@ -1826,7 +1842,7 @@
           ]
         },
         {
-          "date": "2026-12-19",
+          "date": "2026-12-26",
           "dayOfWeek": "Saturday",
           "workouts": [
             {
@@ -1840,7 +1856,7 @@
           ]
         },
         {
-          "date": "2026-12-20",
+          "date": "2026-12-27",
           "dayOfWeek": "Sunday",
           "workouts": [
             {
@@ -1875,15 +1891,15 @@
     },
     {
       "weekNumber": 11,
-      "startDate": "2026-12-21",
-      "endDate": "2026-12-27",
+      "startDate": "2026-12-28",
+      "endDate": "2027-01-03",
       "phase": "Base + Quality",
-      "focus": "Christmas week — steady extends to 25 min · 26 mi",
+      "focus": "New Year week — steady extends to 25 min · 26 mi",
       "targetHours": 5.2,
       "isRecoveryWeek": false,
       "days": [
         {
-          "date": "2026-12-21",
+          "date": "2026-12-28",
           "dayOfWeek": "Monday",
           "workouts": [
             {
@@ -1897,7 +1913,7 @@
           ]
         },
         {
-          "date": "2026-12-22",
+          "date": "2026-12-29",
           "dayOfWeek": "Tuesday",
           "workouts": [
             {
@@ -1925,7 +1941,7 @@
           ]
         },
         {
-          "date": "2026-12-23",
+          "date": "2026-12-30",
           "dayOfWeek": "Wednesday",
           "workouts": [
             {
@@ -1939,7 +1955,7 @@
           ]
         },
         {
-          "date": "2026-12-24",
+          "date": "2026-12-31",
           "dayOfWeek": "Thursday",
           "workouts": [
             {
@@ -1947,17 +1963,17 @@
               "sport": "run",
               "type": "tempo",
               "name": "Steady Run — 25 min steady",
-              "description": "Christmas Eve. If the day is packed, run it all easy — fine.",
+              "description": "New Year's Eve. Go earlier in the day if the evening is busy; if it's packed, run it all easy — fine.",
               "durationMinutes": 60,
               "distanceMeters": 9656,
               "primaryZone": "Zone 3",
-              "humanReadable": "Warm-up: 1.5 mi easy\nMain: 25 min STEADY @ ~9:00-9:20/mi (Zone 3, HR ~153-160). Comfortable but purposeful — you can talk in short sentences. This is NOT tempo.\nCool-down: easy to finish 6 mi total.\n\nIf HR drifts above 160 or the knee complains, back off to easy and call it a normal run.\n\nChristmas Eve. If the day is packed, run it all easy — fine.",
+              "humanReadable": "Warm-up: 1.5 mi easy\nMain: 25 min STEADY @ ~9:00-9:20/mi (Zone 3, HR ~153-160). Comfortable but purposeful — you can talk in short sentences. This is NOT tempo.\nCool-down: easy to finish 6 mi total.\n\nIf HR drifts above 160 or the knee complains, back off to easy and call it a normal run.\n\nNew Year's Eve. Go earlier in the day if the evening is busy; if it's packed, run it all easy — fine.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2026-12-25",
+          "date": "2027-01-01",
           "dayOfWeek": "Friday",
           "workouts": [
             {
@@ -1965,11 +1981,11 @@
               "sport": "run",
               "type": "endurance",
               "name": "Easy 6 mi",
-              "description": "Christmas Day — skip or shorten freely; if you skip it, don't make it up.",
+              "description": "New Year's Day — shorten or skip freely; don't make it up.",
               "durationMinutes": 65,
               "distanceMeters": 9656,
               "primaryZone": "Zone 2",
-              "humanReadable": "6 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.\n\nChristmas Day — skip or shorten freely; if you skip it, don't make it up.",
+              "humanReadable": "6 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.\n\nNew Year's Day — shorten or skip freely; don't make it up.",
               "completed": false
             },
             {
@@ -1985,7 +2001,7 @@
           ]
         },
         {
-          "date": "2026-12-26",
+          "date": "2027-01-02",
           "dayOfWeek": "Saturday",
           "workouts": [
             {
@@ -1999,7 +2015,7 @@
           ]
         },
         {
-          "date": "2026-12-27",
+          "date": "2027-01-03",
           "dayOfWeek": "Sunday",
           "workouts": [
             {
@@ -2034,15 +2050,15 @@
     },
     {
       "weekNumber": 12,
-      "startDate": "2026-12-28",
-      "endDate": "2027-01-03",
+      "startDate": "2027-01-04",
+      "endDate": "2027-01-10",
       "phase": "Base + Quality",
-      "focus": "FLEX WEEK — New Year, no steady run · 19 mi",
+      "focus": "FLEX WEEK — no steady run · 19 mi",
       "targetHours": 3.8,
       "isRecoveryWeek": true,
       "days": [
         {
-          "date": "2026-12-28",
+          "date": "2027-01-04",
           "dayOfWeek": "Monday",
           "workouts": [
             {
@@ -2056,7 +2072,7 @@
           ]
         },
         {
-          "date": "2026-12-29",
+          "date": "2027-01-05",
           "dayOfWeek": "Tuesday",
           "workouts": [
             {
@@ -2084,7 +2100,7 @@
           ]
         },
         {
-          "date": "2026-12-30",
+          "date": "2027-01-06",
           "dayOfWeek": "Wednesday",
           "workouts": [
             {
@@ -2098,7 +2114,7 @@
           ]
         },
         {
-          "date": "2026-12-31",
+          "date": "2027-01-07",
           "dayOfWeek": "Thursday",
           "workouts": [
             {
@@ -2106,17 +2122,17 @@
               "sport": "run",
               "type": "endurance",
               "name": "Easy 5 mi + 4 strides",
-              "description": "New Year's Eve. Go earlier in the day if the evening is busy; if it's packed, shorten it or drop the strides — fine.",
+              "description": "Aerobic base run.",
               "durationMinutes": 50,
               "distanceMeters": 8047,
               "primaryZone": "Zone 2",
-              "humanReadable": "5 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.\nAfter the run: 4 x 20s strides — quick and relaxed, not sprints. Full walk-back recovery.\n\nNew Year's Eve. Go earlier in the day if the evening is busy; if it's packed, shorten it or drop the strides — fine.",
+              "humanReadable": "5 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.\nAfter the run: 4 x 20s strides — quick and relaxed, not sprints. Full walk-back recovery.",
               "completed": false
             }
           ]
         },
         {
-          "date": "2027-01-01",
+          "date": "2027-01-08",
           "dayOfWeek": "Friday",
           "workouts": [
             {
@@ -2124,11 +2140,11 @@
               "sport": "run",
               "type": "endurance",
               "name": "Easy 3 mi",
-              "description": "New Year's Day — shorten or skip freely; don't make it up.",
+              "description": "Aerobic base run.",
               "durationMinutes": 30,
               "distanceMeters": 4828,
               "primaryZone": "Zone 2",
-              "humanReadable": "3 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.\n\nNew Year's Day — shorten or skip freely; don't make it up.",
+              "humanReadable": "3 miles easy.\nEasy = fully conversational, Zone 2 HR (139-152). Pace ~10:00-11:00/mi is a guide, not a target — let HR and breathing decide.",
               "completed": false
             },
             {
@@ -2144,7 +2160,7 @@
           ]
         },
         {
-          "date": "2027-01-02",
+          "date": "2027-01-09",
           "dayOfWeek": "Saturday",
           "workouts": [
             {
@@ -2158,7 +2174,7 @@
           ]
         },
         {
-          "date": "2027-01-03",
+          "date": "2027-01-10",
           "dayOfWeek": "Sunday",
           "workouts": [
             {
@@ -2193,15 +2209,15 @@
     },
     {
       "weekNumber": 13,
-      "startDate": "2027-01-04",
-      "endDate": "2027-01-10",
+      "startDate": "2027-01-11",
+      "endDate": "2027-01-17",
       "phase": "Consolidate",
       "focus": "Back to full volume · 27 mi",
       "targetHours": 5.2,
       "isRecoveryWeek": false,
       "days": [
         {
-          "date": "2027-01-04",
+          "date": "2027-01-11",
           "dayOfWeek": "Monday",
           "workouts": [
             {
@@ -2215,7 +2231,7 @@
           ]
         },
         {
-          "date": "2027-01-05",
+          "date": "2027-01-12",
           "dayOfWeek": "Tuesday",
           "workouts": [
             {
@@ -2243,7 +2259,7 @@
           ]
         },
         {
-          "date": "2027-01-06",
+          "date": "2027-01-13",
           "dayOfWeek": "Wednesday",
           "workouts": [
             {
@@ -2257,7 +2273,7 @@
           ]
         },
         {
-          "date": "2027-01-07",
+          "date": "2027-01-14",
           "dayOfWeek": "Thursday",
           "workouts": [
             {
@@ -2275,7 +2291,7 @@
           ]
         },
         {
-          "date": "2027-01-08",
+          "date": "2027-01-15",
           "dayOfWeek": "Friday",
           "workouts": [
             {
@@ -2303,7 +2319,7 @@
           ]
         },
         {
-          "date": "2027-01-09",
+          "date": "2027-01-16",
           "dayOfWeek": "Saturday",
           "workouts": [
             {
@@ -2317,7 +2333,7 @@
           ]
         },
         {
-          "date": "2027-01-10",
+          "date": "2027-01-17",
           "dayOfWeek": "Sunday",
           "workouts": [
             {
@@ -2352,15 +2368,15 @@
     },
     {
       "weekNumber": 14,
-      "startDate": "2027-01-11",
-      "endDate": "2027-01-17",
+      "startDate": "2027-01-18",
+      "endDate": "2027-01-24",
       "phase": "Consolidate",
       "focus": "First 10-miler · 28 mi",
       "targetHours": 5.4,
       "isRecoveryWeek": false,
       "days": [
         {
-          "date": "2027-01-11",
+          "date": "2027-01-18",
           "dayOfWeek": "Monday",
           "workouts": [
             {
@@ -2374,7 +2390,7 @@
           ]
         },
         {
-          "date": "2027-01-12",
+          "date": "2027-01-19",
           "dayOfWeek": "Tuesday",
           "workouts": [
             {
@@ -2402,7 +2418,7 @@
           ]
         },
         {
-          "date": "2027-01-13",
+          "date": "2027-01-20",
           "dayOfWeek": "Wednesday",
           "workouts": [
             {
@@ -2416,7 +2432,7 @@
           ]
         },
         {
-          "date": "2027-01-14",
+          "date": "2027-01-21",
           "dayOfWeek": "Thursday",
           "workouts": [
             {
@@ -2434,7 +2450,7 @@
           ]
         },
         {
-          "date": "2027-01-15",
+          "date": "2027-01-22",
           "dayOfWeek": "Friday",
           "workouts": [
             {
@@ -2462,7 +2478,7 @@
           ]
         },
         {
-          "date": "2027-01-16",
+          "date": "2027-01-23",
           "dayOfWeek": "Saturday",
           "workouts": [
             {
@@ -2476,7 +2492,7 @@
           ]
         },
         {
-          "date": "2027-01-17",
+          "date": "2027-01-24",
           "dayOfWeek": "Sunday",
           "workouts": [
             {
@@ -2511,15 +2527,15 @@
     },
     {
       "weekNumber": 15,
-      "startDate": "2027-01-18",
-      "endDate": "2027-01-24",
+      "startDate": "2027-01-25",
+      "endDate": "2027-01-31",
       "phase": "Consolidate",
       "focus": "Peak week (~30 mi) · 30 mi",
       "targetHours": 5.9,
       "isRecoveryWeek": false,
       "days": [
         {
-          "date": "2027-01-18",
+          "date": "2027-01-25",
           "dayOfWeek": "Monday",
           "workouts": [
             {
@@ -2533,7 +2549,7 @@
           ]
         },
         {
-          "date": "2027-01-19",
+          "date": "2027-01-26",
           "dayOfWeek": "Tuesday",
           "workouts": [
             {
@@ -2561,7 +2577,7 @@
           ]
         },
         {
-          "date": "2027-01-20",
+          "date": "2027-01-27",
           "dayOfWeek": "Wednesday",
           "workouts": [
             {
@@ -2575,7 +2591,7 @@
           ]
         },
         {
-          "date": "2027-01-21",
+          "date": "2027-01-28",
           "dayOfWeek": "Thursday",
           "workouts": [
             {
@@ -2593,7 +2609,7 @@
           ]
         },
         {
-          "date": "2027-01-22",
+          "date": "2027-01-29",
           "dayOfWeek": "Friday",
           "workouts": [
             {
@@ -2621,7 +2637,7 @@
           ]
         },
         {
-          "date": "2027-01-23",
+          "date": "2027-01-30",
           "dayOfWeek": "Saturday",
           "workouts": [
             {
@@ -2635,7 +2651,7 @@
           ]
         },
         {
-          "date": "2027-01-24",
+          "date": "2027-01-31",
           "dayOfWeek": "Sunday",
           "workouts": [
             {
@@ -2670,15 +2686,15 @@
     },
     {
       "weekNumber": 16,
-      "startDate": "2027-01-25",
-      "endDate": "2027-01-31",
+      "startDate": "2027-02-01",
+      "endDate": "2027-02-07",
       "phase": "Consolidate",
       "focus": "FLEX WEEK + 5K time trial · 20 mi",
       "targetHours": 3.4,
       "isRecoveryWeek": true,
       "days": [
         {
-          "date": "2027-01-25",
+          "date": "2027-02-01",
           "dayOfWeek": "Monday",
           "workouts": [
             {
@@ -2692,7 +2708,7 @@
           ]
         },
         {
-          "date": "2027-01-26",
+          "date": "2027-02-02",
           "dayOfWeek": "Tuesday",
           "workouts": [
             {
@@ -2720,7 +2736,7 @@
           ]
         },
         {
-          "date": "2027-01-27",
+          "date": "2027-02-03",
           "dayOfWeek": "Wednesday",
           "workouts": [
             {
@@ -2734,7 +2750,7 @@
           ]
         },
         {
-          "date": "2027-01-28",
+          "date": "2027-02-04",
           "dayOfWeek": "Thursday",
           "workouts": [
             {
@@ -2752,7 +2768,7 @@
           ]
         },
         {
-          "date": "2027-01-29",
+          "date": "2027-02-05",
           "dayOfWeek": "Friday",
           "workouts": [
             {
@@ -2766,7 +2782,7 @@
           ]
         },
         {
-          "date": "2027-01-30",
+          "date": "2027-02-06",
           "dayOfWeek": "Saturday",
           "workouts": [
             {
@@ -2784,7 +2800,7 @@
           ]
         },
         {
-          "date": "2027-01-31",
+          "date": "2027-02-07",
           "dayOfWeek": "Sunday",
           "workouts": [
             {
