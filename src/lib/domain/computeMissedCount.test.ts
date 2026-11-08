@@ -105,3 +105,32 @@ describe('computeMissedCount', () => {
     expect(computeMissedCount(WEEK, new Map(), entries, todayIso)).toBe(0);
   });
 });
+
+// Story 5.1 -- a "Missed it" check-in still counts in Days missed.
+describe('computeMissedCount -- marked missed (Story 5.1)', () => {
+  it('a past scheduled day marked missed counts as missed', () => {
+    const workoutsByDate = byDate(workout('2026-09-21'), workout('2026-09-22'));
+    const entries: Record<string, unknown> = {
+      '2026-09-21': { completed: false, missed: true },
+      '2026-09-22': { completed: false, missed: true, type: 'Run', duration: '10 min' },
+    };
+    expect(computeMissedCount(WEEK, workoutsByDate, entries, '2026-09-27')).toBe(2);
+  });
+});
+
+// Story 5.1 review -- CLAUDE.md boundary days for a day marked missed: not
+// counted on the day itself; counted the day after and two days after.
+describe('computeMissedCount -- marked missed, boundary days (Story 5.1)', () => {
+  const workoutsByDate = byDate(workout('2026-09-23'));
+  const entries: Record<string, unknown> = { '2026-09-23': { completed: false, missed: true } };
+
+  it('marked missed today: not counted yet', () => {
+    expect(computeMissedCount(WEEK, workoutsByDate, entries, '2026-09-23')).toBe(0);
+  });
+
+  for (const todayIso of ['2026-09-24', '2026-09-25']) {
+    it(`evaluated on ${todayIso}: counted`, () => {
+      expect(computeMissedCount(WEEK, workoutsByDate, entries, todayIso)).toBe(1);
+    });
+  }
+});

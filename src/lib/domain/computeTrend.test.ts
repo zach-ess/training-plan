@@ -93,3 +93,11 @@ describe('computeTrend', () => {
     expect(trend.every((week) => week.count === 0)).toBe(true);
   });
 });
+
+// Story 5.1 -- a "Missed it" entry never counts toward a trend week.
+describe('computeTrend -- marked missed (Story 5.1)', () => {
+  it('a missed entry is not counted toward its week', () => {
+    const entries: Record<string, unknown> = { '2026-09-21': { completed: false, missed: true, type: 'Run' } };
+    expect(computeTrend(entries, '2026-09-25').every((week) => week.count === 0)).toBe(true);
+  });
+});

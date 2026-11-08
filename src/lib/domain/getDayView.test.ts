@@ -46,3 +46,45 @@ describe('getDayView -- sessions (Story 4.5)', () => {
     });
   });
 });
+
+// Story 5.1 -- the "Missed it" flag rides through on logged/orphaned views,
+// read only as `=== true`.
+describe('getDayView -- missed (Story 5.1)', () => {
+  const flat: Workout = { date: '2026-11-05', type: 'Run', duration: '30 min' };
+
+  it('a logged missed entry exposes missed: true alongside completed: false', () => {
+    expect(getDayView(flat, { completed: false, missed: true })).toEqual({ kind: 'logged', completed: false, missed: true });
+  });
+
+  it('keeps logged fields on a missed entry that has them', () => {
+    const view = getDayView(flat, { completed: false, missed: true, type: 'Run', duration: '10 min' });
+    expect(view).toMatchObject({ kind: 'logged', missed: true, type: 'Run', duration: '10 min' });
+  });
+
+  it('anything but true is not missed; a planned day has no missed key', () => {
+    expect(getDayView(flat, { completed: false, missed: 'true' })).not.toHaveProperty('missed');
+    expect(getDayView(flat, { completed: false })).not.toHaveProperty('missed');
+    expect(getDayView(flat, undefined)).not.toHaveProperty('missed');
+  });
+});
+
+// Story 5.1 review -- a missed entry on a date the Plan no longer schedules.
+describe('getDayView -- missed entry with no Workout (Story 5.1)', () => {
+  it('a bare missed check-in with no Workout is an empty day, not an orphaned log', () => {
+    expect(getDayView(undefined, { completed: false, missed: true })).toEqual({ kind: 'empty' });
+  });
+
+  it('a missed entry that still carries logged data stays an orphaned log with missed: true', () => {
+    expect(getDayView(undefined, { completed: false, missed: true, type: 'Run', duration: '10 min' })).toEqual({
+      kind: 'orphaned-log',
+      completed: false,
+      missed: true,
+      type: 'Run',
+      duration: '10 min',
+    });
+    expect(getDayView(undefined, { completed: false, missed: true, notes: 'tired' })).toMatchObject({
+      kind: 'orphaned-log',
+      missed: true,
+    });
+  });
+});

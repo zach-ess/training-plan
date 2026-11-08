@@ -33,6 +33,10 @@ export interface LogEntry {
   duration?: string;
   distance?: string;
   notes?: string;
+  // Story 5.1 -- the "Missed it" check-in. Stored only as `true`, and only
+  // ever alongside `completed: false`; Mark Complete, Edit and Undo remove
+  // the key rather than writing `false`.
+  missed?: true;
   schemaVersion: number;
 }
 
@@ -71,6 +75,9 @@ function toLogEntry(date: string, raw: unknown): LogEntry | null {
   if (typeof raw.duration === 'string') entry.duration = raw.duration;
   if (typeof raw.distance === 'string') entry.distance = raw.distance;
   if (typeof raw.notes === 'string') entry.notes = raw.notes;
+  // Story 5.1 -- kept only in its canonical shape (`true`, paired with
+  // `completed: false`); anything else is dropped rather than trusted.
+  if (raw.missed === true && raw.completed === false) entry.missed = true;
   return migrateLogEntry(entry);
 }
 
@@ -201,8 +208,11 @@ export function setCompleted(date: string, value: boolean, workout?: Workout): W
   const freshEntries = loadInitialEntries();
   const existing = freshEntries[date];
 
+  // Story 5.1 -- Mark Complete clears a "Missed it" check-in: `missed` is
+  // only ever paired with `completed: false`, so the key is removed (never
+  // written as `false`) the moment the day is logged as done.
   const nextEntry: LogEntry = existing
-    ? { ...existing, completed: value, schemaVersion: CURRENT_SCHEMA_VERSION }
+    ? { ...withoutMissed(existing, value), completed: value, schemaVersion: CURRENT_SCHEMA_VERSION }
     : {
         date,
         completed: value,
@@ -213,6 +223,62 @@ export function setCompleted(date: string, value: boolean, workout?: Workout): W
       };
 
   const nextEntries = { ...freshEntries, [date]: nextEntry };
+  const result = persist(nextEntries);
+  if (result.ok) {
+    logStore.entries = nextEntries;
+  }
+  return result;
+}
+
+/** `entry` minus its `missed` key when `dropMissed` is true; otherwise
+ * `entry` unchanged. */
+function withoutMissed(entry: LogEntry, dropMissed: boolean): LogEntry {
+  if (!dropMissed || !('missed' in entry)) {
+    return entry;
+  }
+  const { missed: _missed, ...rest } = entry;
+  return rest;
+}
+
+/**
+ * Story 5.1 -- the "Missed it" check-in, a targeted patch write in the same
+ * fresh-read -> persist -> assign-on-success shape as `setCompleted` above
+ * (AD-3/AD-4: never throws, and a failed write leaves `logStore.entries`
+ * exactly as it was).
+ *
+ * `value: true` marks the day missed: an existing entry keeps every
+ * `type`/`duration`/`distance`/`notes` field untouched and gains
+ * `completed: false, missed: true`; with no entry, a bare
+ * `{ date, completed: false, missed: true }` is created (no Workout values
+ * are frozen in -- nothing was done).
+ *
+ * `value: false` (Undo missed) removes the key. If the entry then carries no
+ * logged data at all, the whole entry is removed, so the day is exactly as
+ * it was before it was marked (unchecked).
+ */
+export function setMissed(date: string, value: boolean): WriteResult {
+  const freshEntries = loadInitialEntries();
+  const existing = freshEntries[date];
+
+  const nextEntries: Record<string, LogEntry> = { ...freshEntries };
+  if (value) {
+    nextEntries[date] = existing
+      ? { ...existing, completed: false, missed: true, schemaVersion: CURRENT_SCHEMA_VERSION }
+      : { date, completed: false, missed: true, schemaVersion: CURRENT_SCHEMA_VERSION };
+  } else if (existing) {
+    const remaining = withoutMissed(existing, true);
+    const hasData =
+      remaining.type !== undefined ||
+      remaining.duration !== undefined ||
+      remaining.distance !== undefined ||
+      remaining.notes !== undefined;
+    if (hasData) {
+      nextEntries[date] = { ...remaining, schemaVersion: CURRENT_SCHEMA_VERSION };
+    } else {
+      delete nextEntries[date];
+    }
+  }
+
   const result = persist(nextEntries);
   if (result.ok) {
     logStore.entries = nextEntries;

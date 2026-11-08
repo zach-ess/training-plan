@@ -111,3 +111,15 @@ describe('computeRollup', () => {
     expect(total).toBe(1);
   });
 });
+
+// Story 5.1 -- a "Missed it" entry is never a workout in Rollups.
+describe('computeRollup -- marked missed (Story 5.1)', () => {
+  it('a missed entry, even one carrying a type, is not counted', () => {
+    const entries: Record<string, unknown> = {
+      '2026-09-01': { completed: false, missed: true },
+      '2026-09-02': { completed: false, missed: true, type: 'Run' },
+    };
+    const rollup = computeRollup(entries, '2026-09-01', '2026-09-30');
+    expect(Object.values(rollup).every((count) => count === 0)).toBe(true);
+  });
+});

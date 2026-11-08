@@ -32,6 +32,9 @@ export interface DayView {
   // off the LogEntry); left `undefined` for `'planned'`/`'empty'`, where
   // there is no LogEntry to read a completion state from at all.
   completed?: boolean;
+  // Story 5.1 -- `true` when the LogEntry is a "Missed it" check-in; absent
+  // otherwise (never `false`). Only ever set for `'logged'`/`'orphaned-log'`.
+  missed?: true;
   // Story 4.5 -- the Plan's sessions for this date, by name, whenever a
   // Workout exists ('planned' and 'logged'): display-only, so a logged day
   // still shows what was planned while its LogEntry values win above.
@@ -46,11 +49,15 @@ export interface DayView {
  * header comment above). */
 function readLoggedFields(
   logEntry: unknown,
-): Pick<DayView, 'type' | 'duration' | 'distance' | 'completed'> {
+): Pick<DayView, 'type' | 'duration' | 'distance' | 'completed' | 'missed'> {
   if (!isRecord(logEntry)) {
     return {};
   }
-  const fields: Pick<DayView, 'type' | 'duration' | 'distance' | 'completed'> = {};
+  const fields: Pick<DayView, 'type' | 'duration' | 'distance' | 'completed' | 'missed'> = {};
+  // Story 5.1 -- read only as `=== true`; any other value means "not marked".
+  if (logEntry.missed === true) {
+    fields.missed = true;
+  }
   if (typeof logEntry.type === 'string') {
     fields.type = logEntry.type;
   }
@@ -64,6 +71,18 @@ function readLoggedFields(
     fields.completed = logEntry.completed;
   }
   return fields;
+}
+
+/** Story 5.1 -- a missed check-in carrying no type/duration/distance/notes. */
+function isBareMissed(logEntry: unknown): boolean {
+  return (
+    isRecord(logEntry) &&
+    logEntry.missed === true &&
+    typeof logEntry.type !== 'string' &&
+    typeof logEntry.duration !== 'string' &&
+    typeof logEntry.distance !== 'string' &&
+    typeof logEntry.notes !== 'string'
+  );
 }
 
 /** Story 4.5 -- the Workout's named sessions, when it has any. */
@@ -97,6 +116,12 @@ export function getDayView(workout: Workout | undefined, logEntry: unknown | und
     };
   }
   if (!workout && logEntry !== undefined) {
+    // Story 5.1 -- a bare "Missed it" check-in (no logged data) left behind
+    // when the Plan stopped scheduling this date is not a logged workout, so
+    // the day reads as empty; AD-8's never-hide rule covers real logs only.
+    if (isBareMissed(logEntry)) {
+      return { kind: 'empty' };
+    }
     return { kind: 'orphaned-log', ...readLoggedFields(logEntry) };
   }
   return { kind: 'empty' };

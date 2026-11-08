@@ -101,13 +101,29 @@
   // Story 2.4 -- a Missed row's meta line reads exactly "missed — no log
   // entry" (DESIGN.md's literal copy), overriding the usual
   // duration/distance readout -- there's nothing logged to show.
+  //
+  // Story 5.1 -- a scheduled day Zach checked in as "Missed it" (past or
+  // today): the past row keeps the full Missed treatment but its label reads
+  // "Missed · noted" and its meta "missed — checked in"; today keeps its own
+  // "Today" label and only the meta changes. Text carries the difference,
+  // never color alone. A future day never gets here (the action isn't
+  // offered there).
+  const isMarkedMissed = $derived(
+    workout !== undefined &&
+      dayView.kind === 'logged' &&
+      dayView.missed === true &&
+      dayView.completed !== true &&
+      date <= todayIso,
+  );
   const meta = $derived(
-    isMissed
-      ? 'missed — no log entry'
-      : isRestDay
-        ? undefined
-        : [dayView.duration, dayView.distance].filter((v): v is string => Boolean(v)).join(' · ') ||
-          undefined,
+    isMarkedMissed
+      ? 'missed — checked in'
+      : isMissed
+        ? 'missed — no log entry'
+        : isRestDay
+          ? undefined
+          : [dayView.duration, dayView.distance].filter((v): v is string => Boolean(v)).join(' · ') ||
+            undefined,
   );
 
   // Accessible name summarizing weekday, date, and status (EXPERIENCE.md's
@@ -169,7 +185,13 @@
              chip alone is never the only signal (Accessibility Floor), so
              this adjacent text label carries "Missed" for a sighted user
              even before the aria-label is ever read. -->
-        <span class="missed-label">Missed</span>
+        {#if isMarkedMissed}
+          <!-- Story 5.1 -- checked in as "Missed it": same chip and tint,
+               the text alone says it was acknowledged. -->
+          <span class="missed-label">Missed · noted</span>
+        {:else}
+          <span class="missed-label">Missed</span>
+        {/if}
       {/if}
     </span>
     <span class="title">{title}</span>

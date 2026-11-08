@@ -34,7 +34,7 @@
   import { tick } from 'svelte';
   import { getDayView } from '../domain/getDayView';
   import type { Workout } from '../domain/parsePlan';
-  import { getLogEntry, setCompleted } from '../data/logStore.svelte';
+  import { getLogEntry, setCompleted, setMissed } from '../data/logStore.svelte';
   import { weekEndReviewStore } from '../data/weekEndReviewStore.svelte';
   import { getTodayIso, parseLocalDate } from '../domain/date';
   import WorkoutDetailStat from './WorkoutDetailStat.svelte';
@@ -78,8 +78,28 @@
   // `||`, not `??` -- mirrors DayRowCard's own "never blank" rule: a Workout
   // whose `type` is present but an empty string must still fall back to
   // "Workout" rather than rendering blank.
-  const title = $derived(isRestDay ? 'Rest Day' : dayView.type || 'Workout');
+  // Story 5.1 -- falls back to the planned Workout's type, so a bare "Missed
+  // it" entry (no type of its own) keeps the planned title.
+  const title = $derived(isRestDay ? 'Rest Day' : dayView.type || workout?.type || 'Workout');
   const isCompleted = $derived(dayView.completed === true);
+
+  // Story 5.1 -- "Missed it": an honest check-in for a planned day (a Workout
+  // exists: 'planned' or 'logged', never rest or orphaned-log) on or before
+  // today that isn't completed. Once marked, the same button reads "Undo
+  // missed" -- on any day still marked, planned or not, so a check-in left on
+  // a date the Plan stopped scheduling can always be undone. One button
+  // element for both labels, so focus stays on it when the label swaps.
+  const isPlannedDay = $derived(dayView.kind === 'planned' || dayView.kind === 'logged');
+  const isMarkedMissed = $derived(dayView.missed === true && !isCompleted);
+  const showMissedAction = $derived(
+    isMarkedMissed || (isPlannedDay && !isCompleted && date <= todayIso),
+  );
+  // Whether the coach-voice confirmation shows: only right after a
+  // successful mark in this dialog, and only while the day is still marked.
+  let missedConfirmation = $state(false);
+  // Which write the shared Retry button repeats.
+  let lastFailedAction = $state<'toggle' | 'missed' | undefined>(undefined);
+  let missedButtonEl = $state<HTMLButtonElement | undefined>();
 
   // Story 2.2 -- Mark Complete/Incomplete write state. `writeErrorReason` is
   // `undefined` whenever the last write attempt (or no attempt yet) didn't
@@ -102,6 +122,7 @@
     // which would otherwise silently drop focus to `document.body`.
     const startedFromRetry = document.activeElement === retryButtonEl;
     writeErrorReason = undefined;
+    lastFailedAction = undefined;
     const wasCompleted = isCompleted;
     // Mirrors epics.md's own call shapes exactly: Mark Complete passes the
     // current Workout (AD-1's value-freeze, consulted only on first
@@ -112,8 +133,10 @@
     const result = wasCompleted ? setCompleted(date, false) : setCompleted(date, true, workout);
     if (!result.ok) {
       writeErrorReason = result.reason;
+      lastFailedAction = 'toggle';
       return;
     }
+    missedConfirmation = false;
     // Retry-success path: move focus to something meaningful instead of
     // letting it drop to `document.body` when the retry button's containing
     // block unmounts above. Falls back to backButtonEl if markButtonEl isn't
@@ -145,6 +168,42 @@
     celebrating = false;
   }
 
+  // Story 5.1 -- "Missed it" / "Undo missed". Never celebrates. Same
+  // never-silent error + Retry as Mark Complete; a failed write leaves the
+  // Data Store (and so this dialog) unchanged.
+  async function handleMissedAction() {
+    const startedFromRetry = document.activeElement === retryButtonEl;
+    writeErrorReason = undefined;
+    lastFailedAction = undefined;
+    const marking = !isMarkedMissed;
+    const result = setMissed(date, marking);
+    if (!result.ok) {
+      writeErrorReason = result.reason;
+      lastFailedAction = 'missed';
+      return;
+    }
+    missedConfirmation = marking;
+    // Wait for the DOM to settle (the Retry block unmounting, the button's
+    // label swapping, or the button itself going away), then make sure focus
+    // didn't drop to <body>: the swapped button, else Mark Complete, else Back.
+    await tick();
+    const active = document.activeElement;
+    if (startedFromRetry || active === null || active === document.body) {
+      const target = [missedButtonEl, markButtonEl, backButtonEl].find(
+        (el) => el !== undefined && el.isConnected && !el.disabled,
+      );
+      target?.focus();
+    }
+  }
+
+  function handleRetry() {
+    if (lastFailedAction === 'missed') {
+      void handleMissedAction();
+    } else {
+      handleToggleComplete();
+    }
+  }
+
   // Story 2.3 -- whether `WorkoutEditForm` is swapped in for the view-mode
   // markup below. `editButtonEl` is the Edit trigger's own DOM ref, refocused
   // (via `tick()` below, since the button it targets doesn't exist in the DOM
@@ -164,6 +223,8 @@
     // ends (Save success or Cancel), since neither of those touches Mark
     // Complete's own write path at all.
     writeErrorReason = undefined;
+    lastFailedAction = undefined;
+    missedConfirmation = false;
     // `.actions` (including this just-clicked, currently-focused button)
     // unmounts once `editing` flips true -- `tick()` first, since
     // `WorkoutEditForm`'s own fields don't exist in the DOM yet in this same
@@ -322,6 +383,11 @@
           <p class="empty-copy">Nothing scheduled to log yet</p>
         {/if}
       {:else}
+        {#if isMarkedMissed}
+          <!-- Story 5.1 -- the marked-missed state, in text (never color
+               alone), matching the day row's "Missed · noted". -->
+          <p class="missed-status">Missed · noted</p>
+        {/if}
         <!-- Story 4.5 -- each planned session by name, with its own minutes ·
              distance and the plan's full instructions, above the day's stats
              (which still show LogEntry values once logged, per AD-8). Plain
@@ -402,6 +468,19 @@
             onclick={handleToggleComplete}
             bind:buttonEl={markButtonEl}
           />
+          <!-- Story 5.1 -- "Missed it" beside Mark Complete; the same element
+               becomes "Undo missed" once marked, so focus never drops. -->
+          {#if showMissedAction}
+            <button
+              type="button"
+              class="missed-action"
+              bind:this={missedButtonEl}
+              disabled={celebrating}
+              onclick={handleMissedAction}
+            >
+              {isMarkedMissed ? 'Undo missed' : 'Missed it'}
+            </button>
+          {/if}
           {#if writeErrorReason}
             <p class="write-error" role="alert">
               {writeErrorReason === 'quota-exceeded'
@@ -411,7 +490,7 @@
                 type="button"
                 class="retry-button"
                 bind:this={retryButtonEl}
-                onclick={handleToggleComplete}
+                onclick={handleRetry}
               >
                 Retry
               </button>
@@ -434,6 +513,12 @@
           </button>
         {/if}
       </div>
+      <!-- Story 5.1 -- the coach-voice confirmation after a successful
+           "Missed it" (Epic 5's voice carve-out). The polite live region is
+           always mounted in view mode so the text appearing in it is
+           announced; it is empty (and takes no space) otherwise. Never a
+           celebration. -->
+      <p class="missed-confirmation" role="status" aria-live="polite">{#if missedConfirmation && isMarkedMissed}Logged as missed. No hiding from it — tomorrow you go again.{/if}</p>
     {/if}
     <!-- Epic 2 retro finding F3 (2026-09-24): this used to be a sibling of
          `.panel` (outside this `role="dialog" aria-modal="true"` element),
@@ -656,6 +741,57 @@
   .retry-button:focus-visible {
     outline: 2px solid var(--accent-primary);
     outline-offset: 2px;
+  }
+
+  /* Story 5.1 -- "Missed it" / "Undo missed": an outlined secondary action
+     beside Mark Complete, never the solid primary fill; 48dp target. */
+  .missed-action {
+    all: unset;
+    box-sizing: border-box;
+    min-height: 3rem;
+    padding: var(--space-4) var(--space-6);
+    border: 1px solid var(--text-secondary);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    text-align: center;
+    color: var(--text-primary);
+    font-family: var(--type-body-font-family);
+    font-size: var(--type-body-size);
+    font-weight: 600;
+  }
+
+  .missed-action:focus-visible {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: 2px;
+  }
+
+  .missed-action:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* Story 5.1 -- the marked-missed state label, same caution color as the
+     day row's "Missed · noted" label, always paired with its text. */
+  .missed-status {
+    margin: 0 0 var(--space-5);
+    font-family: var(--type-caption-font-family);
+    font-size: var(--type-caption-size);
+    font-weight: 600;
+    color: var(--accent-caution);
+  }
+
+  .missed-confirmation {
+    margin: 0;
+    font-family: var(--type-body-font-family);
+    font-size: var(--type-body-size);
+    font-weight: 600;
+    line-height: var(--type-body-line-height);
+    color: var(--text-primary);
+    overflow-wrap: break-word;
+  }
+
+  .missed-confirmation:not(:empty) {
+    margin-top: var(--space-5);
   }
 
   /* Story 4.3 -- secondary action: outlined, never the solid primary fill,

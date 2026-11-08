@@ -181,3 +181,40 @@ describe('computeStreak', () => {
     expect(computeStreak(['2026-09-01', '2026-09-02'], new Map(), {}, '2099-01-01')).toBe(0);
   });
 });
+
+// Story 5.1 -- a "Missed it" check-in is completed: false, so it breaks the
+// Streak exactly like an unlogged day.
+describe('computeStreak -- marked missed (Story 5.1)', () => {
+  it('a past day marked missed breaks the Streak', () => {
+    const dayRange = ['2026-11-03', '2026-11-04', '2026-11-05', '2026-11-06'];
+    const todayIso = '2026-11-06';
+    const workoutsByDate = byDate(workout('2026-11-03'), workout('2026-11-04'), workout('2026-11-05'));
+    const entries: Record<string, unknown> = {
+      '2026-11-03': { completed: true },
+      '2026-11-04': { completed: false, missed: true },
+      '2026-11-05': { completed: true },
+    };
+    expect(computeStreak(dayRange, workoutsByDate, entries, todayIso)).toBe(1);
+  });
+});
+
+// Story 5.1 review -- CLAUDE.md boundary days for a day marked missed: on the
+// day itself it is skipped (not broken yet); from the day after it breaks.
+describe('computeStreak -- marked missed, boundary days (Story 5.1)', () => {
+  const dayRange = ['2026-11-04', '2026-11-05', '2026-11-06', '2026-11-07'];
+  const workoutsByDate = byDate(workout('2026-11-04'), workout('2026-11-05'));
+  const entries: Record<string, unknown> = {
+    '2026-11-04': { completed: true },
+    '2026-11-05': { completed: false, missed: true },
+  };
+
+  it('marked missed today: the Streak is not broken yet', () => {
+    expect(computeStreak(dayRange, workoutsByDate, entries, '2026-11-05')).toBe(1);
+  });
+
+  for (const todayIso of ['2026-11-06', '2026-11-07']) {
+    it(`evaluated on ${todayIso} (after the missed day): the Streak is broken`, () => {
+      expect(computeStreak(dayRange, workoutsByDate, entries, todayIso)).toBe(0);
+    });
+  }
+});
