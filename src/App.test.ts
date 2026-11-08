@@ -10,6 +10,7 @@ import { render, fireEvent, cleanup, screen } from '@testing-library/svelte';
 import { tick } from 'svelte';
 import App from './App.svelte';
 import { planStore } from './lib/data/planStore.svelte';
+import { logStore, setCompleted, setMissed } from './lib/data/logStore.svelte';
 import { weekEndReviewStore } from './lib/data/weekEndReviewStore.svelte';
 import { clearDraft } from './lib/data/reviewDraftStore.svelte';
 import type { Workout } from './lib/domain/parsePlan';
@@ -525,5 +526,86 @@ describe('App -- rest-day note in Workout Detail (Epic 4 retro A11)', () => {
     expect(screen.getByRole('heading', { name: 'Rest Day' })).toBeInTheDocument();
     expect(screen.getByRole('dialog')).toHaveTextContent('Full rest. Walking is fine.');
     expect(screen.queryByText('Nothing scheduled to log yet')).toBeNull();
+  });
+});
+
+describe('App -- unchecked-day counter on Home (Story 5.2)', () => {
+  // Two past planned weekdays (Oct 1, Oct 5), today planned, Oct 11 future.
+  const PLAN: Workout[] = [
+    { date: '2026-10-01', type: 'Run', duration: '20 min' },
+    { date: '2026-10-05', type: 'Run', duration: '30 min' },
+    { date: FIXED_TODAY, type: 'Run', duration: '40 min' },
+    { date: '2026-10-11', type: 'Run', duration: '40 min' },
+  ];
+
+  beforeEach(() => {
+    localStorage.clear();
+    logStore.entries = {};
+    planStore.plan = { workouts: PLAN };
+  });
+
+  afterEach(() => {
+    localStorage.clear();
+    logStore.entries = {};
+  });
+
+  function counterText(container: HTMLElement): string {
+    return (container.querySelector('#panel-home .unchecked-line')?.textContent ?? '').replace(/\s+/g, ' ').trim();
+  }
+
+  it('sits first in the loaded Home panel, before the Streak, with the count and today-open line', async () => {
+    const { container } = await renderApp();
+    const counter = container.querySelector('#panel-home .unchecked-counter')!;
+    expect(counter).not.toBeNull();
+    expect(container.querySelector('#panel-home')!.firstElementChild).toBe(counter);
+    expect(counter.compareDocumentPosition(container.querySelector('#panel-home .streak-indicator')!)).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING,
+    );
+    expect(counter.compareDocumentPosition(container.querySelector('#panel-home .day-list')!) &
+      Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(counterText(container)).toBe('2 days unchecked. Stop hiding from them — log them.');
+    expect(screen.getByText("Today's still open. Done or missed — own it.")).toBeInTheDocument();
+    // Home only.
+    expect(container.querySelector('#panel-history .unchecked-counter')).toBeNull();
+  });
+
+  it('drops the moment a Mark Complete or "Missed it" write succeeds, with no reload', async () => {
+    const { container } = await renderApp();
+    setCompleted('2026-10-01', true, PLAN[0]);
+    await tick();
+    expect(counterText(container)).toBe('1 day unchecked. No excuses — log it.');
+    setMissed('2026-10-05', true);
+    await tick();
+    expect(counterText(container)).toBe('0 unchecked. Keep showing up.');
+    // Checking today removes the today-open line.
+    setMissed(FIXED_TODAY, true);
+    await tick();
+    expect(screen.queryByText(/Today's still open/)).toBeNull();
+  });
+
+  it('marking a past day "Missed it" in Workout Detail and closing it lowers the count on Home', async () => {
+    const { container } = await renderApp();
+    expect(counterText(container)).toBe('2 days unchecked. Stop hiding from them — log them.');
+    await fireEvent.click(container.querySelector<HTMLElement>('#panel-home [data-date="2026-10-05"]')!);
+    await tick();
+    await fireEvent.click(screen.getByRole('button', { name: 'Missed it' }));
+    await tick();
+    await fireEvent.click(screen.getByRole('button', { name: '← Back' }));
+    await tick();
+    await tick();
+    expect(screen.queryByRole('dialog')).toBeNull();
+    expect(counterText(container)).toBe('1 day unchecked. No excuses — log it.');
+  });
+
+  it('is not rendered while loading or on a load error', async () => {
+    planStore.status = 'loading';
+    const loading = await renderApp();
+    expect(loading.container.querySelector('.unchecked-counter')).toBeNull();
+    cleanup();
+
+    planStore.plan = null;
+    planStore.status = 'error';
+    const errored = await renderApp();
+    expect(errored.container.querySelector('.unchecked-counter')).toBeNull();
   });
 });

@@ -21,6 +21,7 @@
   import DayRowCard from './lib/components/DayRowCard.svelte';
   import WorkoutDetail from './lib/components/WorkoutDetail.svelte';
   import StreakIndicator from './lib/components/StreakIndicator.svelte';
+  import UncheckedCounter from './lib/components/UncheckedCounter.svelte';
   import HistoryView from './lib/components/HistoryView.svelte';
   import WeekEndReview from './lib/components/WeekEndReview.svelte';
   import WeekHeader from './lib/components/WeekHeader.svelte';
@@ -32,6 +33,7 @@
   import { getPlanDayRange } from './lib/domain/getPlanDayRange';
   import { getWeekHeaderDates } from './lib/domain/getWeekHeaderDates';
   import { computeStreak } from './lib/domain/computeStreak';
+  import { computeUncheckedCount } from './lib/domain/computeUncheckedCount';
   import { getTodayIso, getWeekStartIso } from './lib/domain/date';
 
   type Tab = 'home' | 'history';
@@ -136,6 +138,11 @@
   // already relies on for its own `dayView` (AC5: recomputes "in the same
   // moment as Completion Feedback," with no explicit event/callback wiring).
   const streak = $derived(computeStreak(dayRange, workoutsByDate, logStore.entries, todayIso));
+
+  // Story 5.2 -- past planned days neither logged nor marked "Missed it",
+  // plus whether today is still open. Derived like `streak`, so a successful
+  // log or "Missed it" write updates it with no reload (AD-2: never stored).
+  const unchecked = $derived(computeUncheckedCount(dayRange, workoutsByDate, logStore.entries, todayIso));
 
   // Story 3.3 -- Week-End Review. `todayWeekStartIso` is computed once, not
   // re-derived reactively (mirrors `todayIso`'s own "today never
@@ -305,6 +312,21 @@
   $effect(() => {
     untrack(loadPlan);
   });
+
+  // Story 5.2 -- a PWA resumed from the background on a later day would
+  // otherwise keep yesterday's `todayIso`, showing it as "Today's still open"
+  // and leaving it out of the unchecked count. Reloading on that resume
+  // treats it as a fresh open on a new day; within one day `todayIso` still
+  // never live-recomputes (Story 1.5's convention above).
+  $effect(() => {
+    function reloadIfNewDay() {
+      if (document.visibilityState === 'visible' && getTodayIso() !== todayIso) {
+        location.reload();
+      }
+    }
+    document.addEventListener('visibilitychange', reloadIfNewDay);
+    return () => document.removeEventListener('visibilitychange', reloadIfNewDay);
+  });
 </script>
 
 <main>
@@ -374,6 +396,7 @@
         <button type="button" class="retry-button" onclick={loadPlan}>Retry</button>
       </div>
     {:else}
+      <UncheckedCounter count={unchecked.count} todayOpen={unchecked.todayOpen} />
       <StreakIndicator {streak} />
       <!-- Story 3.3 -- Sunday-only, non-dismissible: no close/dismiss control
            exists anywhere on this banner (this story's I/O matrix: "Try to

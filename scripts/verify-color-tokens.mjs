@@ -230,6 +230,14 @@ const streakIndicatorSveltePath = path.join(
   'components',
   'StreakIndicator.svelte',
 );
+const uncheckedCounterSveltePath = path.join(
+  __dirname,
+  '..',
+  'src',
+  'lib',
+  'components',
+  'UncheckedCounter.svelte',
+);
 const weekHeaderSveltePath = path.join(__dirname, '..', 'src', 'lib', 'components', 'WeekHeader.svelte');
 const rootSveltePath = path.join(__dirname, '..', 'src', 'Root.svelte');
 const mainTsPath = path.join(__dirname, '..', 'src', 'main.ts');
@@ -1509,6 +1517,43 @@ function checkAppSvelteStreakWiring(failures) {
   }
 }
 
+/** Story 5.2 -- `unchecked-counter`: same color-token-wiring scan as the
+ * Streak's own component check. */
+function checkUncheckedCounterWiring(failures) {
+  const source = readFileSync(uncheckedCounterSveltePath, 'utf8');
+  scanColorWiring(source, 'src/lib/components/UncheckedCounter.svelte', SAFE_NON_TOKEN_VALUES, failures);
+}
+
+/** Story 5.2 -- mirrors `checkAppSvelteStreakWiring`: Home must mount the
+ * counter, and its count must be reactively derived (never a one-time
+ * snapshot), so a log or "Missed it" write updates it with no reload. */
+function checkAppSvelteUncheckedCounterWiring(failures) {
+  const masked = maskAllComments(readFileSync(appSveltePath, 'utf8'));
+
+  if (!/\$derived\(computeUncheckedCount\(/.test(masked)) {
+    failures.push(
+      'src/App.svelte: no $derived(computeUncheckedCount(...)) found -- the unchecked count must be ' +
+        'reactively derived, not computed once as a stale snapshot (Story 5.2)',
+    );
+  }
+
+  const mount = masked.match(/<UncheckedCounter\b[^>]*>/);
+  if (!mount) {
+    failures.push(
+      'src/App.svelte: no <UncheckedCounter mount found -- Home must display the unchecked-day ' +
+        'counter (Story 5.2)',
+    );
+  } else if (
+    !/\bcount=\{\s*unchecked\.count\s*\}/.test(mount[0]) ||
+    !/\btodayOpen=\{\s*unchecked\.todayOpen\s*\}/.test(mount[0])
+  ) {
+    failures.push(
+      'src/App.svelte: <UncheckedCounter must be wired with count={unchecked.count} and ' +
+        'todayOpen={unchecked.todayOpen} -- the derived value, not a constant (Story 5.2)',
+    );
+  }
+}
+
 /** A fresh-review pass on Story 1.6 found that nothing in this file's other
  * checks (or `svelte-check`) would notice if the actual error-boundary
  * wiring regressed -- e.g. `main.ts` reverting to `mount(App, ...)`, or
@@ -2199,6 +2244,8 @@ function main() {
   checkStreakIndicatorWiring(failures);
   checkWeekHeaderWiring(failures);
   checkAppSvelteStreakWiring(failures);
+  checkUncheckedCounterWiring(failures);
+  checkAppSvelteUncheckedCounterWiring(failures);
   checkHistoryViewWiring(failures);
   checkHistoryViewAppWiring(failures);
   checkTrendChartWiring(failures);
@@ -2276,7 +2323,9 @@ function main() {
       `no interactive element or attribute in its template; and Root.svelte renders <CrashFallback in both ` +
       `the boundary's failed snippet and the {#if globalCrash} branch; and the TabBar/App tab-panel ids, the hidden={...} panels, DayRowCard's data-today/` +
       `data-date and App's selectors for them, and App's planStore.status branches and DayRowCard/TabBar ` +
-      `mounts all still agree across files.`,
+      `mounts all still agree across files; and UncheckedCounter.svelte routes its color declarations ` +
+      `through tokens, and src/App.svelte reactively derives the unchecked count via ` +
+      `$derived(computeUncheckedCount(...)) and mounts <UncheckedCounter wired to that derived value.`,
   );
 }
 
